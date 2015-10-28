@@ -74,8 +74,18 @@ def updatespreadsheet():
 
 print('Connecting to resources...')
 logingoog(account, password)
-print('Gettin expenses...')
-getexpenses(expNote)
-print('Updating spreadsheet...')
-updatespreadsheet()
-print('Done!')
+
+while True:
+    start = time.time()
+    print('Gettin expenses...')
+    getexpenses(expNote)
+    print('Updating spreadsheet...')
+
+    if len(expenses) != 0:
+        updatespreadsheet()
+        print('Deleting Keep...')
+        driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').clear()
+        driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
+
+    print('All done! It took {} to process the expenses. Waiting 120s to check again.'. format(time.time()-start))
+    time.sleep(30)

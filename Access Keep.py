@@ -2,8 +2,9 @@ from selenium import webdriver
 import time
 import re
 import calendar
+from selenium.webdriver.common.keys import Keys
 
-driver = webdriver.PhantomJS()
+driver = webdriver.Chrome()
 expNote = 'https://keep.google.com/#NOTE/1445630158926.1066527822'
 account = ''
 password = ''
