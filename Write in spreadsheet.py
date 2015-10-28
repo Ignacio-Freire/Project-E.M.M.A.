@@ -7,7 +7,14 @@ scope = ['https://spreadsheets.google.com/feeds']
 credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
 gc = gspread.authorize(credentials)
 
-sht = gc.open_by_key('1uVvqxtRWIBN8foiBLPFNVzRog-97ZXRlX7KpNA47GlM').sheet1
+sht = gc.open_by_key('1uVvqxtRWIBN8foiBLPFNVzRog-97ZXRlX7KpNA47GlM')
 
-sht.update_acell('B16', 'Te cambio todo')
-print(sht.acell('A1'))
+print(sht.worksheet('October').row_count)
+print(sht.worksheet('October').acell('B'+str(10)).value)
+#print(sht.worksheet('October').col_values('B'))
+
+e = 2
+while sht.worksheet('October').acell('B'+str(e)).value != '':
+        lastrow = e + 1
+        print(lastrow)
+        e += 1

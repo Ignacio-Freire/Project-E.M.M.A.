@@ -44,6 +44,9 @@ def getexpenses(note):
 
 
 def updatespreadsheet():
+    lastmonth = ''
+    prevrow = 0
+
     for i in range(len(expenses)):
         day = expenses[i][0]
         msheet = calendar.month_name[int(expenses[i][1])]
@@ -52,11 +55,22 @@ def updatespreadsheet():
         amount = expenses[i][4]
         currency = expenses[i][5]
 
-        sht.worksheet(msheet).update_acell('B' + str(33+i), day)
-        sht.worksheet(msheet).update_acell('C' + str(33+i), detail)
-        sht.worksheet(msheet).update_acell('D' + str(33+i), category)
-        sht.worksheet(msheet).update_acell('E' + str(33+i), amount)
-        sht.worksheet(msheet).update_acell('F' + str(33+i), currency.upper())
+        e = 2
+
+        if lastmonth == msheet:
+            lastrow = prevrow + 1
+        else:
+            while sht.worksheet(msheet).acell('B'+str(e)).value != '':
+                    lastrow = e + 1
+                    lastmonth = msheet
+                    prevrow = lastrow
+                    e += 1
+
+        sht.worksheet(msheet).update_acell('B' + str(lastrow), day)
+        sht.worksheet(msheet).update_acell('C' + str(lastrow), detail)
+        sht.worksheet(msheet).update_acell('D' + str(lastrow), category)
+        sht.worksheet(msheet).update_acell('E' + str(lastrow), amount)
+        sht.worksheet(msheet).update_acell('F' + str(lastrow), currency.upper())
 
 print('Connecting to resources...')
 logingoog(account, password)
