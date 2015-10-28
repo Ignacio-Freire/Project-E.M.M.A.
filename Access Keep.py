@@ -5,7 +5,7 @@ import calendar
 
 driver = webdriver.PhantomJS()
 expNote = 'https://keep.google.com/#NOTE/1445630158926.1066527822'
-account = 'TheProjectEmma'
+account = ''
 password = ''
 
 p = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>\d*.\d*);'
