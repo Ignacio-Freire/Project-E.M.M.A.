@@ -35,7 +35,7 @@ logged = time.time() - log
 print('Getting Expenses...')
 get = time.time()
 getexpenses(expNote)
-got = time.time()-get
+gotten = time.time()-get
 
 print('Processing expenses...')
 process = time.time()
@@ -51,4 +51,4 @@ for i in range(len(expenses)):
 processed = time.time() - process
 
 print('It took {} for the whole thing but just {} to get the expenses. To process the expenses it took {}.'
-      .format(logged + got, got, processed))
+      .format(logged + gotten, gotten, processed))
