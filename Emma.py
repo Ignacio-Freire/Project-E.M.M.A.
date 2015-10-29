@@ -117,6 +117,6 @@ while True:
         try:
             sht.sheet1.acell('A1')
             time.sleep(10)
-        except:
+        except NameError:
             print('Minor error while waiting, can\'t be ignored if happens more than three times.')
             time.sleep(10)
