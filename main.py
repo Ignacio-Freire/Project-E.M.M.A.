@@ -6,15 +6,15 @@ import time
 import re
 import calendar
 
-#Fill with Keep note, remember to share it with the bot email
+# Fill with Keep note, remember to share it with the bot email
 expNote = 'https://keep.google.com/#NOTE/1445630158926.1066527822'
-#Fill with mail
+# Fill with mail
 account = ''
-#Fill with pass
+# Fill with pass
 password = ''
-#Fill w/ json with Key
+# Fill w/ json with Key
 json_key = json.load(open(''))
-#Fill with sheet key, remember to share it with the json email
+# Fill with sheet key, remember to share it with the json email
 shtkey = '1TH_jKk4Qhn2gVsx7QMTzxE4JHPILKzqIMZLEyocnc5c'
 
 p = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>\d*.\d*);'
@@ -74,6 +74,7 @@ def update_spreadsheet():
                 sht.worksheet(msheet).update_acell(col[j] + str(lastrow), colnm[j])
 
 
+# This has to be seriously optimized, do I really have to relog to delete the content?
 def delete_keep():
 
     driver.close()
@@ -111,6 +112,7 @@ while True:
 
     print('All done! It took {} to process the expenses. Waiting 120s to check again.'. format(time.time()-start))
 
+    # This is to keep the spreadsheet connection alive while waiting, otherwise it times out.
     for i in range(12):
         sht.worksheet('January').acell('A1')
         time.sleep(10)
