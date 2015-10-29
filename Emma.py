@@ -89,34 +89,36 @@ def delete_keep():
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
 
 
-print('Signing in Keep...')
-log_in_goog(account, password)
-print('Done')
+if __name__ == '__main__':
 
-print('Getting spreadheet auth...')
-log_in_sheets(shtkey)
-print('Done')
+    print('Signing in Keep...')
+    log_in_goog(account, password)
+    print('Done')
 
-while True:
-    start = time.time()
-    print('Gettin expenses...')
-    get_expenses(expNote)
+    print('Getting spreadheet auth...')
+    log_in_sheets(shtkey)
+    print('Done')
 
-    if len(expenses) != 0:
-        print('Updating spreadsheet...')
-        update_spreadsheet()
-        print('Deleting Keep...')
-        delete_keep()
-    else:
-        print('Nothing there.')
+    while True:
+        start = time.time()
+        print('Gettin expenses...')
+        get_expenses(expNote)
 
-    print('All done! It took {} to process the expenses. Waiting 120s to check again.'. format(time.time()-start))
+        if len(expenses) != 0:
+            print('Updating spreadsheet...')
+            update_spreadsheet()
+            print('Deleting Keep...')
+            delete_keep()
+        else:
+            print('Nothing there.')
 
-    # This is to keep the spreadsheet connection alive while waiting, otherwise it times out.
-    for i in range(12):
-        try:
-            sht.sheet1.acell('A1')
-            time.sleep(10)
-        except NameError:
-            print('Minor error while waiting, can\'t be ignored if happens more than three times.')
-            time.sleep(10)
+        print('All done! It took {} to process the expenses. Waiting 120s to check again.'. format(time.time()-start))
+
+        # This is to keep the spreadsheet connection alive while waiting, otherwise it times out.
+        for i in range(12):
+            try:
+                sht.sheet1.acell('A1')
+                time.sleep(10)
+            except NameError:
+                print('Minor error while waiting, can\'t be ignored if happens more than three times.')
+                time.sleep(10)
