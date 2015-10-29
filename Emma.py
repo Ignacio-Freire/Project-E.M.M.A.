@@ -19,7 +19,9 @@ shtkey = '1TH_jKk4Qhn2gVsx7QMTzxE4JHPILKzqIMZLEyocnc5c'
 
 # This has to be customized depending on the spreadsheet
 p = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>\d*.\d*);'
-               r'(?P<currency>\w{3})')
+               r'(?P<currency>\w{3})', re.I | re.M)
+
+z = re.compile(r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<amount>\d*.\d*);(?P<currency>\w{3})', re.I | re.M)
 
 
 def log_in_goog(mail, passw):
@@ -48,32 +50,50 @@ def log_in_sheets(key):
 def get_expenses(note):
 
     global expenses
+    global vexpenses
 
     driver.get(note)
     time.sleep(1)
     expenses = p.findall(driver.find_element_by_css_selector('div.VIpgJd-TUo6Hb.XKSfm-L9AdLc.eo9XGd').text)
+    vexpenses = z.findall(driver.find_element_by_css_selector('div.VIpgJd-TUo6Hb.XKSfm-L9AdLc.eo9XGd').text)
     time.sleep(1)
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
 
 
-# This has to be customized depending on the spreadsheet
+# This has to be customized depending on the spreadsheet, not sure if it what's inside can be done in just one function
 def update_spreadsheet():
 
-    for e in range(len(expenses)):
-        day = expenses[e][0]
-        msheet = calendar.month_name[int(expenses[e][1])]
-        detail = expenses[e][2]
-        category = expenses[e][3]
-        amount = expenses[e][4]
-        currency = expenses[e][5]
+        if len(expenses) != 0:
+            for e in range(len(expenses)):
+                day = expenses[e][0]
+                msheet = calendar.month_name[int(expenses[e][1])]
+                detail = expenses[e][2]
+                category = expenses[e][3]
+                amount = expenses[e][4]
+                currency = expenses[e][5]
 
-        lastrow = len(sht.worksheet(msheet).col_values(2)) + 1
+                lastrow = len(sht.worksheet(msheet).col_values(2)) + 1
 
-        col = ['B', 'C', 'D', 'E', 'F']
-        colnm = [day, detail.title(), category.title(), amount, currency.upper()]
+                col = ['B', 'C', 'D', 'E', 'F']
+                colnm = [day, detail.title(), category.title(), amount, currency.upper()]
 
-        for j in range(len(col)):
-                sht.worksheet(msheet).update_acell(col[j] + str(lastrow), colnm[j])
+                for j in range(len(col)):
+                        sht.worksheet(msheet).update_acell(col[j] + str(lastrow), colnm[j])
+
+        if len(vexpenses) != 0:
+            for e in range(len(vexpenses)):
+                msheet = calendar.month_name[int(vexpenses[e][1])]
+                detail = vexpenses[e][2]
+                amount = vexpenses[e][3]
+                currency = vexpenses[e][4]
+
+                lastrow = len(sht.worksheet(msheet).col_values(9)) + 1
+
+                col = ['I', 'J', 'K']
+                colnm = [detail.title(), amount, currency.upper()]
+
+                for j in range(len(col)):
+                        sht.worksheet(msheet).update_acell(col[j] + str(lastrow), colnm[j])
 
 
 # This has to be seriously optimized, do I really have to relog to delete the content?
@@ -104,7 +124,7 @@ if __name__ == '__main__':
         print('Gettin expenses...')
         get_expenses(expNote)
 
-        if len(expenses) != 0:
+        if len(expenses) + len(vexpenses) != 0:
             print('Updating spreadsheet...')
             update_spreadsheet()
             print('Deleting Keep...')
