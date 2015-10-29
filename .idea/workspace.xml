@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="13543268-8562-4da8-9387-68d5b00e1599" name="Default" comment="Added some comments, changed function names.">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/Access Keep.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/Keep string regex test.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Tests/Write in spreadsheet.py" />
-      <change type="DELETED" beforePath="C:\Users\ignacio.freire\PycharmProjects\Project-E.M.M.A\Access Keep.py" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ignacio.freire\PycharmProjects\Project-E.M.M.A\Keep string regex test.py" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ignacio.freire\PycharmProjects\Project-E.M.M.A\Write in spreadsheet.py" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ignacio.freire\PycharmProjects\Project-E.M.M.A\test.py" afterPath="" />
-      <change type="MOVED" beforePath="C:\Users\ignacio.freire\PycharmProjects\Project-E.M.M.A\main.py" afterPath="$PROJECT_DIR$/Emma.py" />
+    <list default="true" id="13543268-8562-4da8-9387-68d5b00e1599" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Emma.py" afterPath="$PROJECT_DIR$/Emma.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Project-E.M.M.A.iws" />
@@ -34,8 +27,8 @@
       <file leaf-file-name="Emma.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Emma.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4857143">
-              <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+            <state vertical-scroll-proportion="0.52987015">
+              <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -62,6 +55,7 @@
         <option value="$PROJECT_DIR$/Write in spreadsheet.py" />
         <option value="$PROJECT_DIR$/test.py" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/Emma.py" />
       </list>
     </option>
   </component>
@@ -424,14 +418,20 @@
       <option name="project" value="LOCAL" />
       <updated>1446130153167</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Changed name and cleaned up folder.">
+      <created>1446130411419</created>
+      <option name="number" value="00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1446130411419</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22098215" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22098215" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26123303" sideWeight="0.50208336" order="7" side_tool="true" content_ui="tabs" />
@@ -467,7 +467,8 @@
     <MESSAGE value="Working 100%. Optimization needed." />
     <MESSAGE value="Shaved 20s. Have to find another way to delete the notes." />
     <MESSAGE value="Added some comments, changed function names." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added some comments, changed function names." />
+    <MESSAGE value="Changed name and cleaned up folder." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed name and cleaned up folder." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -524,8 +525,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Emma.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4857143">
-          <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+        <state vertical-scroll-proportion="0.52987015">
+          <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>

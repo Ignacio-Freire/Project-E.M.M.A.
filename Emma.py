@@ -17,6 +17,7 @@ json_key = json.load(open(''))
 # Fill with sheet key, remember to share it with the json email
 shtkey = '1TH_jKk4Qhn2gVsx7QMTzxE4JHPILKzqIMZLEyocnc5c'
 
+# This has to be cutomized depending on the spreadsheet
 p = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>\d*.\d*);'
                r'(?P<currency>\w{3})')
 
@@ -55,6 +56,7 @@ def get_expenses(note):
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
 
 
+# This has to be cutomized depending on the spreadsheet
 def update_spreadsheet():
 
     for e in range(len(expenses)):
@@ -87,8 +89,6 @@ def delete_keep():
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
 
 
-print('Connecting to resources...')
-
 print('Signing in Keep...')
 log_in_goog(account, password)
 print('Done')
@@ -114,5 +114,5 @@ while True:
 
     # This is to keep the spreadsheet connection alive while waiting, otherwise it times out.
     for i in range(12):
-        sht.worksheet('January').acell('A1')
+        sht.sheet1.acell('A1')
         time.sleep(10)
