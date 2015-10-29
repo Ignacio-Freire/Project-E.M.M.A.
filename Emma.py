@@ -8,11 +8,11 @@ import calendar
 
 # Fill with Keep note, remember to share it with the bot email
 expNote = 'https://keep.google.com/#NOTE/1445630158926.1066527822'
-# Fill with mail
+# Fill with mail, remember to wipe before push
 account = ''
-# Fill with pass
+# Fill with pass, remember to wipe before push
 password = ''
-# Fill w/ json with Key
+# Fill w/ json with Key, remember to wipe before push
 json_key = json.load(open(''))
 # Fill with sheet key, remember to share it with the json email
 shtkey = '1TH_jKk4Qhn2gVsx7QMTzxE4JHPILKzqIMZLEyocnc5c'
@@ -50,9 +50,9 @@ def get_expenses(note):
     global expenses
 
     driver.get(note)
-    time.sleep(5)
+    time.sleep(1)
     expenses = p.findall(driver.find_element_by_css_selector('div.VIpgJd-TUo6Hb.XKSfm-L9AdLc.eo9XGd').text)
-    time.sleep(5)
+    time.sleep(1)
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
 
 
@@ -81,11 +81,11 @@ def delete_keep():
 
     driver.close()
     log_in_goog(account, password)
-    time.sleep(5)
+    time.sleep(1)
     driver.get(expNote)
-    time.sleep(5)
+    time.sleep(1)
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').clear()
-    time.sleep(5)
+    time.sleep(1)
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
 
 
@@ -114,5 +114,9 @@ while True:
 
     # This is to keep the spreadsheet connection alive while waiting, otherwise it times out.
     for i in range(12):
-        sht.sheet1.acell('A1')
-        time.sleep(10)
+        try:
+            sht.sheet1.acell('A1')
+            time.sleep(10)
+        except:
+            print('Minor error while waiting, can\'t be ignored if happens more than three times.')
+            time.sleep(10)
