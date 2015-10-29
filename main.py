@@ -21,7 +21,7 @@ p = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[
                r'(?P<currency>\w{3})')
 
 
-def logingoog(mail, passw):
+def log_in_goog(mail, passw):
 
     global driver
 
@@ -34,7 +34,7 @@ def logingoog(mail, passw):
     driver.find_element_by_id('signIn').click()
 
 
-def loginsheet(key):
+def log_in_sheets(key):
 
     global sht
 
@@ -44,7 +44,7 @@ def loginsheet(key):
     sht = gc.open_by_key(key)
 
 
-def getexpenses(note):
+def get_expenses(note):
 
     global expenses
 
@@ -55,7 +55,7 @@ def getexpenses(note):
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
 
 
-def updatespreadsheet():
+def update_spreadsheet():
 
     for e in range(len(expenses)):
         day = expenses[e][0]
@@ -74,10 +74,10 @@ def updatespreadsheet():
                 sht.worksheet(msheet).update_acell(col[j] + str(lastrow), colnm[j])
 
 
-def deletekeep():
+def delete_keep():
 
     driver.close()
-    logingoog(account, password)
+    log_in_goog(account, password)
     time.sleep(5)
     driver.get(expNote)
     time.sleep(5)
@@ -89,23 +89,23 @@ def deletekeep():
 print('Connecting to resources...')
 
 print('Signing in Keep...')
-logingoog(account, password)
+log_in_goog(account, password)
 print('Done')
 
 print('Getting spreadheet auth...')
-loginsheet(shtkey)
+log_in_sheets(shtkey)
 print('Done')
 
 while True:
     start = time.time()
     print('Gettin expenses...')
-    getexpenses(expNote)
+    get_expenses(expNote)
 
     if len(expenses) != 0:
         print('Updating spreadsheet...')
-        updatespreadsheet()
+        update_spreadsheet()
         print('Deleting Keep...')
-        deletekeep()
+        delete_keep()
     else:
         print('Nothing there.')
 
