@@ -30,7 +30,7 @@ def log_in_goog(mail, passw):
 
     global driver
 
-    driver = webdriver.Chrome()
+    driver = webdriver.PhantomJS()
     driver.get("http://keep.google.com/")
     driver.find_element_by_id('Email').send_keys(mail)
     driver.find_element_by_id('next').click()
