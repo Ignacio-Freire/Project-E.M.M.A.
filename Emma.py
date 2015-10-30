@@ -15,7 +15,7 @@ account = ''
 # Fill with pass, remember to wipe before push
 password = ''
 # Fill w/ json with Key, remember to wipe before push
-json_key = json.load(open(''))
+json_key = json.load(open(r'C:\Users\ignacio.freire\PycharmProjects\Project-E.M.M.A'))
 # Fill with sheet key, remember to share it with the json email
 shtkey = '1TH_jKk4Qhn2gVsx7QMTzxE4JHPILKzqIMZLEyocnc5c'
 
@@ -23,8 +23,10 @@ shtkey = '1TH_jKk4Qhn2gVsx7QMTzxE4JHPILKzqIMZLEyocnc5c'
 p = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>\d*.*\d*);'
                r'(?P<currency>\w{3})', re.I | re.M)
 
-z = re.compile(r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<amount>\d*.*\d*);(?P<currency>\w{3})', re.I | re.M)
+z = re.compile(r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<amount>\d*.*\d*);(?P<currency>\w{3})',
+               re.I | re.M)
 
+runs = 0
 
 def log_in_goog(mail, passw):
 
@@ -134,9 +136,19 @@ if __name__ == '__main__':
         else:
             print('Nothing there.')
 
-        print('All done! It took {} to process the expenses. Waiting 120s to check again.'. format(time.time()-start))
+        runs += 1
+
+        print('All done! Run {} took {} seconds to complete. Waiting 120s to check again.'
+              .format(runs, time.time()-start))
+
 
         # This is to keep the spreadsheet connection alive while waiting, otherwise it times out.
+        if runs == 20:
+            print('Relogging drive to keep connection alive...')
+            driver.close()
+            log_in_goog(account, password)
+            print('Done...')
+
         for i in range(12):
             try:
                 sht.sheet1.acell('A1')
