@@ -18,17 +18,17 @@ json_key = json.load(open(''))
 shtkey = '1TH_jKk4Qhn2gVsx7QMTzxE4JHPILKzqIMZLEyocnc5c'
 
 # This has to be customized depending on the spreadsheet
-p = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>\d*.\d*);'
+p = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>\d*.*\d*);'
                r'(?P<currency>\w{3})', re.I | re.M)
 
-z = re.compile(r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<amount>\d*.\d*);(?P<currency>\w{3})', re.I | re.M)
+z = re.compile(r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<amount>\d*.*\d*);(?P<currency>\w{3})', re.I | re.M)
 
 
 def log_in_goog(mail, passw):
 
     global driver
 
-    driver = webdriver.PhantomJS()
+    driver = webdriver.Chrome()
     driver.get("http://keep.google.com/")
     driver.find_element_by_id('Email').send_keys(mail)
     driver.find_element_by_id('next').click()
