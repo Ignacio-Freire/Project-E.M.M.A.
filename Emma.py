@@ -5,6 +5,8 @@ import gspread
 from oauth2client.client import SignedJwtAssertionCredentials
 from selenium import webdriver
 import time
+from time import strftime, localtime
+from selenium.common.exceptions import NoSuchElementException
 import re
 import calendar
 
@@ -15,7 +17,7 @@ account = ''
 # Fill with pass, remember to wipe before push
 password = ''
 # Fill w/ json with Key, remember to wipe before push
-json_key = json.load(open(r'C:\Users\ignacio.freire\PycharmProjects\Project-E.M.M.A'))
+json_key = json.load(open(r'C:\Users\Tkwk\PycharmProjects\Project-E.M.M.A'))
 # Fill with sheet key, remember to share it with the json email
 shtkey = '1TH_jKk4Qhn2gVsx7QMTzxE4JHPILKzqIMZLEyocnc5c'
 
@@ -25,8 +27,8 @@ p = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[
 
 z = re.compile(r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<amount>\d*.*\d*);(?P<currency>\w{3})',
                re.I | re.M)
+s = re.compile(r'<stop>', re.I | re.M)
 
-runs = 0
 
 def log_in_goog(mail, passw):
 
@@ -55,13 +57,25 @@ def get_expenses(note):
 
     global expenses
     global vexpenses
+    global stop
+
+    expenses = []
+    vexpenses = []
+    stop = []
 
     driver.get(note)
     time.sleep(1)
-    expenses = p.findall(driver.find_element_by_css_selector('div.VIpgJd-TUo6Hb.XKSfm-L9AdLc.eo9XGd').text)
-    vexpenses = z.findall(driver.find_element_by_css_selector('div.VIpgJd-TUo6Hb.XKSfm-L9AdLc.eo9XGd').text)
+
+    try:
+        expenses = p.findall(driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text)
+        vexpenses = z.findall(driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text)
+        stop = s.findall(driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text)
+    except NoSuchElementException:
+        print('[{}] Can\'t find element, will try on next run.'.format(strftime("%H:%M:%S", localtime())))
+
     time.sleep(1)
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
+    time.sleep(1)
 
 
 # This has to be customized depending on the spreadsheet, not sure if it what's inside can be done in just one function
@@ -103,7 +117,7 @@ def update_spreadsheet():
 # This has to be seriously optimized, do I really have to relog to delete the content?
 def delete_keep():
 
-    driver.close()
+    driver.quit()
     log_in_goog(account, password)
     time.sleep(1)
     driver.get(expNote)
@@ -111,48 +125,49 @@ def delete_keep():
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').clear()
     time.sleep(1)
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
+    time.sleep(1)
 
 
 if __name__ == '__main__':
 
-    print('Signing in Keep...')
+    runs = 0
+    go = 'Y'
+
+    print('[{}] Signing in Google Keep...'.format(strftime("%H:%M:%S", localtime())))
     log_in_goog(account, password)
-    print('Done')
+    print('[{}] Done'.format(strftime("%H:%M:%S", localtime())))
 
-    print('Getting spreadheet auth...')
+    print('[{}] Getting spreadheet auth...'.format(strftime("%H:%M:%S", localtime())))
     log_in_sheets(shtkey)
-    print('Done')
+    print('[{}] Done'.format(strftime("%H:%M:%S", localtime())))
 
-    while True:
+    while go == 'Y':
         start = time.time()
-        print('Gettin expenses...')
+        print('[{}] Getting expenses...'.format(strftime("%H:%M:%S", localtime())))
         get_expenses(expNote)
 
         if len(expenses) + len(vexpenses) != 0:
-            print('Updating spreadsheet...')
+            print('[{}] Updating spreadsheet...'.format(strftime("%H:%M:%S", localtime())))
             update_spreadsheet()
-            print('Deleting Keep...')
+            print('[{}] Deleting Keep...'.format(strftime("%H:%M:%S", localtime())))
             delete_keep()
         else:
-            print('Nothing there.')
+            print('[{}] Nothing there.'.format(strftime("%H:%M:%S", localtime())))
 
         runs += 1
 
-        print('All done! Run {} took {} seconds to complete. Waiting 120s to check again.'
-              .format(runs, time.time()-start))
-
-
-        # This is to keep the spreadsheet connection alive while waiting, otherwise it times out.
-        if runs == 20:
-            print('Relogging drive to keep connection alive...')
-            driver.close()
+# This is to keep the spreadsheet connection alive while waiting, otherwise it times out.
+        if runs % 20 == 0:
+            print('[{}] Relogging to keep connections alive...'.format(strftime("%H:%M:%S", localtime())))
             log_in_goog(account, password)
-            print('Done...')
+            log_in_sheets(shtkey)
+            print('[{}] Done...'.format(strftime("%H:%M:%S", localtime())))
 
-        for i in range(12):
-            try:
-                sht.sheet1.acell('A1')
-                time.sleep(10)
-            except NameError:
-                print('Minor error while waiting, can\'t be ignored if happens more than three times.')
-                time.sleep(10)
+        if len(stop) != 0:
+            break
+        else:
+            print('[{}] All done! Run {} took {} seconds to complete. Waiting 120s to check again.'
+                  .format(strftime("%H:%M:%S", localtime()), runs, time.time()-start))
+            time.sleep(120)
+
+    print('[{}] Goodbye!'.format(strftime("%H:%M:%S", localtime())))

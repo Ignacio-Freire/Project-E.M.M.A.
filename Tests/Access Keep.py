@@ -9,9 +9,8 @@ expNote = 'https://keep.google.com/#NOTE/1445630158926.1066527822'
 account = ''
 password = ''
 
-p = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>\d*.\d*);'
-               r'(?P<currency>\w{3})')
-
+p = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>\d*.*\d*);'
+               r'(?P<currency>\w{3})', re.I | re.M)
 
 def logingoog(mail, passw):
     driver.get("http://keep.google.com/")
@@ -26,7 +25,8 @@ def getexpenses(note):
     global expenses
     driver.get(note)
     time.sleep(1)
-    expenses = p.findall(driver.find_element_by_css_selector('div.VIpgJd-TUo6Hb.XKSfm-L9AdLc.eo9XGd').text)
+    expenses = p.findall(driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text)
+    #expenses = p.findall(driver.find_element_by_css_selector('div.VIpgJd-TUo6Hb.XKSfm-L9AdLc.eo9XGd').text)
 
 print('Logging in...')
 log = time.time()
@@ -37,6 +37,7 @@ print('Getting Expenses...')
 get = time.time()
 getexpenses(expNote)
 gotten = time.time()-get
+print(expenses)
 
 print('Processing expenses...')
 process = time.time()
