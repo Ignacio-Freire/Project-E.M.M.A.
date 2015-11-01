@@ -1,5 +1,4 @@
 # ----------------------------- Project Expense Management Mad Assistant --------------------------------------------- #
-
 import json
 import gspread
 from oauth2client.client import SignedJwtAssertionCredentials
@@ -17,7 +16,7 @@ account = ''
 # Fill with pass, remember to wipe before push
 password = ''
 # Fill w/ json with Key, remember to wipe before push
-json_key = json.load(open(r'C:\Users\Tkwk\PycharmProjects\Project-E.M.M.A'))
+json_key = json.load(open(''))
 # Fill with sheet key, remember to share it with the json email
 shtkey = '1TH_jKk4Qhn2gVsx7QMTzxE4JHPILKzqIMZLEyocnc5c'
 
@@ -70,12 +69,12 @@ def get_expenses(note):
         expenses = p.findall(driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text)
         vexpenses = z.findall(driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text)
         stop = s.findall(driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text)
+        time.sleep(1)
+        driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
     except NoSuchElementException:
-        print('[{}] Can\'t find element, will try on next run.'.format(strftime("%H:%M:%S", localtime())))
-
-    time.sleep(1)
-    driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
-    time.sleep(1)
+        print('[{}] Can\'t find element, will relog and try on next run.'.format(strftime("%H:%M:%S", localtime())))
+        driver.quit()
+        log_in_goog(account, password)
 
 
 # This has to be customized depending on the spreadsheet, not sure if it what's inside can be done in just one function
@@ -142,6 +141,7 @@ if __name__ == '__main__':
     print('[{}] Done'.format(strftime("%H:%M:%S", localtime())))
 
     while go == 'Y':
+
         start = time.time()
         print('[{}] Getting expenses...'.format(strftime("%H:%M:%S", localtime())))
         get_expenses(expNote)
@@ -159,6 +159,7 @@ if __name__ == '__main__':
 # This is to keep the spreadsheet connection alive while waiting, otherwise it times out.
         if runs % 20 == 0:
             print('[{}] Relogging to keep connections alive...'.format(strftime("%H:%M:%S", localtime())))
+            driver.quit()
             log_in_goog(account, password)
             log_in_sheets(shtkey)
             print('[{}] Done...'.format(strftime("%H:%M:%S", localtime())))
