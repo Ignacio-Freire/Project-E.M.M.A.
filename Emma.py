@@ -167,7 +167,7 @@ if __name__ == '__main__':
         if len(stop) != 0:
             break
         else:
-            print('[{}] All done! Run {} took {} seconds to complete. Waiting 120s to check again.'
+            print('[{}] All done! Run {} took {} seconds. Next scan in 120s.'
                   .format(strftime("%H:%M:%S", localtime()), runs, time.time()-start))
             time.sleep(120)
 
