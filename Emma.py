@@ -9,14 +9,18 @@ from selenium.common.exceptions import NoSuchElementException
 import re
 import calendar
 
+
+with open('settings.cfg', 'r') as f:
+    log_info = f.readlines()
+
 # Fill with Keep note, remember to share it with the bot email
 expNote = 'https://keep.google.com/#NOTE/1445630158926.1066527822'
 # Fill with mail, remember to wipe before push
-account = ''
+account = log_info[0].strip()
 # Fill with pass, remember to wipe before push
-password = ''
+password = log_info[1].strip()
 # Fill w/ json with Key, remember to wipe before push
-json_key = json.load(open(''))
+json_key = json.load(open(log_info[2].strip()))
 # Fill with sheet key, remember to share it with the json email
 shtkey = '1TH_jKk4Qhn2gVsx7QMTzxE4JHPILKzqIMZLEyocnc5c'
 
