@@ -1,2 +1,3 @@
 *.json
 ghostdriver.log
+*.cfg
