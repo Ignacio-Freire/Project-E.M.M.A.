@@ -63,6 +63,8 @@ def get_expenses(note):
     vexpenses = []
     stop = []
 
+    log_in_goog(account, password)
+    time.sleep(1)
     driver.get(note)
     time.sleep(1)
 
@@ -72,14 +74,19 @@ def get_expenses(note):
         stop = s.findall(driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text)
         time.sleep(1)
         driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
+        
     except NoSuchElementException:
         print('[{}] Can\'t find element, will relog and try on next run.'.format(strftime("%H:%M:%S", localtime())))
         driver.quit()
         log_in_goog(account, password)
 
+    driver.quit()
+
 
 # This has to be customized depending on the spreadsheet, not sure if it what's inside can be done in just one function
 def update_spreadsheet():
+
+        log_in_sheets(shtkey)
 
         if len(expenses) != 0:
             for e in range(len(expenses)):
@@ -117,15 +124,15 @@ def update_spreadsheet():
 # This has to be seriously optimized, do I really have to relog to delete the content?
 def delete_keep():
 
-    driver.quit()
     log_in_goog(account, password)
-    time.sleep(1)
+    time.sleep(5)
     driver.get(expNote)
-    time.sleep(1)
+    time.sleep(5)
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').clear()
-    time.sleep(1)
+    time.sleep(5)
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
-    time.sleep(1)
+    time.sleep(5)
+    driver.quit()
 
 
 if __name__ == '__main__':
@@ -133,21 +140,17 @@ if __name__ == '__main__':
     runs = 0
     go = 'Y'
 
-    print('[{}] Signing in Google Keep...'.format(strftime("%H:%M:%S", localtime())))
-    log_in_goog(account, password)
-    print('[{}] Done'.format(strftime("%H:%M:%S", localtime())))
-
-    print('[{}] Getting spreadheet auth...'.format(strftime("%H:%M:%S", localtime())))
-    log_in_sheets(shtkey)
-    print('[{}] Done'.format(strftime("%H:%M:%S", localtime())))
-
     while go == 'Y':
 
         start = time.time()
+        runs += 1
+		
+        print('[{}] Logging into Keep...'.format(strftime("%H:%M:%S", localtime())))
         print('[{}] Getting expenses...'.format(strftime("%H:%M:%S", localtime())))
         get_expenses(expNote)
 
         if len(expenses) + len(vexpenses) != 0:
+            print('[{}] Getting spreadheet auth...'.format(strftime("%H:%M:%S", localtime())))
             print('[{}] Updating spreadsheet...'.format(strftime("%H:%M:%S", localtime())))
             update_spreadsheet()
             print('[{}] Deleting Keep...'.format(strftime("%H:%M:%S", localtime())))
@@ -155,13 +158,10 @@ if __name__ == '__main__':
         else:
             print('[{}] Nothing there.'.format(strftime("%H:%M:%S", localtime())))
 
-        runs += 1
-
 # This is to keep the spreadsheet connection alive while waiting, otherwise it times out.
-        if runs % 20 == 0:
+        
+        if runs % 14 == 0:
             print('[{}] Relogging to keep connections alive...'.format(strftime("%H:%M:%S", localtime())))
-            driver.quit()
-            log_in_goog(account, password)
             log_in_sheets(shtkey)
             print('[{}] Done...'.format(strftime("%H:%M:%S", localtime())))
 
