@@ -170,6 +170,7 @@ if __name__ == '__main__':
             print('[{}] Done...'.format(strftime("%H:%M:%S", localtime())))
 
         if len(status) != 0:
+		        print('[{}] Sending status...'.format(strftime("%H:%M:%S", localtime())))
                 log_in_goog(account, password)
                 time.sleep(1)
                 driver.get(expNote)
