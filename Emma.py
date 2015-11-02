@@ -28,7 +28,7 @@ p = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[
 z = re.compile(r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<amount>\d*.*\d*);(?P<currency>\w{3})',
                re.I | re.M)
 s = re.compile(r'<stop>', re.I | re.M)
-a = re.compile(r'<are you alive \?>', re.I | re.M)
+a = re.compile(r'<are you alive\?>', re.I | re.M)
 
 
 def log_in_goog(mail, passw):
@@ -160,7 +160,7 @@ if __name__ == '__main__':
             print('[{}] Deleting Keep...'.format(strftime("%H:%M:%S", localtime())))
             delete_keep()
         else:
-            print('[{}] Nothing there.'.format(strftime("%H:%M:%S", localtime())))
+            print('[{}] No expenses found'.format(strftime("%H:%M:%S", localtime())))
 
 # This is to keep the spreadsheet connection alive while waiting, otherwise it times out.
         
@@ -170,17 +170,18 @@ if __name__ == '__main__':
             print('[{}] Done...'.format(strftime("%H:%M:%S", localtime())))
 
         if len(status) != 0:
-		        print('[{}] Sending status...'.format(strftime("%H:%M:%S", localtime())))
-                log_in_goog(account, password)
-                time.sleep(1)
-                driver.get(expNote)
-                time.sleep(1)
-                driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]')\
-                    .send_keys('Yes! I\'m alive :)')
-                time.sleep(1)
-                driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
-                time.sleep(1)
-                driver.quit()
+            delete_keep()
+            print('[{}] Sending status...'.format(strftime("%H:%M:%S", localtime())))
+            log_in_goog(account, password)
+            time.sleep(1)
+            driver.get(expNote)
+            time.sleep(1)
+            driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]')\
+                .send_keys('Yes! I\'m alive :)')
+            time.sleep(1)
+            driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
+            time.sleep(1)
+            driver.quit()
 
         if len(stop) != 0:
             break
