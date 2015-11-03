@@ -1,4 +1,4 @@
-# ----------------------------- Project Expense Management Mad Assistant --------------------------------------------- #
+# ----------------------------------- Expense Management Mad Assistant --------------------------------------------- #
 import json
 import gspread
 from oauth2client.client import SignedJwtAssertionCredentials
@@ -169,6 +169,7 @@ if __name__ == '__main__':
             log_in_sheets(shtkey)
             print('[{}] Done...'.format(strftime("%H:%M:%S", localtime())))
 
+# I should convert this to another function. It was a late addition and forgot to change.
         if len(status) != 0:
             delete_keep()
             print('[{}] Sending status...'.format(strftime("%H:%M:%S", localtime())))
