@@ -72,18 +72,20 @@ def read_note():
 
     driver = log_in_goog(account, password)
     fexpenses, fvexpenses, fstop, fstatus, fstats = [], [], [], [], []
+    
 
     try:
-        fexpenses = exp.findall(driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text)
-        fvexpenses = sig.findall(driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text)
-        fstop = end.findall(driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text)
-        fstatus = rstatus.findall(driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text)
-        fstats = stat.findall(driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text)
+        note = (driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text)
         time.sleep(1)
         driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
-        
     except NoSuchElementException:
         print('{} Can\'t find element, will relog and try on next run.'.format(timestamp()))
+    
+    fexpenses = exp.findall(note)
+    fvexpenses = sig.findall(note)
+    fstop = end.findall(note)
+    fstatus = rstatus.findall(note)
+    fstats = stat.findall(note)
 
     driver.quit()
 
