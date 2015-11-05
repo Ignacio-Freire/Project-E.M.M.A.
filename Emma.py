@@ -182,7 +182,7 @@ if __name__ == '__main__':
         if len(stats) != 0:
             print('{} Sending stats...'.format(timestamp()))
             delete_keep()
-            send_message('{} runs so far. That\'s {} or {} minutes.'
+            send_message('{} runs so far. That\'s {} hours or {} minutes.'
                          .format(runs, (runs*2)//60, runs*2))
 
         if len(stop) != 0:
