@@ -72,20 +72,18 @@ def read_note():
 
     driver = log_in_goog(account, password)
     fexpenses, fvexpenses, fstop, fstatus, fstats = [], [], [], [], []
-    
 
     try:
-        note = (driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text)
+        note = driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text
         time.sleep(1)
         driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
+        fexpenses = exp.findall(note)
+        fvexpenses = sig.findall(note)
+        fstop = end.findall(note)
+        fstatus = rstatus.findall(note)
+        fstats = stat.findall(note)
     except NoSuchElementException:
         print('{} Can\'t find element, will relog and try on next run.'.format(timestamp()))
-    
-    fexpenses = exp.findall(note)
-    fvexpenses = sig.findall(note)
-    fstop = end.findall(note)
-    fstatus = rstatus.findall(note)
-    fstats = stat.findall(note)
 
     driver.quit()
 
@@ -184,8 +182,8 @@ if __name__ == '__main__':
         if len(stats) != 0:
             print('{} Sending stats...'.format(timestamp()))
             delete_keep()
-            send_message('{} runs so far. That would be {} hours running or {} minutes.'
-                         .format(runs, (runs*2)/60, runs*2))
+            send_message('{} runs so far. That\'s {} or {} minutes.'
+                         .format(runs, (runs*2)//60, runs*2))
 
         if len(stop) != 0:
             break
