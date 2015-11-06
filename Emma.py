@@ -21,6 +21,7 @@ Sheet Key
 Keep Note link
 '''
 
+# Just added a ".cfg" file to avoid haveing to erase and retype on every commit.
 with open('settings.cfg', 'r') as f:
     log_info = f.readlines()
 
