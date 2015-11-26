@@ -3,13 +3,13 @@ import json
 import gspread
 from oauth2client.client import SignedJwtAssertionCredentials
 from selenium import webdriver
-import time
-from time import strftime, localtime
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import InvalidElementStateException
 import re
+import time
+from time import strftime, localtime
+from datetime import date
 import calendar
-
 
 '''
 You can either fill each of the next variables manually or create a simple .cfg with the data of each variable in the
@@ -42,6 +42,7 @@ sig = re.compile(r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<amount>\
 end = re.compile(r'<stop>', re.I | re.M)
 rstatus = re.compile(r'<are you alive\?>', re.I | re.M)
 stat = re.compile(r'<status>', re.I | re.M)
+bal = re.compile(r'<balance (?P<month>1[0-2]|[1-9])>', re.I | re.M)
 
 
 def log_in_goog(mail, passw):
@@ -54,7 +55,7 @@ def log_in_goog(mail, passw):
     try:
         drive.find_element_by_xpath('//*[@id="Passwd"]').send_keys(passw)
         drive.find_element_by_id('signIn').click()
-    except (InvalidElementStateException, NoSuchElementException) as err:
+    except (InvalidElementStateException, NoSuchElementException):
         drive.find_element_by_id('Email').send_keys(backaccount)
         drive.find_element_by_id('next').click()
         drive.find_element_by_xpath('//*[@id="Passwd"]').send_keys(passw)
@@ -80,7 +81,7 @@ def log_in_sheets(key):
 def read_note():
 
     driver = log_in_goog(account, password)
-    fexpenses, fvexpenses, fstop, fstatus, fstats = [], [], [], [], []
+    fexpenses, fvexpenses, fstop, fstatus, fstats, fbalance = [], [], [], [], [], []
 
     try:
         note = driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text
@@ -91,18 +92,19 @@ def read_note():
         fstop = end.findall(note)
         fstatus = rstatus.findall(note)
         fstats = stat.findall(note)
+        fbalance = bal.findall(note)
     except NoSuchElementException:
         try:
             driver.find_element_by_id('Email').send_keys(backaccount)
             driver.find_element_by_id('next').click()
-            driver.find_element_by_xpath('//*[@id="Passwd"]').send_keys(passw)
+            driver.find_element_by_xpath('//*[@id="Passwd"]').send_keys(password)
             driver.find_element_by_id('signIn').click()
         except NoSuchElementException:            
             print('{} Can\'t find element, will relog and try on next run.'.format(timestamp()))
 
     driver.quit()
 
-    return fexpenses, fvexpenses, fstop, fstatus, fstats
+    return fexpenses, fvexpenses, fstop, fstatus, fstats, fbalance
 
 
 # This has to be customized depending on the spreadsheet.
@@ -143,6 +145,7 @@ def update_spreadsheet():
 
 # Erases the content of the note.
 def delete_keep():
+
     driver = log_in_goog(account, password)
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').clear()
     time.sleep(1)
@@ -153,6 +156,7 @@ def delete_keep():
 
 # Writes a message on the note.
 def send_message(message):
+
     driver = log_in_goog(account, password)
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]')\
         .send_keys(message)
@@ -160,6 +164,15 @@ def send_message(message):
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
     time.sleep(1)
     driver.quit()
+
+
+def get_balance():
+
+    bmonth = int(balance[0]) + 1
+    wk = sheet.worksheet('{}'.format(date.today().year))
+    b = wk.cell(40, bmonth).value
+
+    return b
 
 
 # Returns current time.
@@ -177,7 +190,7 @@ if __name__ == '__main__':
 
         print('{} Logging into Keep...'.format(timestamp()))
         print('{} Getting expenses...'.format(timestamp()))
-        expenses, vexpenses, stop, status, stats = read_note()
+        expenses, vexpenses, stop, status, stats, balance = read_note()
 
         if len(expenses) + len(vexpenses) != 0:
             print('{} Getting spreadheet auth...'.format(timestamp()))
@@ -197,8 +210,18 @@ if __name__ == '__main__':
         if len(stats) != 0:
             print('{} Sending stats...'.format(timestamp()))
             delete_keep()
-            send_message('{} runs so far. That\'s {} hours or {} minutes.'
-                         .format(runs, (runs*2)//60, runs*2))
+            send_message('{} runs so far. That\'s {} days, {} hours or {} minutes.'
+                         .format(runs, (runs*2)//1440, (runs*2)//60, runs*2))
+
+        if len(balance) != 0:
+            print('{} Getting spreadheet auth...'.format(timestamp()))
+            sheet = log_in_sheets(shtkey)
+            print('{} Getting balance...'.format(timestamp()))
+            balance_ammount = get_balance()
+            print('{} Deleting Keep...'.format(timestamp()))
+            delete_keep()
+            print('{} Sending balance...'.format(timestamp()))
+            send_message('{}: {}'.format(calendar.month_name[int(balance[0])], balance_ammount))
 
         if len(stop) != 0:
             break
