@@ -6,6 +6,7 @@ from selenium import webdriver
 import time
 from time import strftime, localtime
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import InvalidElementStateException
 import re
 import calendar
 
@@ -30,6 +31,7 @@ password = log_info[1].strip()
 json_key = json.load(open(log_info[2].strip()))
 shtkey = log_info[3].strip()
 expNote = log_info[4].strip()
+backaccount = ''
 
 # This has to be customized depending on the spreadsheet
 exp = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>\d*.*\d*);'
@@ -44,13 +46,19 @@ stat = re.compile(r'<status>', re.I | re.M)
 
 def log_in_goog(mail, passw):
 
-    drive = webdriver.PhantomJS()
+    drive = webdriver.Chrome()
     drive.get("http://keep.google.com/")
     drive.find_element_by_id('Email').send_keys(mail)
     drive.find_element_by_id('next').click()
     time.sleep(1)
-    drive.find_element_by_xpath('//*[@id="Passwd"]').send_keys(passw)
-    drive.find_element_by_id('signIn').click()
+    try:
+        drive.find_element_by_xpath('//*[@id="Passwd"]').send_keys(passw)
+        drive.find_element_by_id('signIn').click()
+    except (InvalidElementStateException, NoSuchElementException) as err:
+        drive.find_element_by_id('Email').send_keys(backaccount)
+        drive.find_element_by_id('next').click()
+        drive.find_element_by_xpath('//*[@id="Passwd"]').send_keys(passw)
+        drive.find_element_by_id('signIn').click()
     time.sleep(1)
     drive.get(expNote)
     time.sleep(1)
@@ -84,7 +92,13 @@ def read_note():
         fstatus = rstatus.findall(note)
         fstats = stat.findall(note)
     except NoSuchElementException:
-        print('{} Can\'t find element, will relog and try on next run.'.format(timestamp()))
+        try:
+            driver.find_element_by_id('Email').send_keys(backaccount)
+            driver.find_element_by_id('next').click()
+            driver.find_element_by_xpath('//*[@id="Passwd"]').send_keys(passw)
+            driver.find_element_by_id('signIn').click()
+        except NoSuchElementException:            
+            print('{} Can\'t find element, will relog and try on next run.'.format(timestamp()))
 
     driver.quit()
 
