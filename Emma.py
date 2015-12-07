@@ -48,6 +48,7 @@ bal = re.compile(r'<balance (?P<month>1[0-2]|[1-9])>', re.I | re.M)
 def log_in_goog(mail, passw):
 
     drive = webdriver.Chrome()
+    drive.set_window_size(1280, 720)
     drive.get("http://keep.google.com/")
     drive.find_element_by_id('Email').send_keys(mail)
     drive.find_element_by_id('next').click()
@@ -56,13 +57,14 @@ def log_in_goog(mail, passw):
         drive.find_element_by_xpath('//*[@id="Passwd"]').send_keys(passw)
         drive.find_element_by_id('signIn').click()
     except (InvalidElementStateException, NoSuchElementException):
+        drive.save_screenshot('auth_error.png')
         drive.find_element_by_id('Email').send_keys(backaccount)
         drive.find_element_by_id('next').click()
         drive.find_element_by_xpath('//*[@id="Passwd"]').send_keys(passw)
         drive.find_element_by_id('signIn').click()
-    time.sleep(1)
     drive.get(expNote)
-    time.sleep(1)
+    drive.save_screenshot('abre_note.png')
+    time.sleep(10)
 
     return drive
 
@@ -81,11 +83,11 @@ def log_in_sheets(key):
 def read_note():
 
     driver = log_in_goog(account, password)
+    time.sleep(1)
     fexpenses, fvexpenses, fstop, fstatus, fstats, fbalance = [], [], [], [], [], []
 
     try:
         note = driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text
-        time.sleep(1)
         driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
         fexpenses = exp.findall(note)
         fvexpenses = sig.findall(note)
@@ -94,13 +96,8 @@ def read_note():
         fstats = stat.findall(note)
         fbalance = bal.findall(note)
     except NoSuchElementException:
-        try:
-            driver.find_element_by_id('Email').send_keys(backaccount)
-            driver.find_element_by_id('next').click()
-            driver.find_element_by_xpath('//*[@id="Passwd"]').send_keys(password)
-            driver.find_element_by_id('signIn').click()
-        except NoSuchElementException:            
-            print('{} Can\'t find element, will relog and try on next run.'.format(timestamp()))
+        driver.save_screenshot('element_error.png')
+        print('{} Can\'t find element, will relog and try on next run.'.format(timestamp()))
 
     driver.quit()
 
