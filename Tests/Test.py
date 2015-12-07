@@ -1,7 +1,8 @@
-from time import strftime, localtime
+import time
 
+def wait():
+      time.sleep(5)
 
-def timestamp():
-    return '[{}]'.format(strftime("%H:%M:%S", localtime()))
-
-print(timestamp())
+for x in range(5):
+    print('hi')
+    wait()

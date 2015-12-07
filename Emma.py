@@ -47,14 +47,17 @@ bal = re.compile(r'<balance (?P<month>1[0-2]|[1-9])>', re.I | re.M)
 
 def log_in_goog(mail, passw):
 
-    drive = webdriver.Chrome()
-    drive.set_window_size(1280, 720)
+    drive = webdriver.PhantomJS()
+    drive.set_window_size(1920, 1080)
     drive.get("http://keep.google.com/")
+    wait()
     drive.find_element_by_id('Email').send_keys(mail)
+    wait()
     drive.find_element_by_id('next').click()
-    time.sleep(1)
+    wait()
     try:
         drive.find_element_by_xpath('//*[@id="Passwd"]').send_keys(passw)
+        wait()
         drive.find_element_by_id('signIn').click()
     except (InvalidElementStateException, NoSuchElementException):
         drive.save_screenshot('auth_error.png')
@@ -64,7 +67,7 @@ def log_in_goog(mail, passw):
         drive.find_element_by_id('signIn').click()
     drive.get(expNote)
     drive.save_screenshot('abre_note.png')
-    time.sleep(10)
+    wait()
 
     return drive
 
@@ -83,11 +86,12 @@ def log_in_sheets(key):
 def read_note():
 
     driver = log_in_goog(account, password)
-    time.sleep(1)
+    wait()
     fexpenses, fvexpenses, fstop, fstatus, fstats, fbalance = [], [], [], [], [], []
 
     try:
         note = driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text
+        wait()
         driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
         fexpenses = exp.findall(note)
         fvexpenses = sig.findall(note)
@@ -145,9 +149,9 @@ def delete_keep():
 
     driver = log_in_goog(account, password)
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').clear()
-    time.sleep(1)
+    wait()
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
-    time.sleep(1)
+    wait()
     driver.quit()
 
 
@@ -157,9 +161,9 @@ def send_message(message):
     driver = log_in_goog(account, password)
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]')\
         .send_keys(message)
-    time.sleep(1)
+    wait()
     driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
-    time.sleep(1)
+    wait()
     driver.quit()
 
 
@@ -175,6 +179,10 @@ def get_balance():
 # Returns current time.
 def timestamp():
     return '[{}]'.format(strftime("%H:%M:%S", localtime()))
+
+
+def wait():
+    time.sleep(6)
 
 if __name__ == '__main__':
 
