@@ -24,14 +24,8 @@ Alternative mail configured for the account
 
 # Config File
 with open('settings.cfg', 'r') as f:
-    log_info = f.readlines()
-
-account = log_info[0].strip()
-password = log_info[1].strip()
-shtkey = log_info[3].strip()
-note = log_info[4].strip()
-backaccount = log_info[5].strip()
-json_key = json.load(open(log_info[2].strip()))
+    log_info = f.read().splitlines()
+    account, password, json_auth, shtkey, note, backaccount = log_info
 
 # Commands to search
 expense = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>\d*.*\d*);'
@@ -47,6 +41,7 @@ end = re.compile(r'<stop>', re.I | re.M)
 keep = Keep(account, password, note, backaccount, verbose='yes')
 
 # Google Sheet initialization
+json_key = json.load(open(json_auth.strip()))
 sheet = Expenses(shtkey, json_key, verbose='yes')
 
 
@@ -85,46 +80,46 @@ if __name__ == '__main__':
         log('Checking for commands')
         wExpenses, wSignature, dStop, sStatus, sAlive, sBalance = search_for_commands(note)
 
-        if len(wExpenses) + len(wSignature) + len(dStop) + len(sStatus) + len(sAlive) + len(sBalance) == 0:
-            log('None found')
-        else:
+        if wExpenses or wSignature or dStop or sStatus or sAlive or sBalance:
             log('Executing commands')
+        else:
+            log('None found')
 
-        if len(wExpenses) != 0:
+        if wExpenses:
             try:
                 sheet.add_expenses(wExpenses)
                 keep.delete_content()
             except (InvalidElementStateException, NoSuchElementException):
                 log('Couldn\'t update expenses, will try on next run')
 
-        if len(wSignature) != 0:
+        if wSignature:
             try:
                 sheet.add_signature(wSignature)
                 keep.delete_content()
             except (InvalidElementStateException, NoSuchElementException):
                 log('Couldn\'t update signature, will try on next run')
 
-        if len(sBalance) != 0:
+        if sBalance:
 
             balances = sheet.get_balance(sBalance)
 
             for i in range(len(sBalance)):
                 message.append('{}: {}'.format(calendar.month_name[int(sBalance[i])], balances[i]))
 
-        if len(sStatus) != 0:
+        if sStatus:
             message.append('{} runs so far. That\'s {} days, {} hours or {} minutes. Real process time {}s'
                            .format(runs, (runs*2 + totTime)//1440, (runs*2 + totTime)//60, runs*2, int(totTime)))
 
-        if len(sAlive) != 0:
+        if sAlive:
             message.append('Yes, I\'m alive! :)')
 
-        if len(message) != 0:
+        if message:
             try:
                 keep.send_message(message)
             except(InvalidElementStateException, NoSuchElementException):
                 log('Couldn\'t send message, will try on next run')
 
-        if len(dStop) != 0:
+        if dStop:
             break
             
         totTime += time.time()-start
