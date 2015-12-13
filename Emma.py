@@ -110,8 +110,9 @@ if __name__ == '__main__':
 
         if len(sStatus) != 0:
             try:
-                keep.send_message('{} runs so far. That\'s {} days, {} hours or {} minutes.'
-                                  .format(runs, (runs*2 + totTime)//1440, (runs*2 + totTime)//60, runs*2 + totTime))
+                keep.send_message('{} runs so far. That\'s {} days, {} hours or {} minutes. Real process time {}'
+                                  .format(runs, (runs*2 + totTime)//1440, (runs*2 + totTime)//60, runs*2 + totTime,
+                                          totTime))
             except (InvalidElementStateException, NoSuchElementException):
                 log('Couldn\'t send status, will try on next run')
 
