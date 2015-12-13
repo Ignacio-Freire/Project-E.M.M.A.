@@ -112,8 +112,8 @@ if __name__ == '__main__':
                 message.append('{}: {}'.format(calendar.month_name[int(sBalance[i])], balances[i]))
 
         if len(sStatus) != 0:
-                message.append('{} runs so far. That\'s {} days, {} hours or {} minutes. Real process time {}s'
-                               .format(runs, (runs*2 + totTime)//1440, (runs*2 + totTime)//60, runs*2, int(totTime)))
+            message.append('{} runs so far. That\'s {} days, {} hours or {} minutes. Real process time {}s'
+                           .format(runs, (runs*2 + totTime)//1440, (runs*2 + totTime)//60, runs*2, int(totTime)))
 
         if len(sAlive) != 0:
             message.append('Yes, I\'m alive! :)')
