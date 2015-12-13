@@ -2,6 +2,7 @@
 import re
 import json
 import time
+import calendar
 from time import strftime, localtime
 from AccessKeep import Keep
 from ManageExpenses import Expenses
@@ -49,20 +50,20 @@ keep = Keep(account, password, note, backaccount, verbose='yes')
 sheet = Expenses(shtkey, json_key, verbose='yes')
 
 
-def search_for_commands(message):
+def search_for_commands(text):
 
-    fexpenses = expense.findall(message)
-    fsignature = signature.findall(message)
-    fstop = end.findall(message)
-    fstatus = status.findall(message)
-    falive = alive.findall(message)
-    fbalance = balance.findall(message)
+    fexpenses = expense.findall(text)
+    fsignature = signature.findall(text)
+    fstop = end.findall(text)
+    fstatus = status.findall(text)
+    falive = alive.findall(text)
+    fbalance = balance.findall(text)
 
     return fexpenses, fsignature, fstop, fstatus, falive, fbalance
 
 
-def log(message):
-    print('[{}] Emma.{}'.format(strftime("%H:%M:%S", localtime()), message))
+def log(msg):
+    print('[{}] Emma.{}'.format(strftime("%H:%M:%S", localtime()), msg))
 
 
 if __name__ == '__main__':
@@ -74,6 +75,7 @@ if __name__ == '__main__':
 
         start = time.time()
         runs += 1
+        message = []
 
         try:
             note = keep.read_note()
@@ -103,24 +105,24 @@ if __name__ == '__main__':
                 log('Couldn\'t update signature, will try on next run')
 
         if len(sBalance) != 0:
-            try:
-                keep.send_message(sheet.get_balance(sBalance))
-            except (InvalidElementStateException, NoSuchElementException):
-                log('Couldn\'t send status, will try on next run')
+
+            balances = sheet.get_balance(sBalance)
+
+            for i in range(len(sBalance)):
+                message.append('{}: {}'.format(calendar.month_name[int(sBalance[i])], balances[i]))
 
         if len(sStatus) != 0:
-            try:
-                keep.send_message('{} runs so far. That\'s {} days, {} hours or {} minutes. Real process time {}'
-                                  .format(runs, (runs*2 + totTime)//1440, (runs*2 + totTime)//60, runs*2 + totTime,
-                                          totTime))
-            except (InvalidElementStateException, NoSuchElementException):
-                log('Couldn\'t send status, will try on next run')
+                message.append('{} runs so far. That\'s {} days, {} hours or {} minutes. Real process time {}s'
+                               .format(runs, (runs*2 + totTime)//1440, (runs*2 + totTime)//60, runs*2, int(totTime)))
 
         if len(sAlive) != 0:
+            message.append('Yes, I\'m alive! :)')
+
+        if len(message) != 0:
             try:
-                keep.send_message('Yes, I\'m alive! :)')
-            except (InvalidElementStateException, NoSuchElementException):
-                log('Couldn\'t speak, will try on next run')
+                keep.send_message(message)
+            except(InvalidElementStateException, NoSuchElementException):
+                log('Couldn\'t send message, will try on next run')
 
         if len(dStop) != 0:
             break

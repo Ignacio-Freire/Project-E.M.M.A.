@@ -99,8 +99,12 @@ class Expenses:
 
         sheet = self.log_in_sheets()
 
-        bmonth = int(balance[0]) + 1
+        balances = []
         ws = sheet.worksheet('{}'.format(date.today().year))
-        value = ws.cell(40, bmonth).value
 
-        return value
+        for i in range(len(balance)):
+            bmonth = int(balance[i]) + 1
+            value = ws.cell(40, bmonth).value
+            balances.append(value)
+
+        return balances

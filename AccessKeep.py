@@ -1,9 +1,9 @@
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import InvalidElementStateException
 import time
 from time import strftime, localtime
-
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import InvalidElementStateException
 
 def wait():
     """Time to wait between actions. Applies to all."""
@@ -92,7 +92,7 @@ class Keep:
     def send_message(self, message):
         """ Message to print on the Google Keep Note
             Args:
-                message (str): Message to send.
+                message (list): Messages to send.
         """
 
         driver = self.delete_content(cont='yes')
@@ -101,9 +101,12 @@ class Keep:
 
         driver.get(self.note)
         wait()
-        driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]')\
-            .send_keys(message)
-        wait()
+
+        for i in message:
+            driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').send_keys(i)
+            wait()
+            driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').send_keys(Keys.RETURN)
+
         driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
 
         wait()
@@ -130,6 +133,5 @@ class Keep:
         elif cont.upper() == 'YES':
             self.__log('Keeping driver open for further use')
             return driver
-
 
 
