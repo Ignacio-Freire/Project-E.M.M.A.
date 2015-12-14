@@ -1,10 +1,11 @@
 # ------------------------------------ Extended Multi Management Assistant ------------------------------------------- #
 import re
 import time
+import random
 import calendar
-from time import strftime, localtime
 from AccessKeep import Keep
 from ManageExpenses import Expenses
+from time import strftime, localtime
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import InvalidElementStateException
 
@@ -70,12 +71,13 @@ if __name__ == '__main__':
         runs += 1
         message = []
 
+        log('Checking for commands')
+
         try:
             note = keep.read_note()
         except (InvalidElementStateException, NoSuchElementException):
             log('Couldn\'t reach note, will try on next run')
 
-        log('Checking for commands')
         wExpenses, wSignature, dStop, sStatus, sAlive, sBalance = search_for_commands(note)
 
         if wExpenses or wSignature or dStop or sStatus or sAlive or sBalance:
@@ -118,10 +120,12 @@ if __name__ == '__main__':
 
         if dStop:
             break
-            
-        totTime += time.time()-start
 
-        log('All done! Run {} took {} seconds, next scan in 120s'.format(runs, time.time()-start))
+        finished = time.time()-start
+        totTime += finished
+
+        log('All done! Run {} took {} seconds, next scan in 120s'.format(runs, finished))
         time.sleep(120)
 
-    log('Goodbye!')
+    goodbyes = ['Goodbye!', 'I\'ll be back', 'NOOOOoooo', 'Cya!', 'Ttyl', 'Don\'t kill me plz!']
+    log(random.choice(goodbyes))
