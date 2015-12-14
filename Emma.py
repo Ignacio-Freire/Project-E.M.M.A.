@@ -100,9 +100,8 @@ if __name__ == '__main__':
                 log('Couldn\'t update signature, will try on next run')
 
         if sBalance:
-
             balances = sheet.get_balance(sBalance)
-
+            
             for i in range(len(sBalance)):
                 message.append('{}: {}'.format(calendar.month_name[int(sBalance[i])], balances[i]))
 
