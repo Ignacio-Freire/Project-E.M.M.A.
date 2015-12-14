@@ -107,7 +107,7 @@ if __name__ == '__main__':
 
         if sStatus:
             message.append('{} runs so far. That\'s {} days, {} hours or {} minutes. Real process time {}s'
-                           .format(runs, (runs*2 + totTime)//1440, (runs*2 + totTime)//60, runs*2, int(totTime)))
+                           .format(runs, (runs*2)//1440, (runs*2)//60, runs*2, int(totTime)))
 
         if sAlive:
             message.append('Yes, I\'m alive! :)')
