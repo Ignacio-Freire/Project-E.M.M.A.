@@ -1,6 +1,5 @@
 # ------------------------------------ Extended Multi Management Assistant ------------------------------------------- #
 import re
-import json
 import time
 import calendar
 from time import strftime, localtime
@@ -41,8 +40,7 @@ end = re.compile(r'<stop>', re.I | re.M)
 keep = Keep(account, password, note, backaccount, verbose='yes')
 
 # Google Sheet initialization
-json_key = json.load(open(json_auth.strip()))
-sheet = Expenses(shtkey, json_key, verbose='yes')
+sheet = Expenses(shtkey, json_auth, verbose='yes')
 
 
 def search_for_commands(text):

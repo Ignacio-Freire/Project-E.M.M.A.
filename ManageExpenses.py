@@ -1,14 +1,15 @@
 # ------------------------------------- Expense Management Mad Assistant --------------------------------------------- #
+import json
 import gspread
-from oauth2client.client import SignedJwtAssertionCredentials
-from datetime import date
 import calendar
+from datetime import date
 from time import strftime, localtime
+from oauth2client.client import SignedJwtAssertionCredentials
 
 
 class Expenses:
 
-    def __init__(self, sheet, json, **kwargs):
+    def __init__(self, sheet, json_auth, **kwargs):
         """
             Args:
                 sheet (str): Google Sheet key to access.
@@ -16,7 +17,7 @@ class Expenses:
                 verbose (optional 'yes'): If set verbose='yes' it will display step by step in the log.
         """
         self.key = sheet
-        self.json_key = json
+        self.json_auth = json_auth
         self.verbose = kwargs.get('verbose', 'NO')
 
     def __log(self, message):
@@ -32,8 +33,9 @@ class Expenses:
 
         self.__log('Authenticating Google Sheet')
 
+        json_key = json.load(open(self.json_auth.strip()))
         scope = ['https://spreadsheets.google.com/feeds']
-        credentials = SignedJwtAssertionCredentials(self.json_key['client_email'], self.json_key['private_key'].encode(), scope)
+        credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
         gc = gspread.authorize(credentials)
         sht = gc.open_by_key(self.key)
 
