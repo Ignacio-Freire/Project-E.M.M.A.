@@ -82,44 +82,45 @@ if __name__ == '__main__':
 
         if wExpenses or wSignature or dStop or sStatus or sAlive or sBalance:
             log('Executing commands')
+
+            if wExpenses:
+                try:
+                    sheet.add_expenses(wExpenses)
+                    keep.delete_content()
+                except (InvalidElementStateException, NoSuchElementException):
+                    log('Couldn\'t update expenses, will try on next run')
+
+            if wSignature:
+                try:
+                    sheet.add_signature(wSignature)
+                    keep.delete_content()
+                except (InvalidElementStateException, NoSuchElementException):
+                    log('Couldn\'t update signature, will try on next run')
+
+            if sBalance:
+                balances = sheet.get_balance(sBalance)
+
+                for i in range(len(sBalance)):
+                    message.append('{}: {}'.format(calendar.month_name[int(sBalance[i])], balances[i]))
+
+            if sStatus:
+                message.append('{} runs so far. That\'s {} days, {} hours or {} minutes. Real process time {}s'
+                               .format(runs, (runs*2)//1440, (runs*2)//60, runs*2, int(totTime)))
+
+            if sAlive:
+                message.append('Yes, I\'m alive! :)')
+
+            if message:
+                try:
+                    keep.send_message(message)
+                except(InvalidElementStateException, NoSuchElementException):
+                    log('Couldn\'t send message, will try on next run')
+
+            if dStop:
+                break
+
         else:
             log('None found')
-
-        if wExpenses:
-            try:
-                sheet.add_expenses(wExpenses)
-                keep.delete_content()
-            except (InvalidElementStateException, NoSuchElementException):
-                log('Couldn\'t update expenses, will try on next run')
-
-        if wSignature:
-            try:
-                sheet.add_signature(wSignature)
-                keep.delete_content()
-            except (InvalidElementStateException, NoSuchElementException):
-                log('Couldn\'t update signature, will try on next run')
-
-        if sBalance:
-            balances = sheet.get_balance(sBalance)
-            
-            for i in range(len(sBalance)):
-                message.append('{}: {}'.format(calendar.month_name[int(sBalance[i])], balances[i]))
-
-        if sStatus:
-            message.append('{} runs so far. That\'s {} days, {} hours or {} minutes. Real process time {}s'
-                           .format(runs, (runs*2)//1440, (runs*2)//60, runs*2, int(totTime)))
-
-        if sAlive:
-            message.append('Yes, I\'m alive! :)')
-
-        if message:
-            try:
-                keep.send_message(message)
-            except(InvalidElementStateException, NoSuchElementException):
-                log('Couldn\'t send message, will try on next run')
-
-        if dStop:
-            break
 
         finished = time.time()-start
         totTime += finished
