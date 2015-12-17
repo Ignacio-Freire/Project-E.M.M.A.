@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="13543268-8562-4da8-9387-68d5b00e1599" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AccessKeep.py" afterPath="$PROJECT_DIR$/AccessKeep.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Emma.py" afterPath="$PROJECT_DIR$/Emma.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/PrepMeals.py" afterPath="$PROJECT_DIR$/PrepMeals.py" />
     </list>
     <ignored path="Project-E.M.M.A.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,9 +27,11 @@
       <file leaf-file-name="Emma.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Emma.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.113902844">
-              <caret line="4" column="15" selection-start-line="4" selection-start-column="15" selection-end-line="4" selection-end-column="15" />
-              <folding />
+            <state vertical-scroll-proportion="0.19932999">
+              <caret line="43" column="56" selection-start-line="43" selection-start-column="56" selection-end-line="43" selection-end-column="56" />
+              <folding>
+                <element signature="e#121#130#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -88,8 +88,8 @@
         <option value="$PROJECT_DIR$/Tests/Recipes.txt" />
         <option value="$PROJECT_DIR$/Tests/Test.py" />
         <option value="$PROJECT_DIR$/AccessKeep.py" />
-        <option value="$PROJECT_DIR$/Emma.py" />
         <option value="$PROJECT_DIR$/PrepMeals.py" />
+        <option value="$PROJECT_DIR$/Emma.py" />
       </list>
     </option>
   </component>
@@ -650,7 +650,13 @@
       <option name="project" value="LOCAL" />
       <updated>1450384115902</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Added log functions to MealPrep">
+      <created>1450384815526</created>
+      <option name="number" value="00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1450384815526</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TodoView">
@@ -699,7 +705,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Changed name and cleaned up folder." />
     <MESSAGE value="Added some comments and deleted some future log messages." />
     <MESSAGE value="Typo" />
     <MESSAGE value="Added one error handling cond." />
@@ -724,7 +729,8 @@
     <MESSAGE value="Moved gSheets Json auth to ManageExpenses,py" />
     <MESSAGE value="Changed indentation and useless if" />
     <MESSAGE value="Added MealPrep, changed AcessKeep for better writing" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added MealPrep, changed AcessKeep for better writing" />
+    <MESSAGE value="Added log functions to MealPrep" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added log functions to MealPrep" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1094,9 +1100,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Emma.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.113902844">
-          <caret line="4" column="15" selection-start-line="4" selection-start-column="15" selection-end-line="4" selection-end-column="15" />
-          <folding />
+        <state vertical-scroll-proportion="0.19932999">
+          <caret line="43" column="56" selection-start-line="43" selection-start-column="56" selection-end-line="43" selection-end-column="56" />
+          <folding>
+            <element signature="e#121#130#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

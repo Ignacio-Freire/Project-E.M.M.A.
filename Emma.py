@@ -131,6 +131,7 @@ if __name__ == '__main__':
                 try:
                     recipes.send_message(all_recipes)
                     grocery.send_message(grocery_list)
+                    keep.delete_content()
                 except (InvalidElementStateException, NoSuchElementException, TimeoutException):
                     log('Couldn\'t send meals, will try on next run')
                     continue
