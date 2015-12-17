@@ -1,9 +1,10 @@
 import time
-from time import strftime, localtime
 from selenium import webdriver
+from time import strftime, localtime
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import InvalidElementStateException
+
 
 def wait():
     """Time to wait between actions. Applies to all."""

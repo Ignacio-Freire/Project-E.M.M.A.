@@ -51,6 +51,9 @@ recipes = Keep(account, password, recipes_note, backaccount, verbose='yes')
 # Google Sheet initialization
 sheet = Expenses(shtkey, json_auth, verbose='yes')
 
+# Meal Prep initialization
+meals = MealPrep(verbose='yes')
+
 
 def search_for_commands(text):
 
@@ -122,8 +125,8 @@ if __name__ == '__main__':
                 message.append('Yes, I\'m alive! :)')
 
             if sMeals:
-                all_recipes = MealPrep.create_recipes(int(sMeals[0]))
-                grocery_list = MealPrep.grocery_list(all_recipes)
+                all_recipes = meals.create_recipes(int(sMeals[0]))
+                grocery_list = meals.grocery_list(all_recipes)
 
                 try:
                     recipes.send_message(all_recipes)

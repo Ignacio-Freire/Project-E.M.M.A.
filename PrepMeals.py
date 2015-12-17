@@ -1,4 +1,5 @@
 import random
+from time import strftime, localtime
 
 protein = ['100g Chicken', '100g Pork Steak', '100g Meatballs', '100g Lean Beef', '100g Hamburguer']
 sides = ['1c Broccoli', '1c Green Beans', '1c Brussel Sprouts', '1c Snap Peas', '1c Spinach', '1 Eggs', '1c Beans',
@@ -13,8 +14,28 @@ tobuy = []
 
 class MealPrep:
 
-    @staticmethod
-    def create_recipes(cant):
+    def __init__(self, **kwargs):
+        """
+            Args:
+                verbose (optional 'yes'): If set verbose='yes' it will display step by step in the log.
+        """
+        self.verbose = kwargs.get('verbose', 'NO')
+
+    def __log(self, message):
+        """Message to print on log.
+            Args:
+                message (str): Message to print in log.
+        """
+        if self.verbose.upper() == 'YES':
+            print('[{}] MealPrep.{}'.format(strftime("%H:%M:%S", localtime()), message))
+
+    def create_recipes(self, cant):
+        """
+            Args:
+                cant (list): List containing a single number of how many recipes to create.
+        """
+
+        self.__log('Creating {} recipes'.format(cant))
 
         for i in range(cant):
 
@@ -29,8 +50,13 @@ class MealPrep:
 
         return recipes
 
-    @staticmethod
-    def grocery_list(recipes_list):
+    def grocery_list(self, recipes_list):
+        """
+            Args:
+                recipes_list (list): List with recipes created above.
+        """
+
+        self.__log('Creating recipe list')
 
         tobuy.append('Butcher:')
         for _i in protein:
