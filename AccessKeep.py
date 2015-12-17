@@ -106,6 +106,7 @@ class Keep:
             driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').send_keys(i)
             wait()
             driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').send_keys(Keys.RETURN)
+            driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').send_keys(Keys.SHIFT + Keys.HOME)
 
         driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
 

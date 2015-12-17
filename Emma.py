@@ -4,10 +4,12 @@ import time
 import random
 import calendar
 from AccessKeep import Keep
+from PrepMeals import MealPrep
 from ManageExpenses import Expenses
 from time import strftime, localtime
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import InvalidElementStateException
+from selenium.common.exceptions import TimeoutException
 
 '''
 You can either fill each of the next variables manually or create a simple .cfg with the data of each variable in the
@@ -27,6 +29,9 @@ with open('settings.cfg', 'r') as f:
     log_info = f.read().splitlines()
     account, password, json_auth, shtkey, note, backaccount = log_info
 
+grocery_note = 'https://keep.google.com/#NOTE/1450374195049.2120300443'
+recipes_note = 'https://keep.google.com/#NOTE/1450380507608.970304932'
+
 # Commands to search
 expense = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>\d*.*\d*);'
                      r'(?P<currency>\w{3})', re.I | re.M)
@@ -36,9 +41,12 @@ alive = re.compile(r'<are you alive\?>', re.I | re.M)
 status = re.compile(r'<status>', re.I | re.M)
 balance = re.compile(r'<balance (?P<month>1[0-2]|[1-9])>', re.I | re.M)
 end = re.compile(r'<stop>', re.I | re.M)
+mls = re.compile(r'<meals (?P<meals>\d*)>', re.I | re.M)
 
 # Google Keep Note initialization
 keep = Keep(account, password, note, backaccount, verbose='yes')
+grocery = Keep(account, password, grocery_note, backaccount, verbose='yes')
+recipes = Keep(account, password, recipes_note, backaccount, verbose='yes')
 
 # Google Sheet initialization
 sheet = Expenses(shtkey, json_auth, verbose='yes')
@@ -52,8 +60,9 @@ def search_for_commands(text):
     fstatus = status.findall(text)
     falive = alive.findall(text)
     fbalance = balance.findall(text)
+    fmeals = mls.findall(text)
 
-    return fexpenses, fsignature, fstop, fstatus, falive, fbalance
+    return fexpenses, fsignature, fstop, fstatus, falive, fbalance, fmeals
 
 
 def log(msg):
@@ -78,24 +87,26 @@ if __name__ == '__main__':
         except (InvalidElementStateException, NoSuchElementException):
             log('Couldn\'t reach note, will try on next run')
 
-        wExpenses, wSignature, dStop, sStatus, sAlive, sBalance = search_for_commands(note)
+        wExpenses, wSignature, dStop, sStatus, sAlive, sBalance, sMeals = search_for_commands(note)
 
-        if wExpenses or wSignature or dStop or sStatus or sAlive or sBalance:
+        if wExpenses or wSignature or dStop or sStatus or sAlive or sBalance or sMeals:
             log('Executing commands')
 
             if wExpenses:
                 try:
                     sheet.add_expenses(wExpenses)
                     keep.delete_content()
-                except (InvalidElementStateException, NoSuchElementException):
+                except (InvalidElementStateException, NoSuchElementException, TimeoutException):
                     log('Couldn\'t update expenses, will try on next run')
+                    continue
 
             if wSignature:
                 try:
                     sheet.add_signature(wSignature)
                     keep.delete_content()
-                except (InvalidElementStateException, NoSuchElementException):
+                except (InvalidElementStateException, NoSuchElementException, TimeoutException):
                     log('Couldn\'t update signature, will try on next run')
+                    continue
 
             if sBalance:
                 balances = sheet.get_balance(sBalance)
@@ -110,11 +121,23 @@ if __name__ == '__main__':
             if sAlive:
                 message.append('Yes, I\'m alive! :)')
 
+            if sMeals:
+                all_recipes = MealPrep.create_recipes(int(sMeals[0]))
+                grocery_list = MealPrep.grocery_list(all_recipes)
+
+                try:
+                    recipes.send_message(all_recipes)
+                    grocery.send_message(grocery_list)
+                except (InvalidElementStateException, NoSuchElementException, TimeoutException):
+                    log('Couldn\'t send meals, will try on next run')
+                    continue
+
             if message:
                 try:
                     keep.send_message(message)
-                except(InvalidElementStateException, NoSuchElementException):
+                except(InvalidElementStateException, NoSuchElementException, TimeoutException):
                     log('Couldn\'t send message, will try on next run')
+                    continue
 
             if dStop:
                 break
