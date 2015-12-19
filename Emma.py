@@ -7,9 +7,10 @@ from AccessKeep import Keep
 from PrepMeals import MealPrep
 from ManageExpenses import Expenses
 from time import strftime, localtime
+from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import InvalidElementStateException
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import UnexpectedAlertPresentException
 
 '''
 You can either fill each of the next variables manually or create a simple .cfg with the data of each variable in the
@@ -87,7 +88,8 @@ if __name__ == '__main__':
 
         try:
             note = keep.read_note()
-        except (InvalidElementStateException, NoSuchElementException):
+        except (InvalidElementStateException, NoSuchElementException, TimeoutException,
+                UnexpectedAlertPresentException):
             log('Couldn\'t reach note, will try on next run')
 
         wExpenses, wSignature, dStop, sStatus, sAlive, sBalance, sMeals = search_for_commands(note)
@@ -99,7 +101,8 @@ if __name__ == '__main__':
                 try:
                     sheet.add_expenses(wExpenses)
                     keep.delete_content()
-                except (InvalidElementStateException, NoSuchElementException, TimeoutException):
+                except (InvalidElementStateException, NoSuchElementException, TimeoutException,
+                        UnexpectedAlertPresentException):
                     log('Couldn\'t update expenses, will try on next run')
                     continue
 
@@ -107,7 +110,8 @@ if __name__ == '__main__':
                 try:
                     sheet.add_signature(wSignature)
                     keep.delete_content()
-                except (InvalidElementStateException, NoSuchElementException, TimeoutException):
+                except (InvalidElementStateException, NoSuchElementException, TimeoutException,
+                        UnexpectedAlertPresentException):
                     log('Couldn\'t update signature, will try on next run')
                     continue
 
@@ -132,14 +136,16 @@ if __name__ == '__main__':
                     recipes.send_message(all_recipes)
                     grocery.send_message(grocery_list)
                     keep.delete_content()
-                except (InvalidElementStateException, NoSuchElementException, TimeoutException):
+                except (InvalidElementStateException, NoSuchElementException, TimeoutException,
+                        UnexpectedAlertPresentException):
                     log('Couldn\'t send meals, will try on next run')
                     continue
 
             if message:
                 try:
                     keep.send_message(message)
-                except(InvalidElementStateException, NoSuchElementException, TimeoutException):
+                except(InvalidElementStateException, NoSuchElementException, TimeoutException,
+                       UnexpectedAlertPresentException):
                     log('Couldn\'t send message, will try on next run')
                     continue
 

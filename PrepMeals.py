@@ -8,9 +8,6 @@ main_seasoning = ['Garlic, Pepper', 'Green Onion', 'Cajun Pepper', 'Masala', 'Ch
                   'Honey Mustard']
 secondary_seasonings = ['Chia Seeds', 'Sunflower Seeds', 'Quinoa Seeds', 'Almonds']
 
-recipes = []
-tobuy = []
-
 
 class MealPrep:
 
@@ -32,8 +29,10 @@ class MealPrep:
     def create_recipes(self, cant):
         """
             Args:
-                cant (list): List containing a single number of how many recipes to create.
+                cant (int): List containing a single number of how many recipes to create.
         """
+
+        recipes = []
 
         self.__log('Creating {} recipes'.format(cant))
 
@@ -57,6 +56,8 @@ class MealPrep:
         """
 
         self.__log('Creating recipe list')
+
+        tobuy = []
 
         tobuy.append('Butcher:')
         for _i in protein:
