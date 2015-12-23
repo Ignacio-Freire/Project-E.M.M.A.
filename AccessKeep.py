@@ -2,8 +2,10 @@ import time
 from selenium import webdriver
 from time import strftime, localtime
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import InvalidElementStateException
+from selenium.common.exceptions import UnexpectedAlertPresentException
 
 
 def wait():
@@ -53,7 +55,8 @@ class Keep:
             drive.find_element_by_xpath('//*[@id="Passwd"]').send_keys(self.passw)
             wait()
             drive.find_element_by_id('signIn').click()
-        except (InvalidElementStateException, NoSuchElementException):
+        except (InvalidElementStateException, NoSuchElementException, TimeoutException,
+                UnexpectedAlertPresentException):
             drive.save_screenshot('auth_error.png')
             drive.find_element_by_id('Email').send_keys(self.backaccount)
             drive.find_element_by_id('next').click()
@@ -81,7 +84,8 @@ class Keep:
             wait()
             driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
 
-        except NoSuchElementException:
+        except (InvalidElementStateException, NoSuchElementException, TimeoutException,
+                UnexpectedAlertPresentException):
             driver.save_screenshot('element_error.png')
             self.__log('Can\'t find element, will relog and try on next run')
 
@@ -137,3 +141,5 @@ class Keep:
             return driver
 
 
+class ElementNotFound(Exception):
+    pass

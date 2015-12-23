@@ -38,11 +38,11 @@ class MealPrep:
 
         for i in range(cant):
 
-            main = random.sample(protein, 1)
-            side_one = random.sample(sides, 1)
-            side_two = random.sample(sides, 1)
-            main_season = random.sample(main_seasoning, 1)
-            sec_season = random.sample(secondary_seasonings, 1)
+            main = random.choice(protein)
+            side_one = random.choice(sides)
+            side_two = random.choice(sides)
+            main_season = random.choice(main_seasoning)
+            sec_season = random.choice(secondary_seasonings)
             recipe_num = ['-Recipe number {}'.format(i+1)]
 
             recipes.extend(recipe_num + main + side_one + side_two + main_season + sec_season)
