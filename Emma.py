@@ -25,10 +25,7 @@ Alternative mail configured for the account
 # Config File
 with open('settings.cfg', 'r') as f:
     log_info = f.read().splitlines()
-    account, password, json_auth, shtkey, note, backaccount = log_info
-
-grocery_note = 'https://keep.google.com/#NOTE/1450374195049.2120300443'
-recipes_note = 'https://keep.google.com/#NOTE/1450380507608.970304932'
+    account, password, json_auth, shtkey, note, backaccount, grocery_note, recipes_note = log_info
 
 # Commands to search
 expense = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>\d*.*\d*);'
