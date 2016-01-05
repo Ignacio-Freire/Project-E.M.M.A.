@@ -2,7 +2,7 @@ import random
 from time import strftime, localtime
 
 protein = ['100g Chicken', '100g Pork Steak', '100g Meatballs', '100g Lean Beef', '100g Hamburguer']
-sides = ['1c Broccoli', '1c Peas', '1c Brussel Sprouts', '1c Spinach', '1 Eggs', '1c Soy Beans']
+sides = ['1c Broccoli', '1c Green Peas', '1c Brussel Sprouts', '1c Spinach', '1 Eggs', '1c Soy Beans']
 main_seasoning = ['Garlic, Pepper', 'Green Onion', 'Cajun Pepper', 'Masala', 'Chili', 'BBQ', 'Onion BBQ',
                   'Honey Mustard']
 secondary_seasonings = ['Chia Seeds', 'Sunflower Seeds', 'Quinoa Seeds', 'Almonds']
