@@ -45,7 +45,11 @@ class Keep:
         self.__log('Logging into Google Account')
 
         drive = webdriver.Chrome()
-        drive.get("http://keep.google.com/")
+        try:
+            drive.get("http://keep.google.com/")
+        except (InvalidElementStateException, NoSuchElementException, TimeoutException,
+                UnexpectedAlertPresentException):
+            raise ElementNotFound
         wait()
         drive.find_element_by_id('Email').send_keys(self.mail)
         wait()
@@ -62,6 +66,7 @@ class Keep:
             drive.find_element_by_id('next').click()
             drive.find_element_by_xpath('//*[@id="Passwd"]').send_keys(self.passw)
             drive.find_element_by_id('signIn').click()
+            raise ElementNotFound
 
         self.__log('Opening note')
 
@@ -88,6 +93,7 @@ class Keep:
                 UnexpectedAlertPresentException):
             driver.save_screenshot('element_error.png')
             self.__log('Can\'t find element, will relog and try on next run')
+            raise ElementNotFound
 
         self.__log('Closing driver')
         driver.quit()
