@@ -147,5 +147,6 @@ class Keep:
             return driver
 
 
+# This type of error is not really that good.
 class ElementNotFound(Exception):
     pass

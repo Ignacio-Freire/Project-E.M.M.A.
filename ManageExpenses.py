@@ -1,4 +1,5 @@
 # ------------------------------------- Expense Management Mad Assistant --------------------------------------------- #
+# Shouldn't be a Class really.
 import json
 import gspread
 import calendar

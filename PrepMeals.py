@@ -1,3 +1,4 @@
+# Shouldn't be a Class really
 import random
 from time import strftime, localtime
 
