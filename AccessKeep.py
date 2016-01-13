@@ -103,7 +103,7 @@ class Keep:
     def send_message(self, message):
         """ Message to print on the Google Keep Note
             Args:
-                message (list): Messages to send.
+                message (list): Messages to send. One line per element in list.
         """
 
         driver = self.delete_content(cont='yes')
@@ -126,7 +126,10 @@ class Keep:
         driver.quit()
 
     def delete_content(self, **kwargs):
-        """Deletes contents of the Google Keep Note."""
+        """Deletes contents of the Google Keep Note.
+            Args:
+                kwargs = can add cont='yes' to avoid closing the driver after deleting the contents.
+        """
 
         self.__log('Deleting contents')
 
@@ -147,6 +150,6 @@ class Keep:
             return driver
 
 
-# This type of error is not really that good.
+# This type of error is really not that good.
 class ElementNotFound(Exception):
     pass

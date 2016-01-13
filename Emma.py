@@ -97,12 +97,14 @@ if __name__ == '__main__':
         if wExpenses or wSignature or dStop or sStatus or sAlive or sBalance or sMeals:
             log('Executing commands')
 
-            if wExpenses:
-                sheet.add_expenses(wExpenses)
-                delete_note()
+            if wExpenses or wSignature:
 
-            if wSignature:
-                sheet.add_signature(wSignature)
+                if wExpenses:
+                    sheet.add_expenses(wExpenses, ['B', 'C', 'D', 'E', 'F'])
+
+                if wSignature:
+                    sheet.add_expenses(wSignature, ['I', 'J', 'K'])
+
                 delete_note()
 
             if sBalance:

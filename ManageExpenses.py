@@ -29,7 +29,7 @@ class Expenses:
         if self.verbose.upper() == 'YES':
             print('[{}] AccessKeep.{}'.format(strftime("%H:%M:%S", localtime()), message))
 
-    def log_in_sheets(self):
+    def __log_in_sheets(self):
         """ Google Sheet API authentication process."""
 
         self.__log('Authenticating Google Sheet')
@@ -42,55 +42,33 @@ class Expenses:
 
         return sht
 
-    def add_expenses(self, expenses):
+# Make it need another variable corresponding to a list of the columns to update.
+    def add_expenses(self, expenses, columns):
         """Adds found expenses to the corresponding month
             Args:
-                expenses (list): List of expenses found.
+                expenses (list): List of expenses found. expenses[e][1] Will always be skipped but can be used as month
+                                 for sheet name.
+                columns (list): Columns to update.
         """
 
         self.__log('Adding expenses')
 
-        sheet = self.log_in_sheets()
+        sheet = self.__log_in_sheets()
 
         for data in expenses:
-                day = data[0]
+                temp = list(data)
+
                 msheet = calendar.month_name[int(data[1])]
-                detail = data[2]
-                category = data[3]
-                amount = data[4]
-                currency = data[5]
+                temp.pop(1)
 
-                lastrow = len(sheet.worksheet(msheet).col_values(2)) + 1
+                if temp[0].upper() == 'SIG':
+                    temp.pop(0)
+                    lastrow = len(sheet.worksheet(msheet).col_values(9)) + 1
+                else:
+                    lastrow = len(sheet.worksheet(msheet).col_values(2)) + 1
 
-                col = ['B', 'C', 'D', 'E', 'F']
-                colnm = [day, detail.title(), category.title(), amount, currency.upper()]
-
-                for j in range(len(col)):
-                        sheet.worksheet(msheet).update_acell(col[j] + str(lastrow), colnm[j])
-
-    def add_signature(self, signature):
-        """Adds Visa Signature expenses to the corresponding month
-            Args:
-                signature (list): List of expenses found.
-        """
-
-        self.__log('Adding Visa Signature expenses')
-
-        sheet = self.log_in_sheets()
-
-        for e in signature:
-                msheet = calendar.month_name[int(e[1])]
-                detail = e[2]
-                amount = e[3]
-                currency = e[4]
-
-                lastrow = len(sheet.worksheet(msheet).col_values(9)) + 1
-
-                col = ['I', 'J', 'K']
-                colnm = [detail.title(), amount, currency.upper()]
-
-                for j in range(len(col)):
-                        sheet.worksheet(msheet).update_acell(col[j] + str(lastrow), colnm[j])
+                for j in range(len(temp)):
+                        sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow), temp[j])
 
     def get_balance(self, balance):
         """Returns the balance of the month asked
@@ -100,7 +78,7 @@ class Expenses:
 
         self.__log('Retrieving requested balance')
 
-        sheet = self.log_in_sheets()
+        sheet = self.__log_in_sheets()
 
         balances = []
         ws = sheet.worksheet('{}'.format(date.today().year))
