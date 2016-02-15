@@ -55,18 +55,23 @@ class Keep:
         wait()
         drive.find_element_by_id('next').click()
         wait()
+
+        drive.find_element_by_xpath('//*[@id="Passwd"]').send_keys(self.passw)
+        wait()
+        drive.find_element_by_id('signIn').click()
+        wait()
+
         try:
+            drive.find_element_by_xpath('//*[@id="emailAnswer"]').send_keys(self.backaccount)
+            wait()
+            drive.find_element_by_xpath('//*[@id="submitChallenge"]').click()
+            wait()
             drive.find_element_by_xpath('//*[@id="Passwd"]').send_keys(self.passw)
             wait()
             drive.find_element_by_id('signIn').click()
-        except (InvalidElementStateException, NoSuchElementException, TimeoutException,
+        except(InvalidElementStateException, NoSuchElementException, TimeoutException,
                 UnexpectedAlertPresentException):
-            drive.save_screenshot('auth_error.png')
-            drive.find_element_by_id('Email').send_keys(self.backaccount)
-            drive.find_element_by_id('next').click()
-            drive.find_element_by_xpath('//*[@id="Passwd"]').send_keys(self.passw)
-            drive.find_element_by_id('signIn').click()
-            raise ElementNotFound
+            pass
 
         self.__log('Opening note')
 
@@ -85,9 +90,11 @@ class Keep:
         self.__log('Getting text')
 
         try:
-            text = driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text
+            text = driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[5]').text
+            self.__log('Got Text')
             wait()
-            driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
+            driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[2]/div[1]').click()
+            self.__log('Clicked Done')
 
         except (InvalidElementStateException, NoSuchElementException, TimeoutException,
                 UnexpectedAlertPresentException):
@@ -113,13 +120,13 @@ class Keep:
         driver.get(self.note)
         wait()
 
-        for i in message:
-            driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').send_keys(i)
+        for line in message:
+            driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[5]').send_keys(line)
             wait()
-            driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').send_keys(Keys.RETURN)
-            driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').send_keys(Keys.SHIFT + Keys.HOME)
+            driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[5]').send_keys(Keys.RETURN)
+            driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[5]').send_keys(Keys.SHIFT + Keys.HOME)
 
-        driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
+        driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[2]/div[1]').click()
 
         wait()
         self.__log('Closing driver')
@@ -137,9 +144,9 @@ class Keep:
 
         driver = self.log_in_goog()
 
-        driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').clear()
+        driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[5]').clear()
         wait()
-        driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
+        driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[2]/div[1]').click()
         wait()
 
         if cont.upper() == 'NO':
