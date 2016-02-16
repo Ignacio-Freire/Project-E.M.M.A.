@@ -54,6 +54,8 @@ class Expenses:
 
         sheet = self.__log_in_sheets()
 
+        self.__log('Authorized')
+
         for data in expenses:
                 temp = list(data)
 
@@ -62,12 +64,12 @@ class Expenses:
 
                 if temp[0].upper() == 'SIG':
                     temp.pop(0)
-                    lastrow = len(sheet.worksheet(msheet).col_values(9)) + 1
+                    lastrow = sheet.worksheet(msheet).col_values(9)[1:].index('') + 2
                 else:
-                    lastrow = len(sheet.worksheet(msheet).col_values(2)) + 1
+                    lastrow = sheet.worksheet(msheet).col_values(2)[1:].index('') + 2
 
                 for j in range(len(temp)):
-                        sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow), temp[j])
+                        sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow), temp[j].title())
 
     def get_balance(self, balance):
         """Returns the balance of the month asked
