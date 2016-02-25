@@ -103,7 +103,10 @@ class Keep:
             raise ElementNotFound
 
         self.__log('Closing driver')
-        driver.quit()
+        try:
+            driver.quit()
+        except AttributeError:
+            pass
 
         return text
 
@@ -130,7 +133,10 @@ class Keep:
 
         wait()
         self.__log('Closing driver')
-        driver.quit()
+        try:
+            driver.quit()
+        except AttributeError:
+            pass
 
     def delete_content(self, **kwargs):
         """Deletes contents of the Google Keep Note.
@@ -151,7 +157,10 @@ class Keep:
 
         if cont.upper() == 'NO':
             self.__log('Closing driver')
-            driver.quit()
+            try:
+                driver.quit()
+            except AttributeError:
+                pass
         elif cont.upper() == 'YES':
             self.__log('Keeping driver open for further use')
             return driver
