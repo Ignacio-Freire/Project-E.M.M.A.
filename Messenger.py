@@ -37,7 +37,7 @@ class GoogleKeep:
                 message (str): Message to print in log.
         """
         if self.verbose.upper() == 'YES':
-            print('[{}] AccessKeep.{}'.format(strftime("%H:%M:%S", localtime()), message))
+            print('[{}] Messenger.{}'.format(strftime("%H:%M:%S", localtime()), message))
 
     def log_in_goog(self):
         """Logs into the Google Account capable to read and edit the Google Keep Note to be used."""
