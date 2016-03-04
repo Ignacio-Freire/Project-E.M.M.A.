@@ -85,7 +85,6 @@ class GoogleKeep:
 
         driver = self.log_in_goog()
         wait()
-        text = ''
 
         self.__log('Getting text')
 

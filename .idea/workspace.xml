@@ -5,6 +5,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Accountant.py" afterPath="$PROJECT_DIR$/Accountant.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Chef.py" afterPath="$PROJECT_DIR$/Chef.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Emma.py" afterPath="$PROJECT_DIR$/Emma.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Messenger.py" afterPath="$PROJECT_DIR$/Messenger.py" />
     </list>
     <ignored path="Project-E.M.M.A.iws" />
@@ -26,11 +27,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Emma.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Emma.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Emma.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="22" column="3" selection-start-line="22" selection-start-column="3" selection-end-line="22" selection-end-column="3" />
+            <state vertical-scroll-proportion="0.51428574">
+              <caret line="145" column="13" selection-start-line="145" selection-start-column="13" selection-end-line="145" selection-end-column="13" />
               <folding>
                 <element signature="e#121#130#0" expanded="true" />
               </folding>
@@ -42,7 +43,7 @@
         <entry file="file://$PROJECT_DIR$/Accountant.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="27" column="34" selection-start-line="27" selection-start-column="34" selection-end-line="27" selection-end-column="34" />
+              <caret line="89" column="0" selection-start-line="89" selection-start-column="0" selection-end-line="89" selection-end-column="0" />
               <folding>
                 <element signature="e#121#132#0" expanded="true" />
               </folding>
@@ -54,7 +55,7 @@
         <entry file="file://$PROJECT_DIR$/Messenger.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="39" column="33" selection-start-line="39" selection-start-column="33" selection-end-line="39" selection-end-column="33" />
+              <caret line="47" column="8" selection-start-line="47" selection-start-column="8" selection-end-line="47" selection-end-column="8" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -62,11 +63,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Chef.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Chef.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Chef.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.51428574">
-              <caret line="20" column="35" selection-start-line="20" selection-start-column="35" selection-end-line="20" selection-end-column="35" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding>
                 <element signature="e#30#43#0" expanded="true" />
               </folding>
@@ -107,9 +108,9 @@
         <option value="$PROJECT_DIR$/Tests/Test.py" />
         <option value="$PROJECT_DIR$/AccessKeep.py" />
         <option value="$PROJECT_DIR$/Emma.py" />
+        <option value="$PROJECT_DIR$/Chef.py" />
         <option value="$PROJECT_DIR$/Accountant.py" />
         <option value="$PROJECT_DIR$/Messenger.py" />
-        <option value="$PROJECT_DIR$/Chef.py" />
       </list>
     </option>
   </component>
@@ -733,7 +734,13 @@
       <option name="project" value="LOCAL" />
       <updated>1457128479404</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="Changed log() function to use the new module name.">
+      <created>1457128931469</created>
+      <option name="number" value="00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1457128931469</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TodoView">
@@ -782,7 +789,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Deploy" />
     <MESSAGE value="Added settings.cfg usage" />
     <MESSAGE value="Edited some comments" />
     <MESSAGE value="Added status check" />
@@ -807,7 +813,8 @@
     <MESSAGE value="Fixed when prompted for backup account and change in xPaths" />
     <MESSAGE value="Fixed add_expenses suddenly getting literal last row." />
     <MESSAGE value="Refactored module names and some classes." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactored module names and some classes." />
+    <MESSAGE value="Changed log() function to use the new module name." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed log() function to use the new module name." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1166,22 +1173,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Emma.py">
+    <entry file="file://$PROJECT_DIR$/Chef.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="3" selection-start-line="22" selection-start-column="3" selection-end-line="22" selection-end-column="3" />
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#121#130#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Accountant.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="27" column="34" selection-start-line="27" selection-start-column="34" selection-end-line="27" selection-end-column="34" />
-          <folding>
-            <element signature="e#121#132#0" expanded="true" />
+            <element signature="e#30#43#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1189,19 +1186,29 @@
     <entry file="file://$PROJECT_DIR$/Messenger.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="39" column="33" selection-start-line="39" selection-start-column="33" selection-end-line="39" selection-end-column="33" />
+          <caret line="47" column="8" selection-start-line="47" selection-start-column="8" selection-end-line="47" selection-end-column="8" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Chef.py">
+    <entry file="file://$PROJECT_DIR$/Accountant.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="89" column="0" selection-start-line="89" selection-start-column="0" selection-end-line="89" selection-end-column="0" />
+          <folding>
+            <element signature="e#121#132#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Emma.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.51428574">
-          <caret line="20" column="35" selection-start-line="20" selection-start-column="35" selection-end-line="20" selection-end-column="35" />
+          <caret line="145" column="13" selection-start-line="145" selection-start-column="13" selection-end-line="145" selection-end-column="13" />
           <folding>
-            <element signature="e#30#43#0" expanded="true" />
+            <element signature="e#121#130#0" expanded="true" />
           </folding>
         </state>
       </provider>
