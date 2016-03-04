@@ -13,9 +13,9 @@ def wait():
     time.sleep(3)
 
 
-class Keep:
+class GoogleKeep:
     """Access a Google Keep note to send or read message."""
-    
+
     def __init__(self, acc, pw, nt, bkacc, **kwargs):
         """
             Args:
@@ -30,7 +30,7 @@ class Keep:
         self.note = nt
         self.backaccount = bkacc
         self.verbose = kwargs.get('verbose', 'NO')
-    
+
     def __log(self, message):
         """Message to print on log.
             Args:
@@ -38,7 +38,7 @@ class Keep:
         """
         if self.verbose.upper() == 'YES':
             print('[{}] AccessKeep.{}'.format(strftime("%H:%M:%S", localtime()), message))
-    
+
     def log_in_goog(self):
         """Logs into the Google Account capable to read and edit the Google Keep Note to be used."""
 
@@ -70,7 +70,7 @@ class Keep:
             wait()
             drive.find_element_by_id('signIn').click()
         except(InvalidElementStateException, NoSuchElementException, TimeoutException,
-                UnexpectedAlertPresentException):
+               UnexpectedAlertPresentException):
             pass
 
         self.__log('Opening note')

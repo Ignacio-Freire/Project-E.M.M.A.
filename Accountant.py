@@ -8,7 +8,6 @@ from oauth2client.client import SignedJwtAssertionCredentials
 
 
 class Expenses:
-
     def __init__(self, sheet, json_auth, **kwargs):
         """
             Args:
@@ -41,7 +40,7 @@ class Expenses:
 
         return sht
 
-# Make it need another variable corresponding to a list of the columns to update.
+    # Make it need another variable corresponding to a list of the columns to update.
     def add_expenses(self, expenses, columns):
         """Adds found expenses to the corresponding month
             Args:
@@ -57,19 +56,19 @@ class Expenses:
         self.__log('Authorized')
 
         for data in expenses:
-                temp = list(data)
+            temp = list(data)
 
-                msheet = calendar.month_name[int(data[1])]
-                temp.pop(1)
+            msheet = calendar.month_name[int(data[1])]
+            temp.pop(1)
 
-                if temp[0].upper() == 'SIG':
-                    temp.pop(0)
-                    lastrow = sheet.worksheet(msheet).col_values(9)[1:].index('') + 2
-                else:
-                    lastrow = sheet.worksheet(msheet).col_values(2)[1:].index('') + 2
+            if temp[0].upper() == 'SIG':
+                temp.pop(0)
+                lastrow = sheet.worksheet(msheet).col_values(9)[1:].index('') + 2
+            else:
+                lastrow = sheet.worksheet(msheet).col_values(2)[1:].index('') + 2
 
-                for j in range(len(temp)):
-                        sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow), temp[j].title())
+            for j in range(len(temp)):
+                sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow), temp[j].title())
 
     def get_balance(self, balance):
         """Returns the balance of the month asked

@@ -10,7 +10,6 @@ secondary_seasonings = ['Chia Seeds', 'Sunflower Seeds', 'Quinoa Seeds', 'Almond
 
 
 class MealPrep:
-
     def __init__(self, **kwargs):
         """
             Args:
@@ -37,13 +36,12 @@ class MealPrep:
         self.__log('Creating {} recipes'.format(cant))
 
         for i in range(cant):
-
             main = random.sample(protein, 1)
             side_one = random.sample(sides, 1)
             side_two = random.sample(sides, 1)
             main_season = random.sample(main_seasoning, 1)
             sec_season = random.sample(secondary_seasonings, 1)
-            recipe_num = ['-Recipe number {}'.format(i+1)]
+            recipe_num = ['-Recipe number {}'.format(i + 1)]
 
             recipes.extend(recipe_num + main + side_one + side_two + main_season + sec_season)
 

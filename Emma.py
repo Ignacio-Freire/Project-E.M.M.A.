@@ -3,11 +3,11 @@ import re
 import time
 import random
 import calendar
-from AccessKeep import Keep
-from PrepMeals import MealPrep
-from ManageExpenses import Expenses
+from Messenger import GoogleKeep
+from Chef import MealPrep
+from Accountant import Expenses
 from time import strftime, localtime
-from AccessKeep import ElementNotFound
+from Messenger import ElementNotFound
 
 '''
 You can either fill each of the next variables manually or create a simple .cfg with the data of each variable in the
@@ -39,9 +39,9 @@ end = re.compile(r'<stop>', re.I | re.M)
 mls = re.compile(r'<meals (?P<meals>\d*)>', re.I | re.M)
 
 # Google Keep Note initialization
-keep = Keep(account, password, note, backaccount, verbose='yes')
-grocery = Keep(account, password, grocery_note, backaccount, verbose='yes')
-recipes = Keep(account, password, recipes_note, backaccount, verbose='yes')
+keep = GoogleKeep(account, password, note, backaccount, verbose='yes')
+grocery = GoogleKeep(account, password, grocery_note, backaccount, verbose='yes')
+recipes = GoogleKeep(account, password, recipes_note, backaccount, verbose='yes')
 
 # Google Sheet initialization
 sheet = Expenses(shtkey, json_auth, verbose='yes')
@@ -51,7 +51,6 @@ meals = MealPrep(verbose='yes')
 
 
 def search_for_commands(text):
-
     fexpenses = expense.findall(text)
     fsignature = signature.findall(text)
     fstop = end.findall(text)
@@ -115,8 +114,9 @@ if __name__ == '__main__':
 
             if sStatus:
                 message.append('{} runs so far. That\'s {} days, {} hours or {} minutes. Real process time {}s'
-                               .format(runs, int((((runs*2)/60) + totTime/3600)/24), int(((runs*2)/60) + totTime/3600),
-                                       int(runs*2 + totTime/60), int(totTime)))
+                               .format(runs, int((((runs * 2) / 60) + totTime / 3600) / 24),
+                                       int(((runs * 2) / 60) + totTime / 3600),
+                                       int(runs * 2 + totTime / 60), int(totTime)))
 
             if sAlive:
                 message.append('Yes, I\'m alive! :)')
@@ -146,7 +146,7 @@ if __name__ == '__main__':
         else:
             log('None found')
 
-        finished = time.time()-start
+        finished = time.time() - start
         totTime += finished
 
         log('All done! Run {} took {} seconds, next scan in 120s'.format(runs, finished))
