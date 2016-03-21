@@ -10,7 +10,7 @@ from selenium.common.exceptions import UnexpectedAlertPresentException
 
 def wait():
     """Time to wait between actions. Applies to all."""
-    time.sleep(3)
+    time.sleep(1)
 
 
 class GoogleKeep:
@@ -45,6 +45,8 @@ class GoogleKeep:
         self.__log('Logging into Google Account')
 
         drive = webdriver.Chrome()
+        wait()
+
         try:
             drive.get("http://keep.google.com/")
         except (InvalidElementStateException, NoSuchElementException, TimeoutException,
