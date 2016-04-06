@@ -44,7 +44,11 @@ class GoogleKeep:
 
         self.__log('Logging into Google Account')
 
-        drive = webdriver.Chrome()
+        try:
+            drive = webdriver.Chrome()
+        except AttributeError:
+            pass
+
         wait()
 
         try:

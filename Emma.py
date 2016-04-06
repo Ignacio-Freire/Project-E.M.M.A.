@@ -149,7 +149,7 @@ if __name__ == '__main__':
         finished = time.time() - start
         totTime += finished
 
-        log('All done! Run {} took {} seconds, next scan in 120s'.format(runs, finished))
+        log('All done! Run {} took {:.2f} seconds, next scan in 120s'.format(runs, finished))
         time.sleep(120)
 
     goodbyes = ['Goodbye!', 'I\'ll be back', 'NOOOOoooo', 'Cya!', 'Ttyl', 'Don\'t kill me plz!']
