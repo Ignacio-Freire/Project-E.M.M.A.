@@ -39,9 +39,10 @@ end = re.compile(r'<stop>', re.I | re.M)
 mls = re.compile(r'<meals (?P<meals>\d*)>', re.I | re.M)
 
 # Google Keep Note initialization
-keep = GoogleKeep(account, password, note, backaccount, verbose='yes')
-grocery = GoogleKeep(account, password, grocery_note, backaccount, verbose='yes')
-recipes = GoogleKeep(account, password, recipes_note, backaccount, verbose='yes')
+chromedriver = ""
+keep = GoogleKeep(account, password, note, backaccount, chromedriver, verbose='yes')
+grocery = GoogleKeep(account, password, grocery_note, chromedriver, backaccount, verbose='yes')
+recipes = GoogleKeep(account, password, recipes_note, chromedriver, backaccount, verbose='yes')
 
 # Google Sheet initialization
 sheet = Expenses(shtkey, json_auth, verbose='yes')
