@@ -51,8 +51,8 @@
       <file leaf-file-name="Messenger.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Messenger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="24" column="83" selection-start-line="24" selection-start-column="83" selection-end-line="24" selection-end-column="83" />
+            <state relative-caret-position="299">
+              <caret line="119" column="30" selection-start-line="119" selection-start-column="18" selection-end-line="119" selection-end-column="30" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -823,7 +823,14 @@
       <option name="project" value="LOCAL" />
       <updated>1460061176147</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="Changed driver closing method and fixed closing driver on error.">
+      <created>1460064056519</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1460064056519</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TodoView">
@@ -872,7 +879,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added &lt;balance MM&gt; command" />
     <MESSAGE value="Cleaned up some exceptions" />
     <MESSAGE value="Added screenshot on error and some wait time" />
     <MESSAGE value="Mega overhaul. Changed core file and moved functionality to separate classes so they can be used on other projects." />
@@ -897,7 +903,8 @@
     <MESSAGE value="Changed the Xpath of GoogleKeep as it changed on site." />
     <MESSAGE value="Trying to solve no attibute error on selenium." />
     <MESSAGE value="Added path to chromedriver manually." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added path to chromedriver manually." />
+    <MESSAGE value="Changed driver closing method and fixed closing driver on error." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed driver closing method and fixed closing driver on error." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1288,8 +1295,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Messenger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="83" selection-start-line="24" selection-start-column="83" selection-end-line="24" selection-end-column="83" />
+        <state relative-caret-position="299">
+          <caret line="119" column="30" selection-start-line="119" selection-start-column="18" selection-end-line="119" selection-end-column="30" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>

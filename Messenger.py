@@ -65,6 +65,7 @@ class GoogleKeep:
             drive.get("http://keep.google.com/")
         except (InvalidElementStateException, NoSuchElementException, TimeoutException,
                 UnexpectedAlertPresentException):
+            self.close_driver(drive)
             raise ElementNotFound
         wait()
         drive.find_element_by_id('Email').send_keys(self.mail)
@@ -115,6 +116,7 @@ class GoogleKeep:
                 UnexpectedAlertPresentException):
             driver.save_screenshot('element_error.png')
             self.__log('Can\'t find element, will relog and try on next run')
+            self.close_driver(driver)
             raise ElementNotFound
 
         self.close_driver(driver)
