@@ -41,6 +41,14 @@ class GoogleKeep:
         if self.verbose.upper() == 'YES':
             print('[{}] Messenger.{}'.format(strftime("%H:%M:%S", localtime()), message))
 
+    def close_driver(self, driver):
+        self.__log('Closing driver')
+        try:
+            driver.quit()
+        except AttributeError:
+            self.__log('Error while closing')
+            pass
+
     def log_in_goog(self):
         """Logs into the Google Account capable to read and edit the Google Keep Note to be used."""
 
@@ -109,11 +117,7 @@ class GoogleKeep:
             self.__log('Can\'t find element, will relog and try on next run')
             raise ElementNotFound
 
-        self.__log('Closing driver')
-        try:
-            driver.quit()
-        except AttributeError:
-            pass
+        self.close_driver(driver)
 
         return text
 
@@ -139,11 +143,7 @@ class GoogleKeep:
         driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[2]/div[1]').click()
 
         wait()
-        self.__log('Closing driver')
-        try:
-            driver.quit()
-        except AttributeError:
-            pass
+        self.close_driver(driver)
 
     def delete_content(self, **kwargs):
         """Deletes contents of the Google Keep Note.
@@ -163,11 +163,7 @@ class GoogleKeep:
         wait()
 
         if cont.upper() == 'NO':
-            self.__log('Closing driver')
-            try:
-                driver.quit()
-            except AttributeError:
-                pass
+            self.close_driver(driver)
         elif cont.upper() == 'YES':
             self.__log('Keeping driver open for further use')
             return driver
