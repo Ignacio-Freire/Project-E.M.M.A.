@@ -137,13 +137,20 @@ class GoogleKeep:
         wait()
 
         for line in message:
-            driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[5]').send_keys(line)
-            driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[6]').send_keys(line)
+            try:
+                driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[5]').send_keys(line)
+            except:
+                driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[6]').send_keys(line)
             wait()
-            driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[5]').send_keys(Keys.RETURN)
-            driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[5]').send_keys(Keys.SHIFT + Keys.HOME)
-            driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[6]').send_keys(Keys.RETURN)
-            driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[6]').send_keys(Keys.SHIFT + Keys.HOME)
+
+            try:
+                driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[5]').send_keys(Keys.RETURN)
+                driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[5]').send_keys(
+                    Keys.SHIFT + Keys.HOME)
+            except:
+                driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[6]').send_keys(Keys.RETURN)
+                driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[6]').send_keys(
+                    Keys.SHIFT + Keys.HOME)
 
         driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[2]/div[1]').click()
 
