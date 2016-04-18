@@ -3,3 +3,4 @@
 *.cfg
 *.png
 *.pyc
+chromedriver.exe

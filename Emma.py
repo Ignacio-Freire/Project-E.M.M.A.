@@ -39,7 +39,7 @@ end = re.compile(r'<stop>', re.I | re.M)
 mls = re.compile(r'<meals (?P<meals>\d*)>', re.I | re.M)
 
 # Google Keep Note initialization
-chromedriver = "C:\\Users\Tkwk\Documents\PyCharm Projects\Project-E.M.M.A\chromedriver.exe"
+chromedriver = "C:\\Users\Administrator\Desktop\Project-E.M.M.A\chromedriver.exe"
 keep = GoogleKeep(account, password, note, backaccount, chromedriver, verbose='yes')
 grocery = GoogleKeep(account, password, grocery_note, backaccount, chromedriver, verbose='yes')
 recipes = GoogleKeep(account, password, recipes_note, backaccount, chromedriver, verbose='yes')
@@ -122,7 +122,7 @@ if __name__ == '__main__':
             if sAlive:
                 message.append('Yes, I\'m alive! :)')
 
-            if sMeals or all_recipes or grocery_list:
+            if sMeals:
                 all_recipes = meals.create_recipes(int(sMeals[0]))
                 grocery_list = meals.grocery_list(all_recipes)
 
