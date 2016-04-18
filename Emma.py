@@ -39,10 +39,10 @@ end = re.compile(r'<stop>', re.I | re.M)
 mls = re.compile(r'<meals (?P<meals>\d*)>', re.I | re.M)
 
 # Google Keep Note initialization
-chromedriver = ""
+chromedriver = "C:\\Users\Tkwk\Documents\PyCharm Projects\Project-E.M.M.A\chromedriver.exe"
 keep = GoogleKeep(account, password, note, backaccount, chromedriver, verbose='yes')
-grocery = GoogleKeep(account, password, grocery_note, chromedriver, backaccount, verbose='yes')
-recipes = GoogleKeep(account, password, recipes_note, chromedriver, backaccount, verbose='yes')
+grocery = GoogleKeep(account, password, grocery_note, backaccount, chromedriver, verbose='yes')
+recipes = GoogleKeep(account, password, recipes_note, backaccount, chromedriver, verbose='yes')
 
 # Google Sheet initialization
 sheet = Expenses(shtkey, json_auth, verbose='yes')
@@ -122,7 +122,7 @@ if __name__ == '__main__':
             if sAlive:
                 message.append('Yes, I\'m alive! :)')
 
-            if sMeals:
+            if sMeals or all_recipes or grocery_list:
                 all_recipes = meals.create_recipes(int(sMeals[0]))
                 grocery_list = meals.grocery_list(all_recipes)
 
@@ -130,6 +130,8 @@ if __name__ == '__main__':
                     recipes.send_message(all_recipes)
                     grocery.send_message(grocery_list)
                     keep.delete_content()
+                    all_recipes = []
+                    grocery_list = []
                 except ElementNotFound:
                     log('Couldn\'t send meals, will try on next run')
                     continue

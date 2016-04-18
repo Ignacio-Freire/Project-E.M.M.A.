@@ -55,9 +55,7 @@ class MealPrep:
 
         self.__log('Creating recipe list')
 
-        tobuy = []
-
-        tobuy.append('Butcher:')
+        tobuy = ['Butcher:']
         for _i in protein:
             cant = recipes_list.count(_i)
 
