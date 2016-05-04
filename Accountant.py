@@ -25,7 +25,7 @@ class Expenses:
                 message (str): Message to print in log.
         """
         if self.verbose.upper() == 'YES':
-            print('[{}] Accountant.{}'.format(strftime("%H:%M:%S", localtime()), message))
+            print('[{}] Emma, as an accountant, says: {}'.format(strftime("%H:%M:%S", localtime()), message))
 
     def __log_in_sheets(self):
         """ Google Sheet API authentication process."""

@@ -3,4 +3,7 @@
 *.cfg
 *.png
 *.pyc
+*.iml
+workspace.xml
+misc.xml
 chromedriver.exe

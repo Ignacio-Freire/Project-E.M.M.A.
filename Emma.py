@@ -22,12 +22,19 @@ Alternative mail configured for the account
 /---------------------------/
 '''
 
+
+def log(msg):
+    print('[{}] Emma says: {}'.format(strftime("%H:%M:%S", localtime()), msg))
+
+
 # Config File
+log('Loading settings.')
 with open('settings.cfg', 'r') as f:
     log_info = f.read().splitlines()
     account, password, json_auth, shtkey, note, backaccount, grocery_note, recipes_note = log_info
 
 # Commands to search
+log('Compiling Regex.')
 expense = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>\d*.*\d*);'
                      r'(?P<currency>\w{3})', re.I | re.M)
 signature = re.compile(r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<amount>\d*.*\d*);(?P<currency>\w{3})',
@@ -39,16 +46,19 @@ end = re.compile(r'<stop>', re.I | re.M)
 mls = re.compile(r'<meals (?P<meals>\d*)>', re.I | re.M)
 
 # Google Keep Note initialization
+log('Creating Messenger objects.')
 chromedriver = "C:\\Users\Administrator\Desktop\Project-E.M.M.A\chromedriver.exe"
 keep = GoogleKeep(account, password, note, backaccount, chromedriver, verbose='yes')
 grocery = GoogleKeep(account, password, grocery_note, backaccount, chromedriver, verbose='yes')
 recipes = GoogleKeep(account, password, recipes_note, backaccount, chromedriver, verbose='yes')
 
-# Google Sheet initialization
-sheet = Expenses(shtkey, json_auth, verbose='yes')
-
 # Meal Prep initialization
+log('Creating Chef object.')
 meals = MealPrep(verbose='yes')
+
+# Google Sheet initialization
+log('Initializing spreadsheet.')
+sheet = Expenses(shtkey, json_auth, verbose='yes')
 
 
 def search_for_commands(text):
@@ -63,10 +73,6 @@ def search_for_commands(text):
     return fexpenses, fsignature, fstop, fstatus, falive, fbalance, fmeals
 
 
-def log(msg):
-    print('[{}] Emma.{}'.format(strftime("%H:%M:%S", localtime()), msg))
-
-
 def delete_note():
     try:
         keep.delete_content()
@@ -78,12 +84,16 @@ if __name__ == '__main__':
 
     runs = 0
     totTime = 0
+    log('Initializing Emma.')
 
     while True:
 
         start = time.time()
         runs += 1
         message = []
+
+        if runs == 1:
+            log('Hi, I\'m ready to go!')
 
         log('Checking for commands')
 
@@ -156,5 +166,6 @@ if __name__ == '__main__':
         log('All done! Run {} took {:.2f} seconds, next scan in 120s'.format(runs, finished))
         time.sleep(120)
 
-    goodbyes = ['Goodbye!', 'I\'ll be back', 'NOOOOoooo', 'Cya!', 'Ttyl', 'Don\'t kill me plz!']
+    goodbyes = ['Goodbye!', 'I\'ll be back', 'NOOOOoooo', 'Cya!', 'Ttyl', 'Don\'t kill me plz!',
+                'Cyka blyat, don\'t do it']
     log(random.choice(goodbyes))
