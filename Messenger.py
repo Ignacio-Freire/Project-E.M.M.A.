@@ -137,20 +137,25 @@ class GoogleKeep:
         wait()
 
         for line in message:
-            try:
-                driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[5]').send_keys(line)
-            except:
-                driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[6]').send_keys(line)
+
+            for i in range(4, 11):
+                try:
+                    driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[{}]'.format(i)).send_keys(
+                        line)
+                    break
+                except:
+                    pass
+
             wait()
 
-            try:
-                driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[5]').send_keys(Keys.RETURN)
-                driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[5]').send_keys(
-                    Keys.SHIFT + Keys.HOME)
-            except:
-                driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[6]').send_keys(Keys.RETURN)
-                driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[6]').send_keys(
-                    Keys.SHIFT + Keys.HOME)
+            for i in range(4, 11):
+                try:
+                    driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[{}]'.format(i)).send_keys(
+                        Keys.RETURN)
+                    driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[{}]'.format(i)).send_keys(
+                        Keys.SHIFT + Keys.HOME)
+                except:
+                    pass
 
         driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[2]/div[1]').click()
 
@@ -169,10 +174,12 @@ class GoogleKeep:
 
         driver = self.log_in_goog()
 
-        try:
-            driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[5]').clear()
-        except:
-            driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[6]').clear()
+        for i in range(4, 11):
+            try:
+                driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[{}]'.format(i)).clear()
+                break
+            except:
+                pass
 
         wait()
         driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[2]/div[1]').click()

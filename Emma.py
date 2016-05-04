@@ -129,6 +129,7 @@ if __name__ == '__main__':
                 try:
                     recipes.send_message(all_recipes)
                     grocery.send_message(grocery_list)
+                    time.sleep(10)
                     keep.delete_content()
                     all_recipes = []
                     grocery_list = []
