@@ -89,3 +89,26 @@ class Expenses:
             balances.append(value)
 
         return balances
+
+    def get_currency(self, curr):
+        """Returns the value of the asked currency
+            Args:
+                curr (list): Currency name (strings)
+        """
+
+        self.__log('Retrieving requested currency values')
+
+        sheet = self.__log_in_sheets()
+
+        values = []
+        ws = sheet.worksheet('{}'.format(date.today().year))
+
+        for i in curr:
+            if i.lower() == 'usd':
+                value = ws.cell(5, 'Q').value
+                values.append(value)
+            elif i.lower() == 'EUR':
+                value = ws.cell(6, 'Q').value
+                values.append(value)
+
+        return values
