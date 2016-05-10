@@ -1,10 +1,9 @@
 # ------------------------------------- Expense Management Mad Assistant --------------------------------------------- #
-import json
 import gspread
 import calendar
 from datetime import date
 from time import strftime, localtime
-from oauth2client.client import SignedJwtAssertionCredentials
+from oauth2client.service_account import ServiceAccountCredentials
 
 
 class Expenses:
@@ -25,16 +24,15 @@ class Expenses:
                 message (str): Message to print in log.
         """
         if self.verbose.upper() == 'YES':
-            print('[{}] Emma, as an accountant, says: {}'.format(strftime("%H:%M:%S", localtime()), message))
+            print('[{}] Emma.Accountant: {}'.format(strftime("%H:%M:%S", localtime()), message))
 
     def __log_in_sheets(self):
         """ Google Sheet API authentication process."""
 
         self.__log('Authenticating Google Sheet')
 
-        json_key = json.load(open(self.json_auth.strip()))
         scope = ['https://spreadsheets.google.com/feeds']
-        credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(self.json_auth, scope)
         gc = gspread.authorize(credentials)
         sht = gc.open_by_key(self.key)
 
@@ -85,7 +83,7 @@ class Expenses:
 
         for i in range(len(balance)):
             bmonth = int(balance[i]) + 1
-            value = ws.cell(40, bmonth).value
+            value = ws.cell(41, bmonth).value
             balances.append(value)
 
         return balances
@@ -104,11 +102,11 @@ class Expenses:
         ws = sheet.worksheet('{}'.format(date.today().year))
 
         for i in curr:
-            if i.lower() == 'usd':
-                value = ws.cell(5, 'Q').value
+            if i.lower() == '<usd>':
+                value = ws.cell(5, 17).value
                 values.append(value)
-            elif i.lower() == 'EUR':
-                value = ws.cell(6, 'Q').value
+            elif i.lower() == '<eur>':
+                value = ws.cell(6, 17).value
                 values.append(value)
 
         return values

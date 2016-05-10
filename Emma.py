@@ -24,7 +24,7 @@ Alternative mail configured for the account
 
 
 def log(msg):
-    print('[{}] Emma says: {}'.format(strftime("%H:%M:%S", localtime()), msg))
+    print('[{}] Emma: {}'.format(strftime("%H:%M:%S", localtime()), msg))
 
 
 # Config File
@@ -44,7 +44,7 @@ status = re.compile(r'<status>', re.I | re.M)
 balance = re.compile(r'<balance (?P<month>1[0-2]|[1-9])>', re.I | re.M)
 end = re.compile(r'<stop>', re.I | re.M)
 mls = re.compile(r'<meals (?P<meals>\d*)>', re.I | re.M)
-usd = re.compile(r'<usd>', re.I | re.M)
+cur = re.compile(r'<usd>|<eur>', re.I | re.M)
 
 # Google Keep Note initialization
 log('Creating Messenger objects.')
@@ -70,9 +70,9 @@ def search_for_commands(text):
     falive = alive.findall(text)
     fbalance = balance.findall(text)
     fmeals = mls.findall(text)
-    fusd = usd.findall(text)
+    fcur = cur.findall(text)
 
-    return fexpenses, fsignature, fstop, fstatus, falive, fbalance, fmeals, fusd
+    return fexpenses, fsignature, fstop, fstatus, falive, fbalance, fmeals, fcur
 
 
 def delete_note():
@@ -104,9 +104,10 @@ if __name__ == '__main__':
         except ElementNotFound:
             log('Couldn\'t reach note, will try on next run')
 
-        wExpenses, wSignature, dStop, sStatus, sAlive, sBalance, sMeals, sUsd = search_for_commands(note)
+        print(note)
+        wExpenses, wSignature, dStop, sStatus, sAlive, sBalance, sMeals, sCur = search_for_commands(note)
 
-        if wExpenses or wSignature or dStop or sStatus or sAlive or sBalance or sMeals:
+        if wExpenses or wSignature or dStop or sStatus or sAlive or sBalance or sMeals or sCur:
             log('Executing commands')
 
             if wExpenses or wSignature:
@@ -125,11 +126,12 @@ if __name__ == '__main__':
                 for month, bal in enumerate(balances):
                     message.append('{}: {}'.format(calendar.month_name[int(sBalance[month])], bal))
 
-            if sUsd:
-                values = sheet.get_currency(sUsd)
+            if sCur:
+                print('in')
+                values = sheet.get_currency(sCur)
 
                 for currency, value in enumerate(values):
-                    message.append('{}: {}'.format(sUsd[currency], value))
+                    message.append('{}: {}'.format(sCur[currency], value))
 
             if sMeals:
                 all_recipes = meals.create_recipes(int(sMeals[0]))

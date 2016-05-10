@@ -39,7 +39,7 @@ class GoogleKeep:
                 message (str): Message to print in log.
         """
         if self.verbose.upper() == 'YES':
-            print('[{}] Emma, as the messenger, says: {}'.format(strftime("%H:%M:%S", localtime()), message))
+            print('[{}] Emma.Messenger: {}'.format(strftime("%H:%M:%S", localtime()), message))
 
     def close_driver(self, driver):
         self.__log('Closing driver')

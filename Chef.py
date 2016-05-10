@@ -23,7 +23,7 @@ class MealPrep:
                 message (str): Message to print in log.
         """
         if self.verbose.upper() == 'YES':
-            print('[{}] Emma, as a chef, says: {}'.format(strftime("%H:%M:%S", localtime()), message))
+            print('[{}] Emma.Chef: {}'.format(strftime("%H:%M:%S", localtime()), message))
 
     def create_recipes(self, cant):
         """
