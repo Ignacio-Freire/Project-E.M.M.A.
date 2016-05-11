@@ -3,9 +3,9 @@ import re
 import time
 import random
 import calendar
-from Messenger import GoogleKeep
 from Chef import MealPrep
 from Accountant import Expenses
+from Messenger import GoogleKeep
 from time import strftime, localtime
 from Messenger import ElementNotFound
 
@@ -104,7 +104,6 @@ if __name__ == '__main__':
         except ElementNotFound:
             log('Couldn\'t reach note, will try on next run')
 
-        print(note)
         wExpenses, wSignature, dStop, sStatus, sAlive, sBalance, sMeals, sCur = search_for_commands(note)
 
         if wExpenses or wSignature or dStop or sStatus or sAlive or sBalance or sMeals or sCur:
@@ -127,7 +126,6 @@ if __name__ == '__main__':
                     message.append('{}: {}'.format(calendar.month_name[int(sBalance[month])], bal))
 
             if sCur:
-                print('in')
                 values = sheet.get_currency(sCur)
 
                 for currency, value in enumerate(values):
@@ -177,5 +175,5 @@ if __name__ == '__main__':
         time.sleep(120)
 
     goodbyes = ['Goodbye!', 'I\'ll be back', 'NOOOOoooo', 'Cya!', 'Ttyl', 'Don\'t kill me plz!',
-                'Cyka blyat, don\'t do it']
+                'Cyka blyat, don\'t do it', 'Peace out', '*Drops mic*']
     log(random.choice(goodbyes))

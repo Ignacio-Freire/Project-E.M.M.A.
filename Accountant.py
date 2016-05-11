@@ -38,7 +38,6 @@ class Expenses:
 
         return sht
 
-    # Make it need another variable corresponding to a list of the columns to update.
     def add_expenses(self, expenses, columns):
         """Adds found expenses to the corresponding month
             Args:
