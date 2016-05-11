@@ -45,10 +45,12 @@ balance = re.compile(r'<balance (?P<month>1[0-2]|[1-9])>', re.I | re.M)
 end = re.compile(r'<stop>', re.I | re.M)
 mls = re.compile(r'<meals (?P<meals>\d*)>', re.I | re.M)
 cur = re.compile(r'<usd>|<eur>', re.I | re.M)
+sig = re.compile(r'<sig (?P<month>1[0-2]|[1-9])>', re.I | re.M)
 
 # Google Keep Note initialization
 log('Creating Messenger objects.')
-chromedriver = "C:\\Users\Administrator\Desktop\Project-E.M.M.A\chromedriver.exe"
+#chromedriver = "C:\\Users\Administrator\Desktop\Project-E.M.M.A\chromedriver.exe"
+chromedriver = "C:\\Users\ignacio.freire\PycharmProjects\Project-E.M.M.A\chromedriver.exe"
 keep = GoogleKeep(account, password, note, backaccount, chromedriver, verbose='yes')
 grocery = GoogleKeep(account, password, grocery_note, backaccount, chromedriver, verbose='yes')
 recipes = GoogleKeep(account, password, recipes_note, backaccount, chromedriver, verbose='yes')
@@ -71,8 +73,9 @@ def search_for_commands(text):
     fbalance = balance.findall(text)
     fmeals = mls.findall(text)
     fcur = cur.findall(text)
+    fsig = sig.findall(text)
 
-    return fexpenses, fsignature, fstop, fstatus, falive, fbalance, fmeals, fcur
+    return fexpenses, fsignature, fstop, fstatus, falive, fbalance, fmeals, fcur, fsig
 
 
 def delete_note():
@@ -104,9 +107,9 @@ if __name__ == '__main__':
         except ElementNotFound:
             log('Couldn\'t reach note, will try on next run')
 
-        wExpenses, wSignature, dStop, sStatus, sAlive, sBalance, sMeals, sCur = search_for_commands(note)
+        wExpenses, wSignature, dStop, sStatus, sAlive, sBalance, sMeals, sCur, sSig = search_for_commands(note)
 
-        if wExpenses or wSignature or dStop or sStatus or sAlive or sBalance or sMeals or sCur:
+        if wExpenses or wSignature or dStop or sStatus or sAlive or sBalance or sMeals or sCur or sSig:
             log('Executing commands')
 
             if wExpenses or wSignature:
@@ -130,6 +133,12 @@ if __name__ == '__main__':
 
                 for currency, value in enumerate(values):
                     message.append('{}: {}'.format(sCur[currency], value))
+
+            if sSig:
+                remaining = sheet.get_sig_remaining(sSig)
+
+                for month, rem in enumerate(remaining):
+                    message.append('Remaining in {}: ${}'.format(calendar.month_name[int(sSig[month])], rem))
 
             if sMeals:
                 all_recipes = meals.create_recipes(int(sMeals[0]))

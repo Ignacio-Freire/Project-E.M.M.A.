@@ -70,7 +70,7 @@ class Expenses:
     def get_balance(self, balance):
         """Returns the balance of the month asked
             Args:
-                balance (list): Month (in number)
+                balance (list): Months (in number)
         """
 
         self.__log('Retrieving requested balance')
@@ -80,9 +80,13 @@ class Expenses:
         balances = []
         ws = sheet.worksheet('{}'.format(date.today().year))
 
-        for i in range(len(balance)):
+        '''for i in range(len(balance)):
             bmonth = int(balance[i]) + 1
             value = ws.cell(41, bmonth).value
+            balances.append(value)'''
+
+        for month in balance:
+            value = ws.cell(41, int(month) + 1).value
             balances.append(value)
 
         return balances
@@ -109,3 +113,22 @@ class Expenses:
                 values.append(value)
 
         return values
+
+    def get_sig_remaining(self, remaining):
+        """Returns the balance of the month asked
+            Args:
+                remaining (list): Months (in number)
+        """
+
+        self.__log('Retrieving requested remaining')
+
+        sheet = self.__log_in_sheets()
+
+        remainings = []
+
+        for month in remaining:
+            ws = sheet.worksheet(calendar.month_name[int(month)])
+            value = ws.cell(20, 11).value
+            remainings.append(value)
+
+        return remainings
