@@ -49,8 +49,7 @@ sig = re.compile(r'<sig (?P<month>1[0-2]|[1-9])>', re.I | re.M)
 
 # Google Keep Note initialization
 log('Creating Messenger objects.')
-#chromedriver = "C:\\Users\Administrator\Desktop\Project-E.M.M.A\chromedriver.exe"
-chromedriver = "C:\\Users\ignacio.freire\PycharmProjects\Project-E.M.M.A\chromedriver.exe"
+chromedriver = "C:\\Users\Administrator\Desktop\Project-E.M.M.A\chromedriver.exe"
 keep = GoogleKeep(account, password, note, backaccount, chromedriver, verbose='yes')
 grocery = GoogleKeep(account, password, grocery_note, backaccount, chromedriver, verbose='yes')
 recipes = GoogleKeep(account, password, recipes_note, backaccount, chromedriver, verbose='yes')
