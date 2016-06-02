@@ -106,10 +106,10 @@ class GoogleKeep:
         self.__log('Getting text')
 
         try:
-            text = driver.find_element_by_xpath('/html/body/div[8]/div/div[2]').text
+            text = driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text
             self.__log('Got Text')
             wait()
-            driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[2]/div[1]').click()
+            driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
             self.__log('Clicked Done')
 
         except (InvalidElementStateException, NoSuchElementException, TimeoutException,
@@ -140,7 +140,7 @@ class GoogleKeep:
 
             for i in range(4, 11):
                 try:
-                    driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[{}]'.format(i)).send_keys(
+                    driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[{}]'.format(i)).send_keys(
                         line)
                     break
                 except:
@@ -150,14 +150,14 @@ class GoogleKeep:
 
             for i in range(4, 11):
                 try:
-                    driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[{}]'.format(i)).send_keys(
+                    driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[{}]'.format(i)).send_keys(
                         Keys.RETURN)
-                    driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[{}]'.format(i)).send_keys(
+                    driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[{}]'.format(i)).send_keys(
                         Keys.SHIFT + Keys.HOME)
                 except:
                     pass
 
-        driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[2]/div[1]').click()
+        driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
 
         wait()
         self.close_driver(driver)
@@ -176,13 +176,13 @@ class GoogleKeep:
 
         for i in range(4, 11):
             try:
-                driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[1]/div[{}]'.format(i)).clear()
+                driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[{}]'.format(i)).clear()
                 break
             except:
                 pass
 
         wait()
-        driver.find_element_by_xpath('/html/body/div[8]/div/div[2]/div[2]/div[1]').click()
+        driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
         wait()
 
         if cont.upper() == 'NO':

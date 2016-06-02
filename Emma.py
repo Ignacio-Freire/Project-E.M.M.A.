@@ -89,6 +89,7 @@ if __name__ == '__main__':
     runs = 0
     totTime = 0
     log('Initializing Emma.')
+    frequency = 120
 
     while True:
 
@@ -179,8 +180,8 @@ if __name__ == '__main__':
         finished = time.time() - start
         totTime += finished
 
-        log('All done! Run {} took {:.2f} seconds, next scan in 120s'.format(runs, finished))
-        time.sleep(120)
+        log('All done! Run {} took {:.2f} seconds, next scan in {}s'.format(runs, finished, frequency))
+        time.sleep(frequency)
 
     goodbyes = ['Goodbye!', 'I\'ll be back', 'NOOOOoooo', 'Cya!', 'Ttyl', 'Don\'t kill me plz!',
                 'Cyka blyat, don\'t do it', 'Peace out', '*Drops mic*']
