@@ -16,7 +16,7 @@ def wait():
 class GoogleKeep:
     """Access a Google Keep note to send or read message."""
 
-    def __init__(self, acc, pw, nt, bkacc, loc, **kwargs):
+    def __init__(self, acc, pw, nt, bkacc, **kwargs):
         """
             Args:
                 acc (str): Account to access the Google Keep Note.
@@ -27,7 +27,7 @@ class GoogleKeep:
                 verbose (optional 'yes'): If set verbose='yes' it will display step by step in the log.
         """
         self.passw = pw
-        self.location = loc
+        self.location = kwargs.get('location', '')
         self.mail = acc
         self.note = nt
         self.backaccount = bkacc
@@ -55,7 +55,10 @@ class GoogleKeep:
         self.__log('Logging into Google Account')
 
         try:
-            drive = webdriver.Chrome(self.location)
+            if self.location:
+                drive = webdriver.Chrome(self.location)
+            else:
+                drive = webdriver.Chrome()
         except AttributeError:
             pass
 
