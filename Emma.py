@@ -77,9 +77,9 @@ def search_for_commands(text):
     return fexpenses, fsignature, fstop, fstatus, falive, fbalance, fmeals, fcur, fsig
 
 
-def delete_note():
+def delete_note(driv):
     try:
-        keep.delete_content()
+        keep.delete_content(logged='YES', driver=driv)
     except ElementNotFound:
         log('Couldn\'t delete note, will try on next run')
 
@@ -103,7 +103,7 @@ if __name__ == '__main__':
         log('Checking for commands')
 
         try:
-            note = keep.read_note()
+            note, driver = keep.read_note(cont='YES')
         except ElementNotFound:
             log('Couldn\'t reach note, will try on next run')
 
@@ -120,7 +120,7 @@ if __name__ == '__main__':
                 if wSignature:
                     sheet.add_expenses(wSignature, ['I', 'J', 'K'])
 
-                delete_note()
+                delete_note(driver)
 
             if sBalance:
                 balances = sheet.get_balance(sBalance)
@@ -148,7 +148,7 @@ if __name__ == '__main__':
                     recipes.send_message(all_recipes)
                     grocery.send_message(grocery_list)
                     time.sleep(10)
-                    delete_note()
+                    delete_note(driver)
                     all_recipes = []
                     grocery_list = []
                 except ElementNotFound:
@@ -166,7 +166,7 @@ if __name__ == '__main__':
 
             if message:
                 try:
-                    keep.send_message(message)
+                    keep.send_message(message, logged='YES', driver=driver)
                 except ElementNotFound:
                     log('Couldn\'t send message, will try on next run')
                     continue
@@ -176,6 +176,7 @@ if __name__ == '__main__':
 
         else:
             log('None found')
+            keep.close_driver(driver)
 
         finished = time.time() - start
         totTime += finished

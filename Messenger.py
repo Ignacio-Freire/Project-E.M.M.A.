@@ -97,8 +97,13 @@ class GoogleKeep:
 
         return drive
 
-    def read_note(self):
-        """"Retrieves text from the Google Keep Note."""
+    def read_note(self, **kwargs):
+        """"Retrieves text from the Google Keep Note.
+         Args:
+                kwargs = can add cont='yes' to avoid closing the driver after deleting the contents.
+        """
+
+        cont = kwargs.get('cont', 'NO')
 
         driver = self.log_in_goog()
         wait()
@@ -106,7 +111,7 @@ class GoogleKeep:
         self.__log('Getting text')
 
         try:
-            text = driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[1]/div[5]').text
+            text = driver.find_element_by_xpath('/html/body/div[9]/div/div[2]').text
             self.__log('Got Text')
             wait()
             driver.find_element_by_xpath('/html/body/div[9]/div/div[2]/div[2]/div[1]').click()
@@ -119,17 +124,28 @@ class GoogleKeep:
             self.close_driver(driver)
             raise ElementNotFound
 
-        self.close_driver(driver)
+        if cont.upper() == 'NO':
+            self.close_driver(driver)
+        else:
+            self.__log('Keeping open for further use')
 
-        return text
+        return text, driver
 
-    def send_message(self, message):
+    def send_message(self, message, **kwargs):
         """ Message to print on the Google Keep Note
             Args:
                 message (list): Messages to send. One line per element in list.
         """
 
-        driver = self.delete_content(cont='yes')
+        logged = kwargs.get('logged', 'NO')
+        window = kwargs.get('driver', '')
+
+        self.__log('Prepearing note for message')
+
+        if window:
+            driver = self.delete_content(cont='YES', logged=logged, driver=window)
+        else:
+            driver = self.delete_content(cont='YES', logged=logged)
 
         self.__log('Sending message')
 
@@ -171,8 +187,13 @@ class GoogleKeep:
         self.__log('Deleting contents')
 
         cont = kwargs.get('cont', 'NO')
+        logged = kwargs.get('logged', 'NO')
+        window = kwargs.get('driver', '')
 
-        driver = self.log_in_goog()
+        if logged == 'NO':
+            driver = self.log_in_goog()
+        elif window:
+            driver = window
 
         for i in range(4, 11):
             try:
