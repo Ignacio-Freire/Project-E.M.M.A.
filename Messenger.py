@@ -196,6 +196,7 @@ class GoogleKeep:
             driver = self.log_in_goog()
         elif window:
             driver = window
+            driver.get(self.note)
 
         for i in range(4, 11):
             try:
