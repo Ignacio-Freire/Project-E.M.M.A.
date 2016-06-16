@@ -61,7 +61,7 @@ class GoogleKeep:
                 elif 'phantomjs' in self.location:
                     drive = webdriver.PhantomJS(self.location)
             else:
-                drive = webdriver.PhantomJS()
+                drive = webdriver.Chrome()
 
         except AttributeError:
             pass
@@ -130,11 +130,6 @@ class GoogleKeep:
             self.__log('Can\'t find element, will relog and try on next run')
             self.close_driver(driver)
             raise ElementNotFound
-
-        if cont.upper() == 'NO':
-            self.close_driver(driver)
-        else:
-            self.__log('Keeping open for further use')
 
         return text, driver
 
