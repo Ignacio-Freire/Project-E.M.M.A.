@@ -56,9 +56,13 @@ class GoogleKeep:
 
         try:
             if self.location:
-                drive = webdriver.PhantomJS(self.location)
+                if 'chromedriver' in self.location:
+                    drive = webdriver.Chrome(self.location)
+                elif 'phantomjs' in self.location:
+                    drive = webdriver.PhantomJS(self.location)
             else:
                 drive = webdriver.PhantomJS()
+
         except AttributeError:
             pass
 

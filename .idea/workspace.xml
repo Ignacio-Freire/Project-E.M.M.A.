@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="13543268-8562-4da8-9387-68d5b00e1599" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Emma.py" afterPath="$PROJECT_DIR$/Emma.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Messenger.py" afterPath="$PROJECT_DIR$/Messenger.py" />
     </list>
     <ignored path="Project-E.M.M.A.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -24,11 +24,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Emma.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Emma.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Emma.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="32" column="31" selection-start-line="32" selection-start-column="31" selection-end-line="32" selection-end-column="31" />
+            <state relative-caret-position="204">
+              <caret line="52" column="55" selection-start-line="51" selection-start-column="0" selection-end-line="52" selection-end-column="55" />
               <folding>
                 <element signature="e#121#130#0" expanded="true" />
               </folding>
@@ -48,11 +48,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Messenger.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Messenger.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Messenger.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-17">
-              <caret line="33" column="50" selection-start-line="33" selection-start-column="50" selection-end-line="33" selection-end-column="50" />
+            <state relative-caret-position="305">
+              <caret line="56" column="12" selection-start-line="56" selection-start-column="12" selection-end-line="56" selection-end-column="12" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -109,8 +109,8 @@
         <option value="$PROJECT_DIR$/Chef.py" />
         <option value="$PROJECT_DIR$/Tests/test.html" />
         <option value="$PROJECT_DIR$/Accountant.py" />
-        <option value="$PROJECT_DIR$/Messenger.py" />
         <option value="$PROJECT_DIR$/Emma.py" />
+        <option value="$PROJECT_DIR$/Messenger.py" />
       </list>
     </option>
   </component>
@@ -501,20 +501,6 @@
       <option name="presentableId" value="Default" />
       <updated>1446000093876</updated>
     </task>
-    <task id="LOCAL-00012" summary="Added another type of expense.">
-      <created>1446136357247</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1446136357247</updated>
-    </task>
-    <task id="LOCAL-00013" summary="It can now take Excel formulas in currency slot.">
-      <created>1446208805304</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1446208805304</updated>
-    </task>
     <task id="LOCAL-00014" summary="Added some comments.">
       <created>1446209942552</created>
       <option name="number" value="00014" />
@@ -844,7 +830,21 @@
       <option name="project" value="LOCAL" />
       <updated>1466034704361</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL-00061" summary="Changed for Linux server">
+      <created>1466077350975</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1466077350978</updated>
+    </task>
+    <task id="LOCAL-00062" summary="Fixed phantomjs driver location">
+      <created>1466077400190</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1466077400191</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="TodoView">
@@ -894,8 +894,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="false" />
-    <MESSAGE value="Added log functions to MealPrep" />
-    <MESSAGE value="Fixed MealPrep saving previous recipes. Added new error handling." />
     <MESSAGE value="Fixed &lt;status&gt; again." />
     <MESSAGE value="Added Exception to AccessKeep for cleaner code in Emma.py" />
     <MESSAGE value="Fixed &lt;status&gt;. Problems with basic math." />
@@ -919,7 +917,9 @@
     <MESSAGE value="Added remaining side-budget check." />
     <MESSAGE value="Chenged back Chromedriver location to server default." />
     <MESSAGE value="Less chromedriver opening and closing. Down to one per session." />
-    <option name="LAST_COMMIT_MESSAGE" value="Less chromedriver opening and closing. Down to one per session." />
+    <MESSAGE value="Changed for Linux server" />
+    <MESSAGE value="Fixed phantomjs driver location" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed phantomjs driver location" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1264,16 +1264,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Messenger.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-17">
-          <caret line="33" column="50" selection-start-line="33" selection-start-column="50" selection-end-line="33" selection-end-column="50" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Chef.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -1286,10 +1276,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Emma.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="32" column="31" selection-start-line="32" selection-start-column="31" selection-end-line="32" selection-end-column="31" />
+        <state relative-caret-position="204">
+          <caret line="52" column="55" selection-start-line="51" selection-start-column="0" selection-end-line="52" selection-end-column="55" />
           <folding>
             <element signature="e#121#130#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Messenger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="305">
+          <caret line="56" column="12" selection-start-line="56" selection-start-column="12" selection-end-line="56" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
