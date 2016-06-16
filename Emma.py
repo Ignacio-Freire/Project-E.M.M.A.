@@ -50,7 +50,7 @@ sig = re.compile(r'<sig (?P<month>1[0-2]|[1-9])>', re.I | re.M)
 # Google Keep Note initialization
 log('Creating Messenger objects.')
 chromedriver = "/home/Projects/Project-E.M.M.A./chromedriver"
-phantomjs = "/home/Projects/Project-E.M.M.A./chromedriver"
+phantomjs = "/home/Projects/Project-E.M.M.A./phantomjs"
 keep = GoogleKeep(account, password, note, backaccount, verbose='yes', location=phantomjs)
 grocery = GoogleKeep(account, password, grocery_note, backaccount, verbose='yes', location=phantomjs)
 recipes = GoogleKeep(account, password, recipes_note, backaccount, verbose='yes', location=phantomjs)
