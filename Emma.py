@@ -6,6 +6,7 @@ import calendar
 from Chef import MealPrep
 from Accountant import Expenses
 from Messenger import GoogleKeep
+from Messenger import Evernote
 from time import strftime, localtime
 from Messenger import ElementNotFound
 
@@ -31,7 +32,7 @@ def log(msg):
 log('Loading settings.')
 with open('settings.cfg', 'r') as f:
     log_info = f.read().splitlines()
-    account, password, json_auth, shtkey, note, backaccount, grocery_note, recipes_note = log_info
+    account, password, json_auth, shtkey, note, backaccount, grocery_note, recipes_note, evernote_token = log_info
 
 # Commands to search
 log('Compiling Regex.')
@@ -39,13 +40,13 @@ expense = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<cate
                      r'(?P<currency>\w{3})', re.I | re.M)
 signature = re.compile(r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<amount>\d*.*\d*);(?P<currency>\w{3})',
                        re.I | re.M)
-alive = re.compile(r'<are you alive\?>', re.I | re.M)
-status = re.compile(r'<status>', re.I | re.M)
-balance = re.compile(r'<balance (?P<month>1[0-2]|[1-9])>', re.I | re.M)
-end = re.compile(r'<stop>', re.I | re.M)
-mls = re.compile(r'<meals (?P<meals>\d*)>', re.I | re.M)
-cur = re.compile(r'<usd>|<eur>', re.I | re.M)
-sig = re.compile(r'<sig (?P<month>1[0-2]|[1-9])>', re.I | re.M)
+alive = re.compile(r'/are you alive\?', re.I | re.M)
+status = re.compile(r'/status', re.I | re.M)
+balance = re.compile(r'/balance (?P<month>1[0-2]|[1-9])', re.I | re.M)
+end = re.compile(r'/stop', re.I | re.M)
+mls = re.compile(r'/meals (?P<meals>\d*)', re.I | re.M)
+cur = re.compile(r'/usd|/eur', re.I | re.M)
+sig = re.compile(r'/sig (?P<month>1[0-2]|[1-9])', re.I | re.M)
 
 # Google Keep Note initialization
 log('Creating Messenger objects.')
@@ -54,6 +55,9 @@ phantomjs = "/home/Projects/Project-E.M.M.A./phantomjs"
 keep = GoogleKeep(account, password, note, backaccount, verbose='yes')
 grocery = GoogleKeep(account, password, grocery_note, backaccount, verbose='yes')
 recipes = GoogleKeep(account, password, recipes_note, backaccount, verbose='yes')
+
+# Evernote initialization
+evernote = Evernote(evernote_token, 'Emma', verbose='yes')
 
 # Meal Prep initialization
 log('Creating Chef object.')
@@ -103,10 +107,14 @@ if __name__ == '__main__':
 
         log('Checking for commands')
 
+        '''
         try:
             note, driver = keep.read_note(cont='YES')
         except ElementNotFound:
             log('Couldn\'t reach note, will try on next run')
+        '''
+
+        note_store, full_note, note = evernote.get_content()
 
         wExpenses, wSignature, dStop, sStatus, sAlive, sBalance, sMeals, sCur, sSig = search_for_commands(note)
 
@@ -121,7 +129,8 @@ if __name__ == '__main__':
                 if wSignature:
                     sheet.add_expenses(wSignature, ['I', 'J', 'K'])
 
-                delete_note(driver)
+                # delete_note(driver)
+                evernote.delete_content(note_store, note)
 
             if sBalance:
                 balances = sheet.get_balance(sBalance)
@@ -149,7 +158,8 @@ if __name__ == '__main__':
                     recipes.send_message(all_recipes)
                     grocery.send_message(grocery_list)
                     time.sleep(10)
-                    delete_note(driver)
+                    # delete_note(driver)
+                    evernote.delete_content(note_store, note)
                     all_recipes = []
                     grocery_list = []
                 except ElementNotFound:
@@ -166,18 +176,22 @@ if __name__ == '__main__':
                 message.append('Yes, I\'m alive! :)')
 
             if message:
+                '''
                 try:
                     keep.send_message(message, logged='YES', driver=driver)
                 except ElementNotFound:
                     log('Couldn\'t send message, will try on next run')
                     continue
+                '''
+
+                evernote.send_message(message, note_store, full_note)
 
             if dStop:
                 break
 
         else:
             log('None found')
-            keep.close_driver(driver)
+            # keep.close_driver(driver)
 
         finished = time.time() - start
         totTime += finished

@@ -65,7 +65,7 @@ class Expenses:
                 lastrow = sheet.worksheet(msheet).col_values(2)[1:].index('') + 2
 
             for j in range(len(temp)):
-                sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow), temp[j].upper())
+                sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow), temp[j].title())
 
     def get_balance(self, balance):
         """Returns the balance of the month asked
@@ -86,7 +86,7 @@ class Expenses:
             balances.append(value)'''
 
         for month in balance:
-            value = ws.cell(41, int(month) + 1).value
+            value = ws.cell(42, int(month) + 1).value
             balances.append(value)
 
         return balances
