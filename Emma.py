@@ -130,7 +130,7 @@ if __name__ == '__main__':
                     sheet.add_expenses(wSignature, ['I', 'J', 'K'])
 
                 # delete_note(driver)
-                evernote.delete_content(note_store, note)
+                evernote.delete_content(note_store, full_note)
 
             if sBalance:
                 balances = sheet.get_balance(sBalance)
@@ -159,7 +159,7 @@ if __name__ == '__main__':
                     grocery.send_message(grocery_list)
                     time.sleep(10)
                     # delete_note(driver)
-                    evernote.delete_content(note_store, note)
+                    evernote.delete_content(note_store, full_note)
                     all_recipes = []
                     grocery_list = []
                 except ElementNotFound:
