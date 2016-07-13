@@ -7,3 +7,7 @@
 workspace.xml
 misc.xml
 chromedriver.exe
+phantomjs.exe
+*.xml
+.idea/workspace.xml
+*.xml

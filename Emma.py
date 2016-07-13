@@ -36,10 +36,12 @@ with open('settings.cfg', 'r') as f:
 
 # Commands to search
 log('Compiling Regex.')
-expense = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>\d*.*\d*);'
-                     r'(?P<currency>\w{3})', re.I | re.M)
-signature = re.compile(r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<amount>\d*.*\d*);(?P<currency>\w{3})',
-                       re.I | re.M)
+expense = re.compile(
+    r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>[^;]*);(?P<currency>\w{3})',
+    re.I | re.M)
+signature = re.compile(
+    r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>[^;]*);(?P<currency>\w{3})',
+    re.I | re.M)
 alive = re.compile(r'/are you alive\?', re.I | re.M)
 status = re.compile(r'/status', re.I | re.M)
 balance = re.compile(r'/balance (?P<month>1[0-2]|[1-9])', re.I | re.M)
