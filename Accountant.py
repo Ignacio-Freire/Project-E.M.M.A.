@@ -58,6 +58,10 @@ class Expenses:
             msheet = calendar.month_name[int(data[1])]
             temp.pop(1)
 
+            '''Podria hacerlo chequear que no este en la DB el anterior al lastrow. Si no esta, lo inserta.
+            El tema es si es un gasto identico en dos horarios distintos. Para diferenciar el bot podría insertar un
+            timestamp en el excel tamb.'''
+
             if temp[0].upper() == 'SIG':
                 temp.pop(0)
                 lastrow = sheet.worksheet(msheet).col_values(9)[1:].index('') + 2
@@ -79,11 +83,6 @@ class Expenses:
 
         balances = []
         ws = sheet.worksheet('{}'.format(date.today().year))
-
-        '''for i in range(len(balance)):
-            bmonth = int(balance[i]) + 1
-            value = ws.cell(41, bmonth).value
-            balances.append(value)'''
 
         for month in balance:
             value = ws.cell(42, int(month) + 1).value

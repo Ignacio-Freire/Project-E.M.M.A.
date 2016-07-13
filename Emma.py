@@ -69,6 +69,7 @@ sheet = Expenses(shtkey, json_auth, verbose='yes')
 
 
 def search_for_commands(text):
+
     fexpenses = expense.findall(text)
     fsignature = signature.findall(text)
     fstop = end.findall(text)
