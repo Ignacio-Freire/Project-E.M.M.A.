@@ -116,7 +116,11 @@ if __name__ == '__main__':
             log('Couldn\'t reach note, will try on next run')
         '''
 
-        note_store, full_note, note = evernote.get_content()
+        try:
+            note_store, full_note, note = evernote.get_content()
+        except:
+            log('Couldn\'t reach note, will try on next run')
+            note = ''
 
         wExpenses, wSignature, dStop, sStatus, sAlive, sBalance, sMeals, sCur, sSig = search_for_commands(note)
 
@@ -204,3 +208,4 @@ if __name__ == '__main__':
     goodbyes = ['Goodbye!', 'I\'ll be back', 'NOOOOoooo', 'Cya!', 'Ttyl', 'Don\'t kill me plz!',
                 'Cyka blyat, don\'t do it', 'Peace out', '*Drops mic*']
     log(random.choice(goodbyes))
+

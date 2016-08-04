@@ -26,7 +26,7 @@ class Expenses:
         if self.verbose.upper() == 'YES':
             print('[{}] Emma.Accountant: {}'.format(strftime("%H:%M:%S", localtime()), message))
 
-    def __log_in_sheets(self):
+    def log_in_sheets(self):
         """ Google Sheet API authentication process."""
 
         self.__log('Authenticating Google Sheet')
@@ -48,7 +48,7 @@ class Expenses:
 
         self.__log('Adding expenses')
 
-        sheet = self.__log_in_sheets()
+        sheet = self.log_in_sheets()
 
         self.__log('Authorized')
 
@@ -75,7 +75,7 @@ class Expenses:
 
         self.__log('Retrieving requested balance')
 
-        sheet = self.__log_in_sheets()
+        sheet = self.log_in_sheets()
 
         balances = []
         ws = sheet.worksheet('{}'.format(date.today().year))
@@ -99,7 +99,7 @@ class Expenses:
 
         self.__log('Retrieving requested currency values')
 
-        sheet = self.__log_in_sheets()
+        sheet = self.log_in_sheets()
 
         values = []
         ws = sheet.worksheet('{}'.format(date.today().year))
@@ -122,7 +122,7 @@ class Expenses:
 
         self.__log('Retrieving requested remaining')
 
-        sheet = self.__log_in_sheets()
+        sheet = self.log_in_sheets()
 
         remainings = []
 
