@@ -72,19 +72,21 @@ class Expenses:
             dt = datetime.now()
 
             if data[5].upper() == 'ARS':
+                currency_value = 'null'
                 total = int(data[4])
             elif data[5].upper() == 'USD':
+                currency_value = usd
                 total = int(data[4]) * usd
             elif data[5].upper() == 'EUR':
+                currency_value = eur
                 total = int(data[4]) * eur
 
             cursor.execute(
                 """INSERT INTO GASTOS (TRANS_ID, TRANS_DATE, DETAIL, EXP_CATEGORY, PRICE, PYMNT_METHOD, CURRENCY,
                  CURRENCY_VALUE, TOTAL, INSERT_TIMESTAMP, INSERT_USER_ID) VALUES ({}, to_date('{}','DDMMYYYY'),
                   '{}', '{}', {}, '{}', '{}', {}, {}, {}, '{}');""".format(
-                    tid[0] + 1, data[0] + data[1] + str(datetime.now().year), data[2], data[3], data[4].upper(),
-                    data[6].upper(), data[5], usd if data[5].upper() == 'USD' else eur, total,
-                    dt.strftime("%Y%d%m%H%M%S"), 'Emma'))
+                    tid[0] + 1, data[0] + data[1] + str(datetime.now().year), data[2], data[3], data[4],
+                    data[6].upper(), data[5].upper(), currency_value, total, dt.strftime("%Y%d%m%H%M%S"), 'Emma'))
 
         connection.commit()
 
