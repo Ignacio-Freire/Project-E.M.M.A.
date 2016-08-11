@@ -1,13 +1,16 @@
 # ------------------------------------- Expense Management Mad Assistant --------------------------------------------- #
 import gspread
 import calendar
-from datetime import date
+import psycopg2
+import requests
+from itertools import chain
+from datetime import date, datetime
 from time import strftime, localtime
 from oauth2client.service_account import ServiceAccountCredentials
 
 
 class Expenses:
-    def __init__(self, sheet, json_auth, **kwargs):
+    def __init__(self, sheet, json_auth, db, **kwargs):
         """
             Args:
                 sheet (str): Google Sheet key to access.
@@ -16,6 +19,7 @@ class Expenses:
         """
         self.key = sheet
         self.json_auth = json_auth
+        self.connection = db
         self.verbose = kwargs.get('verbose', 'NO')
 
     def __log(self, message):
@@ -37,6 +41,52 @@ class Expenses:
         sht = gc.open_by_key(self.key)
 
         return sht
+
+    def connect_db(self):
+
+        self.__log('Connecting to Database')
+
+        conn = psycopg2.connect(self.connection)
+
+        return conn
+
+    def add_db(self, expenses):
+
+        connection = self.connect_db()
+        cursor = connection.cursor()
+
+        self.__log('Adding expenses to Database')
+
+        currencies = ['ars', 'ARS', 'usd', 'USD', 'eur', 'EUR']
+
+        for currency in currencies:
+            if currency in chain.from_iterable(expenses):
+                usd = requests.get("https://currency-api.appspot.com/api/USD/ARS.json").json()['rate']
+                eur = requests.get("https://currency-api.appspot.com/api/EUR/ARS.json").json()['rate']
+                break
+
+        for data in expenses:
+            cursor.execute("""select max(trans_id) from gastos;""")
+            tid = cursor.fetchone()
+
+            dt = datetime.now()
+
+            if data[5].upper() == 'ARS':
+                total = int(data[4])
+            elif data[5].upper() == 'USD':
+                total = int(data[4]) * usd
+            elif data[5].upper() == 'EUR':
+                total = int(data[4]) * eur
+
+            cursor.execute(
+                """INSERT INTO GASTOS (TRANS_ID, TRANS_DATE, DETAIL, EXP_CATEGORY, PRICE, PYMNT_METHOD, CURRENCY,
+                 CURRENCY_VALUE, TOTAL, INSERT_TIMESTAMP, INSERT_USER_ID) VALUES ({}, to_date('{}','DDMMYYYY'),
+                  '{}', '{}', {}, '{}', '{}', {}, {}, {}, '{}');""".format(
+                    tid[0] + 1, data[0] + data[1] + str(datetime.now().year), data[2], data[3], data[4].upper(),
+                    data[6].upper(), data[5], usd if data[5].upper() == 'USD' else eur, total,
+                    dt.strftime("%Y%d%m%H%M%S"), 'Emma'))
+
+        connection.commit()
 
     def add_expenses(self, expenses, columns):
         """Adds found expenses to the corresponding month

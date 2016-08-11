@@ -32,12 +32,12 @@ def log(msg):
 log('Loading settings.')
 with open('settings.cfg', 'r') as f:
     log_info = f.read().splitlines()
-    account, password, json_auth, shtkey, note, backaccount, grocery_note, recipes_note, evernote_token = log_info
+    account, password, json_auth, shtkey, note, backaccount, grocery_note, recipes_note, evernote_token, db = log_info
 
 # Commands to search
 log('Compiling Regex.')
 expense = re.compile(
-    r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>[^;]*);(?P<currency>\w{3})',
+    r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>[^;]*);(?P<currency>\w{3});(?P<method>\bEFVO|\bMASTER|\bVISA|\bDEBITO)',
     re.I | re.M)
 signature = re.compile(
     r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>[^;]*);(?P<currency>\w{3})',
@@ -67,7 +67,7 @@ meals = MealPrep(verbose='yes')
 
 # Google Sheet initialization
 log('Initializing spreadsheet.')
-sheet = Expenses(shtkey, json_auth, verbose='yes')
+sheet = Expenses(shtkey, json_auth, db, verbose='yes')
 
 
 def search_for_commands(text):
@@ -130,7 +130,8 @@ if __name__ == '__main__':
             if wExpenses or wSignature:
 
                 if wExpenses:
-                    sheet.add_expenses(wExpenses, ['B', 'C', 'D', 'E', 'F'])
+                    sheet.add_db(wExpenses)
+                    sheet.add_expenses(wExpenses, ['B', 'C', 'D', 'E', 'F', 'G'])
 
                 if wSignature:
                     sheet.add_expenses(wSignature, ['I', 'J', 'K'])
