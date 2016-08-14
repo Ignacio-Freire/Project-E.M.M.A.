@@ -128,16 +128,21 @@ if __name__ == '__main__':
             log('Executing commands')
 
             if wExpenses or wSignature:
+                correct = True
 
                 if wExpenses:
-                    sheet.add_db(wExpenses)
-                    sheet.add_expenses(wExpenses, ['B', 'C', 'D', 'E', 'F', 'G'])
+                    correct = sheet.add_db(wExpenses)
+                    if correct:
+                        sheet.add_expenses(wExpenses, ['B', 'C', 'D', 'E', 'F', 'G'])
+                    else:
+                        log('Something is wrong in transaction.')
 
                 if wSignature:
                     sheet.add_expenses(wSignature, ['I', 'J', 'K'])
 
                 # delete_note(driver)
-                evernote.delete_content(note_store, full_note)
+                if correct:
+                    evernote.delete_content(note_store, full_note)
 
             if sBalance:
                 balances = sheet.get_balance(sBalance)
