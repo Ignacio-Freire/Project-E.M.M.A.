@@ -11,3 +11,5 @@ phantomjs.exe
 *.xml
 .idea/workspace.xml
 *.xml
+Tests/Migration.py
+Tests/Migration.py
