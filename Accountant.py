@@ -141,7 +141,7 @@ class Expenses:
         ws = sheet.worksheet('{}'.format(date.today().year))
 
         for month in balance:
-            value = ws.cell(42, int(month) + 1).value
+            value = ws.cell(45, int(month) + 1).value
             balances.append(value)
 
         return balances
