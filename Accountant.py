@@ -57,7 +57,7 @@ class Expenses:
 
         self.__log('Adding expenses to Database')
 
-        currencies = ['ars', 'ARS', 'usd', 'USD', 'eur', 'EUR']
+        currencies = ['usd', 'USD', 'eur', 'EUR']
 
         for currency in currencies:
             if currency in chain.from_iterable(expenses):
