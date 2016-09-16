@@ -43,6 +43,7 @@ class Expenses:
         return sht
 
     def connect_db(self):
+        """" PostgreSQL Database """
 
         self.__log('Connecting to Database')
 
