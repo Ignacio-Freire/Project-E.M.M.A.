@@ -1,14 +1,15 @@
 # ------------------------------------ Extended Multi Management Assistant ------------------------------------------- #
+import calendar
+import random
 import re
 import time
-import random
-import calendar
-from Chef import MealPrep
-from Accountant import Expenses
-from Messenger import GoogleKeep
-from Messenger import Evernote
 from time import strftime, localtime
+
+from Accountant import Expenses
+
 from Messenger import ElementNotFound
+from Messenger import Evernote
+from Messenger import GoogleKeep
 
 '''
 You can either fill each of the next variables manually or create a simple .cfg with the data of each variable in the
@@ -46,7 +47,6 @@ alive = re.compile(r'/are you alive\?', re.I | re.M)
 status = re.compile(r'/status', re.I | re.M)
 balance = re.compile(r'/balance (?P<month>1[0-2]|[1-9])', re.I | re.M)
 end = re.compile(r'/stop', re.I | re.M)
-mls = re.compile(r'/meals (?P<meals>\d*)', re.I | re.M)
 cur = re.compile(r'/usd|/eur', re.I | re.M)
 sig = re.compile(r'/sig (?P<month>1[0-2]|[1-9])', re.I | re.M)
 
@@ -61,10 +61,6 @@ recipes = GoogleKeep(account, password, recipes_note, backaccount, verbose='yes'
 # Evernote initialization
 evernote = Evernote(evernote_token, 'Emma', verbose='yes')
 
-# Meal Prep initialization
-log('Creating Chef object.')
-meals = MealPrep(verbose='yes')
-
 # Google Sheet initialization
 log('Initializing spreadsheet.')
 sheet = Expenses(shtkey, json_auth, db, verbose='yes')
@@ -78,11 +74,10 @@ def search_for_commands(text):
     fstatus = status.findall(text)
     falive = alive.findall(text)
     fbalance = balance.findall(text)
-    fmeals = mls.findall(text)
     fcur = cur.findall(text)
     fsig = sig.findall(text)
 
-    return fexpenses, fsignature, fstop, fstatus, falive, fbalance, fmeals, fcur, fsig
+    return fexpenses, fsignature, fstop, fstatus, falive, fbalance, fcur, fsig
 
 
 def delete_note(driv):
@@ -162,22 +157,6 @@ if __name__ == '__main__':
 
                 for month, rem in enumerate(remaining):
                     message.append('Remaining in {}: ${}'.format(calendar.month_name[int(sSig[month])], rem))
-
-            if sMeals:
-                all_recipes = meals.create_recipes(int(sMeals[0]))
-                grocery_list = meals.grocery_list(all_recipes)
-
-                try:
-                    recipes.send_message(all_recipes)
-                    grocery.send_message(grocery_list)
-                    time.sleep(10)
-                    # delete_note(driver)
-                    evernote.delete_content(note_store, full_note)
-                    all_recipes = []
-                    grocery_list = []
-                except ElementNotFound:
-                    log('Couldn\'t send meals, will try on next run')
-                    continue
 
             if sStatus:
                 message.append('{} runs so far. That\'s {} days, {} hours or {} minutes. Real process time {}s'
