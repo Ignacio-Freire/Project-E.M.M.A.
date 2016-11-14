@@ -1,8 +1,8 @@
 # ------------------------------------ Extended Multi Management Assistant ------------------------------------------- #
-import calendar
-import random
 import re
 import time
+import random
+import calendar
 from time import strftime, localtime
 
 from Accountant import SpreadsheetManager, PostgreDBManager
@@ -21,31 +21,11 @@ Alternative mail configured for the account
 /---------------------------/
 '''
 
+log('Initializing Emma.')
+
 
 def log(msg):
     print('[{}] Emma: {}'.format(strftime("%H:%M:%S", localtime()), msg))
-
-
-def display_time(seconds, granularity=2):
-
-    intervals = (
-        ('weeks', 604800),
-        ('days', 86400),
-        ('hours', 3600),
-        ('minutes', 60),
-        ('seconds', 1),
-    )
-
-    result = []
-
-    for name, count in intervals:
-        t_value = seconds // count
-        if t_value:
-            seconds -= t_value * count
-            if t_value == 1:
-                name = name.rstrip('s')
-            result.append("{} {}".format(t_value, name))
-    return ', '.join(result[:granularity])
 
 
 # Config File
@@ -78,6 +58,11 @@ postgre_db = PostgreDBManager(db, verbose='yes')
 log('Initializing spreadsheet.')
 sheet = SpreadsheetManager(shtkey, json_auth, verbose='yes')
 
+# Initializing variables
+runs = 0
+totTime = 0
+FREQUENCY = 120
+
 
 def search_for_commands(text):
     fexpenses = expense.findall(text)
@@ -90,21 +75,36 @@ def search_for_commands(text):
     return fexpenses, fstop, fstatus, falive, fbalance, fcur
 
 
-if __name__ == '__main__':
+def display_time(seconds, granularity=2):
+    intervals = (
+        ('weeks', 604800),
+        ('days', 86400),
+        ('hours', 3600),
+        ('minutes', 60),
+        ('seconds', 1),
+    )
 
-    runs = 0
-    totTime = 0
-    log('Initializing Emma.')
-    frequency = 120
+    result = []
+
+    for name, count in intervals:
+        t_value = seconds // count
+        if t_value:
+            seconds -= t_value * count
+            if t_value == 1:
+                name = name.rstrip('s')
+            result.append("{} {}".format(t_value, name))
+    return ', '.join(result[:granularity])
+
+
+log('Hi, I\'m ready to go!')
+
+if __name__ == '__main__':
 
     while True:
 
         start = time.time()
         runs += 1
         message = []
-
-        if runs == 1:
-            log('Hi, I\'m ready to go!')
 
         log('Checking for commands')
 
@@ -163,8 +163,8 @@ if __name__ == '__main__':
         finished = time.time() - start
         totTime += finished
 
-        log('All done! Run {} took {:.2f} seconds, next scan in {}s'.format(runs, finished, frequency))
-        time.sleep(frequency)
+        log('All done! Run {} took {:.2f} seconds, next scan in {}s'.format(runs, finished, FREQUENCY))
+        time.sleep(FREQUENCY)
 
     goodbyes = ['Goodbye!', 'I\'ll be back', 'NOOOOoooo', 'Cya!', 'Ttyl', 'Don\'t kill me plz!',
                 'Cyka blyat, don\'t do it', 'Peace out', '*Drops mic*']

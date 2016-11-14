@@ -61,15 +61,7 @@ class SpreadsheetManager:
             msheet = calendar.month_name[int(data[1])]
             temp.pop(1)
 
-            '''Podria hacerlo chequear que no este en la DB el anterior al lastrow. Si no esta, lo inserta.
-            El tema es si es un gasto identico en dos horarios distintos. Para diferenciar el bot podría insertar un
-            timestamp en el excel tamb.'''
-
-            if temp[0].upper() == 'SIG':
-                temp.pop(0)
-                lastrow = sheet.worksheet(msheet).col_values(9)[1:].index('') + 2
-            else:
-                lastrow = sheet.worksheet(msheet).col_values(2)[1:].index('') + 2
+            lastrow = sheet.worksheet(msheet).col_values(2)[1:].index('') + 2
 
             for j in range(len(temp)):
                 sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow), temp[j].title())
@@ -171,31 +163,33 @@ class PostgreDBManager:
 
         self.__log('Adding expenses to Database')
 
-        currencies = ['usd', 'USD', 'eur', 'EUR']
+        currencies = ['USD', 'EUR']
 
         for currency in currencies:
-            if currency in chain.from_iterable(expenses):
+            if currency in chain.from_iterable(expenses.upper()):
                 usd = requests.get("https://currency-api.appspot.com/api/USD/ARS.json").json()['rate']
                 eur = requests.get("https://currency-api.appspot.com/api/EUR/ARS.json").json()['rate']
                 break
+        else:
+            usd = None
+            eur = None
 
         for data in expenses:
-            cursor.execute("""select max(trans_id) from gastos;""")
+            cursor.execute("""SELECT MAX(trans_id) FROM GASTOS;""")
             tid = cursor.fetchone()
 
             dt = datetime.now()
 
             if data[5].upper() == 'ARS':
-                currency_value = 'null'
-                total = int(data[4])
+                currency_value = None
             elif data[5].upper() == 'USD':
                 currency_value = usd
-                total = int(data[4]) * usd
             elif data[5].upper() == 'EUR':
                 currency_value = eur
-                total = int(data[4]) * eur
             else:
                 return False
+
+            total = int(data[4]) * currency_value if currency_value else int(data[4])
 
             cursor.execute(
                 """INSERT INTO GASTOS (TRANS_ID, TRANS_DATE, DETAIL, EXP_CATEGORY, PRICE, PYMNT_METHOD, CURRENCY,
