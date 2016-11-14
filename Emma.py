@@ -5,11 +5,9 @@ import re
 import time
 from time import strftime, localtime
 
-from Accountant import Expenses
-
-from Messenger import ElementNotFound
-from Messenger import Evernote
-from Messenger import GoogleKeep
+from Accountant import SpreadsheetManager
+from Accountant import PostgreDBManager
+from Messenger import EvernoteManager
 
 '''
 You can either fill each of the next variables manually or create a simple .cfg with the data of each variable in the
@@ -50,24 +48,18 @@ end = re.compile(r'/stop', re.I | re.M)
 cur = re.compile(r'/usd|/eur', re.I | re.M)
 sig = re.compile(r'/sig (?P<month>1[0-2]|[1-9])', re.I | re.M)
 
-# Google Keep Note initialization
-log('Creating Messenger objects.')
-chromedriver = "/home/Projects/Project-E.M.M.A./chromedriver"
-phantomjs = "/home/Projects/Project-E.M.M.A./phantomjs"
-keep = GoogleKeep(account, password, note, backaccount, verbose='yes')
-grocery = GoogleKeep(account, password, grocery_note, backaccount, verbose='yes')
-recipes = GoogleKeep(account, password, recipes_note, backaccount, verbose='yes')
-
 # Evernote initialization
-evernote = Evernote(evernote_token, 'Emma', verbose='yes')
+evernote = EvernoteManager(evernote_token, 'Emma', verbose='yes')
+
+# DB initialization
+postgre_db = PostgreDBManager(db, verbose='yes')
 
 # Google Sheet initialization
 log('Initializing spreadsheet.')
-sheet = Expenses(shtkey, json_auth, db, verbose='yes')
+sheet = SpreadsheetManager(shtkey, json_auth, verbose='yes')
 
 
 def search_for_commands(text):
-
     fexpenses = expense.findall(text)
     fsignature = signature.findall(text)
     fstop = end.findall(text)
@@ -78,13 +70,6 @@ def search_for_commands(text):
     fsig = sig.findall(text)
 
     return fexpenses, fsignature, fstop, fstatus, falive, fbalance, fcur, fsig
-
-
-def delete_note(driv):
-    try:
-        keep.delete_content(logged='YES', driver=driv)
-    except ElementNotFound:
-        log('Couldn\'t delete note, will try on next run')
 
 
 if __name__ == '__main__':
@@ -105,29 +90,22 @@ if __name__ == '__main__':
 
         log('Checking for commands')
 
-        '''
-        try:
-            note, driver = keep.read_note(cont='YES')
-        except ElementNotFound:
-            log('Couldn\'t reach note, will try on next run')
-        '''
-
         try:
             note_store, full_note, note = evernote.get_content()
         except:
             log('Couldn\'t reach note, will try on next run')
             note = ''
 
-        wExpenses, wSignature, dStop, sStatus, sAlive, sBalance, sMeals, sCur, sSig = search_for_commands(note)
+        wExpenses, wSignature, dStop, sStatus, sAlive, sBalance, sCur, sSig = search_for_commands(note)
 
-        if wExpenses or wSignature or dStop or sStatus or sAlive or sBalance or sMeals or sCur or sSig:
+        if wExpenses or wSignature or dStop or sStatus or sAlive or sBalance or sCur or sSig:
             log('Executing commands')
 
             if wExpenses or wSignature:
                 correct = True
 
                 if wExpenses:
-                    correct = sheet.add_db(wExpenses)
+                    correct = postgre_db.add_expenses(wExpenses)
                     if correct:
                         sheet.add_expenses(wExpenses, ['B', 'C', 'D', 'E', 'F', 'G'])
                     else:
@@ -136,7 +114,6 @@ if __name__ == '__main__':
                 if wSignature:
                     sheet.add_expenses(wSignature, ['I', 'J', 'K'])
 
-                # delete_note(driver)
                 if correct:
                     evernote.delete_content(note_store, full_note)
 
@@ -168,14 +145,6 @@ if __name__ == '__main__':
                 message.append('Yes, I\'m alive! :)')
 
             if message:
-                '''
-                try:
-                    keep.send_message(message, logged='YES', driver=driver)
-                except ElementNotFound:
-                    log('Couldn\'t send message, will try on next run')
-                    continue
-                '''
-
                 evernote.send_message(message, note_store, full_note)
 
             if dStop:
@@ -183,7 +152,6 @@ if __name__ == '__main__':
 
         else:
             log('None found')
-            # keep.close_driver(driver)
 
         finished = time.time() - start
         totTime += finished
@@ -194,4 +162,3 @@ if __name__ == '__main__':
     goodbyes = ['Goodbye!', 'I\'ll be back', 'NOOOOoooo', 'Cya!', 'Ttyl', 'Don\'t kill me plz!',
                 'Cyka blyat, don\'t do it', 'Peace out', '*Drops mic*']
     log(random.choice(goodbyes))
-

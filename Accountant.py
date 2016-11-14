@@ -9,8 +9,8 @@ from time import strftime, localtime
 from oauth2client.service_account import ServiceAccountCredentials
 
 
-class Expenses:
-    def __init__(self, sheet, json_auth, db, **kwargs):
+class SpreadsheetManager:
+    def __init__(self, sheet, json_auth, **kwargs):
         """
             Args:
                 sheet (str): Google Sheet key to access.
@@ -19,7 +19,6 @@ class Expenses:
         """
         self.key = sheet
         self.json_auth = json_auth
-        self.connection = db
         self.verbose = kwargs.get('verbose', 'NO')
 
     def __log(self, message):
@@ -28,7 +27,7 @@ class Expenses:
                 message (str): Message to print in log.
         """
         if self.verbose.upper() == 'YES':
-            print('[{}] Emma.Accountant: {}'.format(strftime("%H:%M:%S", localtime()), message))
+            print('[{}] Emma.Accountant.SpreadsheetManager: {}'.format(strftime("%H:%M:%S", localtime()), message))
 
     def log_in_sheets(self):
         """ Google Sheet API authentication process."""
@@ -41,59 +40,6 @@ class Expenses:
         sht = gc.open_by_key(self.key)
 
         return sht
-
-    def connect_db(self):
-        """" PostgreSQL Database """
-
-        self.__log('Connecting to Database')
-
-        conn = psycopg2.connect(self.connection)
-
-        return conn
-
-    def add_db(self, expenses):
-
-        connection = self.connect_db()
-        cursor = connection.cursor()
-
-        self.__log('Adding expenses to Database')
-
-        currencies = ['usd', 'USD', 'eur', 'EUR']
-
-        for currency in currencies:
-            if currency in chain.from_iterable(expenses):
-                usd = requests.get("https://currency-api.appspot.com/api/USD/ARS.json").json()['rate']
-                eur = requests.get("https://currency-api.appspot.com/api/EUR/ARS.json").json()['rate']
-                break
-
-        for data in expenses:
-            cursor.execute("""select max(trans_id) from gastos;""")
-            tid = cursor.fetchone()
-
-            dt = datetime.now()
-
-            if data[5].upper() == 'ARS':
-                currency_value = 'null'
-                total = int(data[4])
-            elif data[5].upper() == 'USD':
-                currency_value = usd
-                total = int(data[4]) * usd
-            elif data[5].upper() == 'EUR':
-                currency_value = eur
-                total = int(data[4]) * eur
-            else:
-                return False
-
-            cursor.execute(
-                """INSERT INTO GASTOS (TRANS_ID, TRANS_DATE, DETAIL, EXP_CATEGORY, PRICE, PYMNT_METHOD, CURRENCY,
-                 CURRENCY_VALUE, TOTAL, INSERT_TIMESTAMP, INSERT_USER_ID) VALUES ({}, to_date('{}','DDMMYYYY'),
-                  '{}', '{}', {}, '{}', '{}', {}, {}, {}, '{}');""".format(
-                    tid[0] + 1, data[0] + data[1] + str(datetime.now().year), data[2].title(), data[3].title(), data[4],
-                    data[6].upper(), data[5].upper(), currency_value, total, dt.strftime("%Y%d%m%H%M%S"), 'Emma'))
-
-        connection.commit()
-
-        return True
 
     def add_expenses(self, expenses, columns):
         """Adds found expenses to the corresponding month
@@ -188,3 +134,76 @@ class Expenses:
             remainings.append(value)
 
         return remainings
+
+
+class PostgreDBManager:
+    def __init__(self, db, **kwargs):
+        """
+            Args:
+                sheet (str): Google Sheet key to access.
+                json (str): Json downloaded with credentials from Google Sheet API.
+                verbose (optional 'yes'): If set verbose='yes' it will display step by step in the log.
+        """
+        self.connection = db
+        self.verbose = kwargs.get('verbose', 'NO')
+
+    def __log(self, message):
+        """Message to print on log.
+            Args:
+                message (str): Message to print in log.
+        """
+        if self.verbose.upper() == 'YES':
+            print('[{}] Emma.Accountant.DBMamager: {}'.format(strftime("%H:%M:%S", localtime()), message))
+
+    def connect_db(self):
+        """" PostgreSQL Database """
+
+        self.__log('Connecting to Database')
+
+        conn = psycopg2.connect(self.connection)
+
+        return conn
+
+    def add_expenses(self, expenses):
+
+        connection = self.connect_db()
+        cursor = connection.cursor()
+
+        self.__log('Adding expenses to Database')
+
+        currencies = ['usd', 'USD', 'eur', 'EUR']
+
+        for currency in currencies:
+            if currency in chain.from_iterable(expenses):
+                usd = requests.get("https://currency-api.appspot.com/api/USD/ARS.json").json()['rate']
+                eur = requests.get("https://currency-api.appspot.com/api/EUR/ARS.json").json()['rate']
+                break
+
+        for data in expenses:
+            cursor.execute("""select max(trans_id) from gastos;""")
+            tid = cursor.fetchone()
+
+            dt = datetime.now()
+
+            if data[5].upper() == 'ARS':
+                currency_value = 'null'
+                total = int(data[4])
+            elif data[5].upper() == 'USD':
+                currency_value = usd
+                total = int(data[4]) * usd
+            elif data[5].upper() == 'EUR':
+                currency_value = eur
+                total = int(data[4]) * eur
+            else:
+                return False
+
+            cursor.execute(
+                """INSERT INTO GASTOS (TRANS_ID, TRANS_DATE, DETAIL, EXP_CATEGORY, PRICE, PYMNT_METHOD, CURRENCY,
+                 CURRENCY_VALUE, TOTAL, INSERT_TIMESTAMP, INSERT_USER_ID) VALUES ({}, to_date('{}','DDMMYYYY'),
+                  '{}', '{}', {}, '{}', '{}', {}, {}, {}, '{}');""".format(
+                    tid[0] + 1, data[0] + data[1] + str(datetime.now().year), data[2].title(), data[3].title(), data[4],
+                    data[6].upper(), data[5].upper(), currency_value, total, dt.strftime("%Y%d%m%H%M%S"), 'Emma'))
+
+        connection.commit()
+
+        return True
