@@ -26,22 +26,10 @@
       <file leaf-file-name="Emma.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Emma.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="453">
-              <caret line="116" column="43" selection-start-line="116" selection-start-column="43" selection-end-line="116" selection-end-column="43" />
+            <state relative-caret-position="17">
+              <caret line="131" column="24" selection-start-line="131" selection-start-column="24" selection-end-line="131" selection-end-column="24" />
               <folding>
                 <element signature="e#121#136#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Messenger.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Messenger.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -50,10 +38,22 @@
       <file leaf-file-name="Accountant.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Accountant.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="527">
+            <state relative-caret-position="-1456">
               <caret line="31" column="28" selection-start-line="31" selection-start-column="28" selection-end-line="31" selection-end-column="28" />
               <folding>
                 <element signature="e#121#135#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Messenger.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Messenger.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-567">
+              <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -478,13 +478,6 @@
       <option name="presentableId" value="Default" />
       <updated>1446000093876</updated>
     </task>
-    <task id="LOCAL-00022" summary="Added &lt;balance MM&gt; command">
-      <created>1448552180575</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1448552180575</updated>
-    </task>
     <task id="LOCAL-00023" summary="Cleaned up some exceptions">
       <created>1449510661245</created>
       <option name="number" value="00023" />
@@ -821,7 +814,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479133531144</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="Added function to translate runtime into weeks, days, hours and minutes.">
+      <created>1479134842530</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1479134842530</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
     <servers />
   </component>
   <component name="TodoView">
@@ -871,7 +871,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="false" />
-    <MESSAGE value="Changed log() function to use the new module name." />
     <MESSAGE value="Cleaned up some unused variables." />
     <MESSAGE value="Changed the Xpath of GoogleKeep as it changed on site." />
     <MESSAGE value="Trying to solve no attibute error on selenium." />
@@ -896,7 +895,8 @@
     <MESSAGE value="Added database for expenses!" />
     <MESSAGE value="Added ARS to currency_value check." />
     <MESSAGE value="Renamed clases and created a separate class for the PostgreSQL Database." />
-    <option name="LAST_COMMIT_MESSAGE" value="Renamed clases and created a separate class for the PostgreSQL Database." />
+    <MESSAGE value="Added function to translate runtime into weeks, days, hours and minutes." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added function to translate runtime into weeks, days, hours and minutes." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1201,7 +1201,7 @@
     <entry file="file://$PROJECT_DIR$/Tests/Migration.py" />
     <entry file="file://$PROJECT_DIR$/Messenger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
+        <state relative-caret-position="-567">
           <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
@@ -1211,7 +1211,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Accountant.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
+        <state relative-caret-position="-1456">
           <caret line="31" column="28" selection-start-line="31" selection-start-column="28" selection-end-line="31" selection-end-column="28" />
           <folding>
             <element signature="e#121#135#0" expanded="true" />
@@ -1221,8 +1221,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Emma.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="453">
-          <caret line="116" column="43" selection-start-line="116" selection-start-column="43" selection-end-line="116" selection-end-column="43" />
+        <state relative-caret-position="17">
+          <caret line="131" column="24" selection-start-line="131" selection-start-column="24" selection-end-line="131" selection-end-column="24" />
           <folding>
             <element signature="e#121#136#0" expanded="true" />
           </folding>

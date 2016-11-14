@@ -67,7 +67,6 @@ status = re.compile(r'/status', re.I | re.M)
 balance = re.compile(r'/balance (?P<month>1[0-2]|[1-9])', re.I | re.M)
 end = re.compile(r'/stop', re.I | re.M)
 cur = re.compile(r'/usd|/eur', re.I | re.M)
-sig = re.compile(r'/sig (?P<month>1[0-2]|[1-9])', re.I | re.M)
 
 # Evernote initialization
 evernote = EvernoteManager(evernote_token, 'Emma', verbose='yes')
@@ -82,15 +81,13 @@ sheet = SpreadsheetManager(shtkey, json_auth, verbose='yes')
 
 def search_for_commands(text):
     fexpenses = expense.findall(text)
-    fsignature = signature.findall(text)
     fstop = end.findall(text)
     fstatus = status.findall(text)
     falive = alive.findall(text)
     fbalance = balance.findall(text)
     fcur = cur.findall(text)
-    fsig = sig.findall(text)
 
-    return fexpenses, fsignature, fstop, fstatus, falive, fbalance, fcur, fsig
+    return fexpenses, fstop, fstatus, falive, fbalance, fcur
 
 
 if __name__ == '__main__':
@@ -117,12 +114,12 @@ if __name__ == '__main__':
             log('Couldn\'t reach note, will try on next run')
             note = ''
 
-        wExpenses, wSignature, dStop, sStatus, sAlive, sBalance, sCur, sSig = search_for_commands(note)
+        wExpenses, dStop, sStatus, sAlive, sBalance, sCur = search_for_commands(note)
 
-        if wExpenses or wSignature or dStop or sStatus or sAlive or sBalance or sCur or sSig:
+        if wExpenses or dStop or sStatus or sAlive or sBalance or sCur:
             log('Executing commands')
 
-            if wExpenses or wSignature:
+            if wExpenses:
                 correct = True
 
                 if wExpenses:
@@ -131,9 +128,6 @@ if __name__ == '__main__':
                         sheet.add_expenses(wExpenses, ['B', 'C', 'D', 'E', 'F', 'G'])
                     else:
                         log('Something is wrong in transaction.')
-
-                if wSignature:
-                    sheet.add_expenses(wSignature, ['I', 'J', 'K'])
 
                 if correct:
                     evernote.delete_content(note_store, full_note)
@@ -149,12 +143,6 @@ if __name__ == '__main__':
 
                 for currency, value in enumerate(values):
                     message.append('{}: {}'.format(sCur[currency], value))
-
-            if sSig:
-                remaining = sheet.get_sig_remaining(sSig)
-
-                for month, rem in enumerate(remaining):
-                    message.append('Remaining in {}: ${}'.format(calendar.month_name[int(sSig[month])], rem))
 
             if sStatus:
                 message.append('{} runs so far. That\'s {}.'
