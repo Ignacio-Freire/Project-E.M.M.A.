@@ -5,8 +5,7 @@ import re
 import time
 from time import strftime, localtime
 
-from Accountant import SpreadsheetManager
-from Accountant import PostgreDBManager
+from Accountant import SpreadsheetManager, PostgreDBManager
 from Messenger import EvernoteManager
 
 '''
@@ -25,6 +24,28 @@ Alternative mail configured for the account
 
 def log(msg):
     print('[{}] Emma: {}'.format(strftime("%H:%M:%S", localtime()), msg))
+
+
+def display_time(seconds, granularity=2):
+
+    intervals = (
+        ('weeks', 604800),
+        ('days', 86400),
+        ('hours', 3600),
+        ('minutes', 60),
+        ('seconds', 1),
+    )
+
+    result = []
+
+    for name, count in intervals:
+        t_value = seconds // count
+        if t_value:
+            seconds -= t_value * count
+            if t_value == 1:
+                name = name.rstrip('s')
+            result.append("{} {}".format(t_value, name))
+    return ', '.join(result[:granularity])
 
 
 # Config File
@@ -136,10 +157,8 @@ if __name__ == '__main__':
                     message.append('Remaining in {}: ${}'.format(calendar.month_name[int(sSig[month])], rem))
 
             if sStatus:
-                message.append('{} runs so far. That\'s {} days, {} hours or {} minutes. Real process time {}s'
-                               .format(runs, int((((runs * 2) / 60) + totTime / 3600) / 24),
-                                       int(((runs * 2) / 60) + totTime / 3600),
-                                       int(runs * 2 + totTime / 60), int(totTime)))
+                message.append('{} runs so far. That\'s {}.'
+                               .format(runs, display_time(totTime, granularity=5)))
 
             if sAlive:
                 message.append('Yes, I\'m alive! :)')
