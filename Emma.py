@@ -21,12 +21,11 @@ Alternative mail configured for the account
 /---------------------------/
 '''
 
-log('Initializing Emma.')
-
 
 def log(msg):
     print('[{}] Emma: {}'.format(strftime("%H:%M:%S", localtime()), msg))
 
+log('Booting up Emma.')
 
 # Config File
 log('Loading settings.')
@@ -42,23 +41,25 @@ expense = re.compile(
 signature = re.compile(
     r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>[^;]*);(?P<currency>\w{3})',
     re.I | re.M)
-alive = re.compile(r'/are you alive\?', re.I | re.M)
 status = re.compile(r'/status', re.I | re.M)
 balance = re.compile(r'/balance (?P<month>1[0-2]|[1-9])', re.I | re.M)
 end = re.compile(r'/stop', re.I | re.M)
 cur = re.compile(r'/usd|/eur', re.I | re.M)
 
 # Evernote initialization
+log('Initializing Evernote Manager.')
 evernote = EvernoteManager(evernote_token, 'Emma', verbose='yes')
 
 # DB initialization
+log('Initializing DB Manager.')
 postgre_db = PostgreDBManager(db, verbose='yes')
 
 # Google Sheet initialization
-log('Initializing spreadsheet.')
+log('Initializing Spreadsheet Manager.')
 sheet = SpreadsheetManager(shtkey, json_auth, verbose='yes')
 
 # Initializing variables
+log('Initializing variables.')
 runs = 0
 totTime = 0
 FREQUENCY = 120
@@ -68,11 +69,10 @@ def search_for_commands(text):
     fexpenses = expense.findall(text)
     fstop = end.findall(text)
     fstatus = status.findall(text)
-    falive = alive.findall(text)
     fbalance = balance.findall(text)
     fcur = cur.findall(text)
 
-    return fexpenses, fstop, fstatus, falive, fbalance, fcur
+    return fexpenses, fstop, fstatus, fbalance, fcur
 
 
 def display_time(seconds, granularity=2):
@@ -114,9 +114,12 @@ if __name__ == '__main__':
             log('Couldn\'t reach note, will try on next run')
             note = ''
 
-        wExpenses, dStop, sStatus, sAlive, sBalance, sCur = search_for_commands(note)
+        wExpenses, dStop, sStatus, sBalance, sCur = search_for_commands(note)
 
-        if wExpenses or dStop or sStatus or sAlive or sBalance or sCur:
+        if wExpenses or dStop or sStatus or sBalance or sCur:
+
+            spreadsheet = sheet.log_in_sheets()
+
             log('Executing commands')
 
             if wExpenses:
@@ -125,7 +128,7 @@ if __name__ == '__main__':
                 if wExpenses:
                     correct = postgre_db.add_expenses(wExpenses)
                     if correct:
-                        sheet.add_expenses(wExpenses, ['B', 'C', 'D', 'E', 'F', 'G'])
+                        sheet.add_expenses(wExpenses, ['B', 'C', 'D', 'E', 'F', 'G'], spreadsheet)
                     else:
                         log('Something is wrong in transaction.')
 
@@ -133,13 +136,13 @@ if __name__ == '__main__':
                     evernote.delete_content(note_store, full_note)
 
             if sBalance:
-                balances = sheet.get_balance(sBalance)
+                balances = sheet.get_balance(sBalance, spreadsheet)
 
                 for month, bal in enumerate(balances):
                     message.append('{}: {}'.format(calendar.month_name[int(sBalance[month])], bal))
 
             if sCur:
-                values = sheet.get_currency(sCur)
+                values = sheet.get_currency(sCur, spreadsheet)
 
                 for currency, value in enumerate(values):
                     message.append('{}: {}'.format(sCur[currency], value))
@@ -147,9 +150,6 @@ if __name__ == '__main__':
             if sStatus:
                 message.append('{} runs so far. That\'s {}.'
                                .format(runs, display_time(totTime, granularity=5)))
-
-            if sAlive:
-                message.append('Yes, I\'m alive! :)')
 
             if message:
                 evernote.send_message(message, note_store, full_note)

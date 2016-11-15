@@ -39,21 +39,20 @@ class SpreadsheetManager:
         gc = gspread.authorize(credentials)
         sht = gc.open_by_key(self.key)
 
+        self.__log("Authorized")
+
         return sht
 
-    def add_expenses(self, expenses, columns):
+    def add_expenses(self, expenses, columns, sheet):
         """Adds found expenses to the corresponding month
             Args:
                 expenses (list): List of expenses found. expenses[e][1] Will always be skipped but can be used as month
                                  for sheet name.
                 columns (list): Columns to update.
+                sheet (*): Spreadsheet to add data
         """
 
         self.__log('Adding expenses')
-
-        sheet = self.log_in_sheets()
-
-        self.__log('Authorized')
 
         for data in expenses:
             temp = list(data)
@@ -66,15 +65,14 @@ class SpreadsheetManager:
             for j in range(len(temp)):
                 sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow), temp[j].title())
 
-    def get_balance(self, balance):
+    def get_balance(self, balance, sheet):
         """Returns the balance of the month asked
             Args:
                 balance (list): Months (in number)
+                sheet (*): Spreadsheet to gather data from
         """
 
         self.__log('Retrieving requested balance')
-
-        sheet = self.log_in_sheets()
 
         balances = []
         ws = sheet.worksheet('{}'.format(date.today().year))
@@ -85,15 +83,13 @@ class SpreadsheetManager:
 
         return balances
 
-    def get_currency(self, curr):
+    def get_currency(self, curr, sheet):
         """Returns the value of the asked currency
             Args:
                 curr (list): Currency name (strings)
         """
 
         self.__log('Retrieving requested currency values')
-
-        sheet = self.log_in_sheets()
 
         values = []
         ws = sheet.worksheet('{}'.format(date.today().year))
@@ -108,24 +104,14 @@ class SpreadsheetManager:
 
         return values
 
-    def get_sig_remaining(self, remaining):
-        """Returns the balance of the month asked
-            Args:
-                remaining (list): Months (in number)
-        """
 
-        self.__log('Retrieving requested remaining')
+    def get_last_id(self):
+        """Returns the highest transaction id value"""
+
+        self.__log("Retrieveng last transaction")
 
         sheet = self.log_in_sheets()
 
-        remainings = []
-
-        for month in remaining:
-            ws = sheet.worksheet(calendar.month_name[int(month)])
-            value = ws.cell(20, 11).value
-            remainings.append(value)
-
-        return remainings
 
 
 class PostgreDBManager:
