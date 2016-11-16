@@ -52,6 +52,8 @@ class SpreadsheetManager:
                 sheet (*): Spreadsheet to add data
         """
 
+        # TODO Fix category when slightly misspelled
+
         self.__log('Adding expenses')
 
         for data in expenses:
@@ -104,14 +106,12 @@ class SpreadsheetManager:
 
         return values
 
-
     def get_last_id(self):
         """Returns the highest transaction id value"""
 
         self.__log("Retrieveng last transaction")
 
         sheet = self.log_in_sheets()
-
 
 
 class PostgreDBManager:
@@ -143,6 +143,8 @@ class PostgreDBManager:
         return conn
 
     def add_expenses(self, expenses):
+
+        # TODO Allow decimals in DB
 
         connection = self.connect_db()
         cursor = connection.cursor()

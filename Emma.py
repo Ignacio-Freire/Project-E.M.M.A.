@@ -5,8 +5,8 @@ import random
 import calendar
 from time import strftime, localtime
 
-from Accountant import SpreadsheetManager, PostgreDBManager
 from Messenger import EvernoteManager
+from Accountant import SpreadsheetManager, PostgreDBManager
 
 '''
 You can either fill each of the next variables manually or create a simple .cfg with the data of each variable in the
@@ -16,8 +16,8 @@ Account
 Password
 Json File Name
 Sheet Key
-Keep Note link
-Alternative mail configured for the account
+Evernote Token
+DB
 /---------------------------/
 '''
 
@@ -25,18 +25,20 @@ Alternative mail configured for the account
 def log(msg):
     print('[{}] Emma: {}'.format(strftime("%H:%M:%S", localtime()), msg))
 
+
 log('Booting up Emma.')
 
 # Config File
 log('Loading settings.')
 with open('settings.cfg', 'r') as f:
     log_info = f.read().splitlines()
-    account, password, json_auth, shtkey, note, backaccount, grocery_note, recipes_note, evernote_token, db = log_info
+    account, password, json_auth, shtkey, evernote_token, db = log_info
 
 # Commands to search
+# TODO Allow to add number of payments next to credit card in Regex
 log('Compiling Regex.')
 expense = re.compile(
-    r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>[^;]*);(?P<currency>\w{3});(?P<method>\bEFVO|\bMASTER|\bVISA|\bDEBITO)',
+    r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>[^;]*);(?P<currency>\bARS|\bEUR|\bUSD);(?P<method>\bEFVO|\bMASTER|\bVISA|\bDEBITO)',
     re.I | re.M)
 signature = re.compile(
     r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>[^;]*);(?P<currency>\w{3})',
@@ -118,34 +120,35 @@ if __name__ == '__main__':
 
         if wExpenses or dStop or sStatus or sBalance or sCur:
 
-            spreadsheet = sheet.log_in_sheets()
-
             log('Executing commands')
 
-            if wExpenses:
+            if wExpenses or sBalance or sCur:
+                spreadsheet = sheet.log_in_sheets()
                 correct = True
+
+                # TODO Check if last ID is the same in both the DB and spreadsheet; if not check last 10 on both to update missing ones
 
                 if wExpenses:
                     correct = postgre_db.add_expenses(wExpenses)
                     if correct:
-                        sheet.add_expenses(wExpenses, ['B', 'C', 'D', 'E', 'F', 'G'], spreadsheet)
+                        sheet.add_expenses(wExpenses, ['C', 'D', 'E', 'F', 'G', 'I', 'J'], spreadsheet)
                     else:
                         log('Something is wrong in transaction.')
 
-                if correct:
-                    evernote.delete_content(note_store, full_note)
+                    if correct:
+                        evernote.delete_content(note_store, full_note)
 
-            if sBalance:
-                balances = sheet.get_balance(sBalance, spreadsheet)
+                if sBalance:
+                    balances = sheet.get_balance(sBalance, spreadsheet)
 
-                for month, bal in enumerate(balances):
-                    message.append('{}: {}'.format(calendar.month_name[int(sBalance[month])], bal))
+                    for month, bal in enumerate(balances):
+                        message.append('{}: {}'.format(calendar.month_name[int(sBalance[month])], bal))
 
-            if sCur:
-                values = sheet.get_currency(sCur, spreadsheet)
+                if sCur:
+                    values = sheet.get_currency(sCur, spreadsheet)
 
-                for currency, value in enumerate(values):
-                    message.append('{}: {}'.format(sCur[currency], value))
+                    for currency, value in enumerate(values):
+                        message.append('{}: {}'.format(sCur[currency], value))
 
             if sStatus:
                 message.append('{} runs so far. That\'s {}.'
@@ -156,6 +159,8 @@ if __name__ == '__main__':
 
             if dStop:
                 break
+
+        # TODO Edit final currency value at end of month
 
         else:
             log('None found')
