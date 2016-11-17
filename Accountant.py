@@ -144,8 +144,6 @@ class PostgreDBManager:
 
     def add_expenses(self, expenses):
 
-        # TODO Allow decimals in DB
-
         connection = self.connect_db()
         cursor = connection.cursor()
 
@@ -177,7 +175,7 @@ class PostgreDBManager:
             else:
                 return False
 
-            total = int(data[4]) * currency_value if currency_value else int(data[4])
+            total = float(data[4]) * currency_value if currency_value else int(data[4])
 
             cursor.execute(
                 """INSERT INTO GASTOS (TRANS_ID, TRANS_DATE, DETAIL, EXP_CATEGORY, PRICE, PYMNT_METHOD, CURRENCY,
