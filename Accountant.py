@@ -1,5 +1,6 @@
 # ------------------------------------- Expense Management Mad Assistant --------------------------------------------- #
 import gspread
+import difflib
 import calendar
 import psycopg2
 import requests
@@ -20,6 +21,7 @@ class SpreadsheetManager:
         self.key = sheet
         self.json_auth = json_auth
         self.verbose = kwargs.get('verbose', 'NO')
+        self.categories = []
 
     def __log(self, message):
         """Message to print on log.
@@ -41,6 +43,14 @@ class SpreadsheetManager:
 
         self.__log("Authorized")
 
+        self.__log("Loading categories")
+
+        wsheet = sht.worksheet(calendar.month_name[datetime.now().year])
+
+        self.categories = wsheet.col_values('A')
+
+        self.__log("Loaded")
+
         return sht
 
     def add_expenses(self, expenses, columns, sheet):
@@ -52,8 +62,6 @@ class SpreadsheetManager:
                 sheet (*): Spreadsheet to add data
         """
 
-        # TODO Fix category when slightly misspelled
-
         self.__log('Adding expenses')
 
         for data in expenses:
@@ -61,6 +69,10 @@ class SpreadsheetManager:
 
             msheet = calendar.month_name[int(data[1])]
             temp.pop(1)
+
+            categ = difflib.get_close_matches(temp[2], self.categories)
+
+            temp[2] = categ[0] if categ else temp[2]
 
             lastrow = sheet.worksheet(msheet).col_values(2)[1:].index('') + 2
 
