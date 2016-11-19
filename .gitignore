@@ -10,6 +10,7 @@ chromedriver.exe
 phantomjs.exe
 *.xml
 .idea/workspace.xml
+.idea/
 *.xml
 Tests/Migration.py
 Tests/Migration.py
