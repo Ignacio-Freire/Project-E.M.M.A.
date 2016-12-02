@@ -125,6 +125,21 @@ class SpreadsheetManager:
 
         sheet = self.log_in_sheets()
 
+    def lock_cur_value(self, month, column):
+        """
+        Locks the foreign currency value for the whole month in the spreadsheet.
+        :param month: Month to lock currency value.
+        :param column: Column on which the currency value resides
+        :return:
+        """
+
+        msheet = calendar.month_name[month]
+        self.__log('Locking Spreadsheet foreign currency value for {}'.format(msheet))
+
+        # TODO complete function to lock currency value at EoM in Sheet
+
+        pass
+
 
 class PostgreDBManager:
     def __init__(self, db, **kwargs):
@@ -199,3 +214,18 @@ class PostgreDBManager:
         connection.commit()
 
         return True
+
+    def lock_cur_value(self, month):
+        """
+        Locks the foreign currency value for the whole month in the DB.
+        :param month: Month to lock currency value.
+        :return:
+        """
+
+        self.connect_db()
+
+        self.__log('Locking DB foreign currency value for {}'.format(calendar.month_name[month]))
+
+        # TODO complete function to lock currency value at EoM in DB
+
+        pass

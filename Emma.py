@@ -3,6 +3,7 @@ import re
 import time
 import random
 import calendar
+from datetime import datetime
 from time import strftime, localtime
 
 from Messenger import EvernoteManager
@@ -25,6 +26,9 @@ DB
 def log(msg):
     print('[{}] Emma: {}'.format(strftime("%H:%M:%S", localtime()), msg))
 
+
+def is_endofmonth():
+    return calendar.monthrange(datetime.now().year, datetime.now().month)[1] == datetime.now().day
 
 log('Booting up Emma.')
 
@@ -65,6 +69,7 @@ log('Initializing variables.')
 runs = 0
 totTime = 0
 FREQUENCY = 120
+processed = False
 
 
 def search_for_commands(text):
@@ -160,10 +165,22 @@ if __name__ == '__main__':
             if dStop:
                 break
 
-        # TODO Edit final currency value at end of month
-
         else:
             log('None found')
+
+        if is_endofmonth() and not processed:
+
+            log('Locking currency value for EoM')
+
+            try:
+                postgre_db.lock_cur_value()
+                sheet.lock_cur_value()
+                processed = True
+            except:
+                processed = False
+
+        else:
+            processed = False
 
         finished = time.time() - start
         totTime += finished
