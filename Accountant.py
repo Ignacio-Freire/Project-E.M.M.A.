@@ -211,9 +211,10 @@ class PostgreDBManager:
             usd = None
             eur = None
 
+        cursor.execute("""SELECT MAX(trans_id) FROM GASTOS;""")
+        tid = cursor.fetchone()
+
         for data in expenses:
-            cursor.execute("""SELECT MAX(trans_id) FROM GASTOS;""")
-            tid = cursor.fetchone()
 
             dt = datetime.now()
 
@@ -224,15 +225,18 @@ class PostgreDBManager:
             elif data[5].upper() == 'EUR':
                 currency_value = eur
             else:
+                self.__log('Currency not expected')
                 return False
 
             total = float(data[4]) * currency_value if currency_value else int(data[4])
+
+            tid[0] += 1
 
             cursor.execute(
                 """INSERT INTO GASTOS (TRANS_ID, TRANS_DATE, DETAIL, EXP_CATEGORY, PRICE, PYMNT_METHOD, CURRENCY,
                  CURRENCY_VALUE, TOTAL, INSERT_TIMESTAMP, INSERT_USER_ID) VALUES ({}, to_date('{}','DDMMYYYY'),
                   '{}', '{}', {}, '{}', '{}', {}, {}, {}, '{}');""".format(
-                    tid[0] + 1, data[0] + data[1] + str(datetime.now().year), data[2].title(), data[3].title(), data[4],
+                    tid[0], data[0] + data[1] + str(datetime.now().year), data[2].title(), data[3].title(), data[4],
                     data[6].upper(), data[5].upper(), currency_value, total, dt.strftime("%Y%d%m%H%M%S"), 'Emma'))
 
         connection.commit()
