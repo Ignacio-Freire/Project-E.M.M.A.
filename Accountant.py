@@ -11,28 +11,35 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 
 class SpreadsheetManager:
+    # TODO Change functions so that they need to be called with which cell they need to use instead of hardcoding them.
+
     def __init__(self, sheet, json_auth, **kwargs):
         """
-            Args:
-                sheet (str): Google Sheet key to access.
-                json (str): Json downloaded with credentials from Google Sheet API.
-                verbose (optional 'yes'): If set verbose='yes' it will display step by step in the log.
+        Class to handle the connection with the Spreadsheet.
+        :param sheet: Google Sheet key to access.
+        :param json_auth: Json downloaded with credentials from Google Sheet API.
+        :param kwargs: If set verbose='yes' it will display step by step in the log.
         """
+
         self.key = sheet
         self.json_auth = json_auth
         self.verbose = kwargs.get('verbose', 'NO')
         self.categories = []
 
     def __log(self, message):
-        """Message to print on log.
-            Args:
-                message (str): Message to print in log.
         """
+        Displays message on console providing some context.
+        :param message: Message to print in log.
+        """
+
         if self.verbose.upper() == 'YES':
             print('[{}] Emma.Accountant.SpreadsheetManager: {}'.format(strftime("%H:%M:%S", localtime()), message))
 
     def log_in_sheets(self):
-        """ Google Sheet API authentication process."""
+        """
+        Google Sheet API authentication process.
+        :return Returns a worksheet.
+        """
 
         self.__log('Authenticating Google Sheet')
 
@@ -54,12 +61,12 @@ class SpreadsheetManager:
         return sht
 
     def add_expenses(self, expenses, columns, sheet):
-        """Adds found expenses to the corresponding month
-            Args:
-                expenses (list): List of expenses found. expenses[e][1] Will always be skipped but can be used as month
-                                 for sheet name.
-                columns (list): Columns to update.
-                sheet (*): Spreadsheet to add data
+        """
+        Adds found expenses to the corresponding month.
+        :param expenses: List of expenses found. expenses[e][1] Will always be skipped but can be used as month
+                         for sheet name.
+        :param columns: List of columns to update.
+        :param sheet: Spreadsheet to add data.
         """
 
         self.__log('Adding expenses')
@@ -80,10 +87,11 @@ class SpreadsheetManager:
                 sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow), temp[j].title())
 
     def get_balance(self, balance, sheet):
-        """Returns the balance of the month asked
-            Args:
-                balance (list): Months (in number)
-                sheet (*): Spreadsheet to gather data from
+        """
+        Returns the balance of a month.
+        :param balance: Months (in number).
+        :param sheet: Spreadsheet to gather data from.
+        :return: Returns the values to be informed.
         """
 
         self.__log('Retrieving requested balance')
@@ -98,9 +106,11 @@ class SpreadsheetManager:
         return balances
 
     def get_currency(self, curr, sheet):
-        """Returns the value of the asked currency
-            Args:
-                curr (list): Currency name (strings)
+        """
+        Returns the current value of the asked currency.
+        :param curr: Currency name (USD or EUR).
+        :param sheet: Sheet to get the value from.
+        :return: Returns the value to be informed.
         """
 
         self.__log('Retrieving requested currency values')
@@ -119,17 +129,23 @@ class SpreadsheetManager:
         return values
 
     def get_last_id(self):
-        """Returns the highest transaction id value"""
+        """
+        Returns the highest transaction id value.
+        :return Returns the highest ID in the spreadsheet.
+        """
 
         self.__log("Retrieveng last transaction")
 
         sheet = self.log_in_sheets()
 
-    def lock_cur_value(self, month, column):
+        # TODO Finish get las ID function
+
+    def lock_cur_value(self, month, column, entity):
         """
         Locks the foreign currency value for the whole month in the spreadsheet.
         :param month: Month to lock currency value.
-        :param column: Column on which the currency value resides
+        :param column: Column on which the currency value resides.
+        :param entity: Entity to lock the foreing currency value on. (Ex: Visa, Master, Cash, All).
         :return:
         """
 
@@ -144,24 +160,27 @@ class SpreadsheetManager:
 class PostgreDBManager:
     def __init__(self, db, **kwargs):
         """
-            Args:
-                sheet (str): Google Sheet key to access.
-                json (str): Json downloaded with credentials from Google Sheet API.
-                verbose (optional 'yes'): If set verbose='yes' it will display step by step in the log.
+        Class to handle the connection with the PostgreSQL database.
+        :param db: String with DB connection data.
+        :param kwargs: If set verbose='yes' it will display step by step in the log.
         """
+
         self.connection = db
         self.verbose = kwargs.get('verbose', 'NO')
 
     def __log(self, message):
-        """Message to print on log.
-            Args:
-                message (str): Message to print in log.
+        """
+        Prints a message on the console specifying the current module in use.
+        :param message: Message to display.
         """
         if self.verbose.upper() == 'YES':
             print('[{}] Emma.Accountant.DBMamager: {}'.format(strftime("%H:%M:%S", localtime()), message))
 
     def connect_db(self):
-        """" PostgreSQL Database """
+        """
+        PostgreSQL Database Connection
+        :return: Connection object.
+        """
 
         self.__log('Connecting to Database')
 
@@ -170,6 +189,11 @@ class PostgreDBManager:
         return conn
 
     def add_expenses(self, expenses):
+        """
+        Adds expenses to Postgre DB.
+        :param expenses: Lists of lists containing the expenses and their attributes.
+        :return: True if the insert was successful
+        """
 
         connection = self.connect_db()
         cursor = connection.cursor()
@@ -215,10 +239,23 @@ class PostgreDBManager:
 
         return True
 
-    def lock_cur_value(self, month):
+    def get_last_id(self):
+        """
+        Returns the highest transaction id value
+        :return the highest ID in the DB
+        """
+
+        self.__log("Retrieveng last transaction")
+
+        sheet = self.connect_db()
+
+        # TODO Finish get las ID function
+
+    def lock_cur_value(self, month, entity):
         """
         Locks the foreign currency value for the whole month in the DB.
         :param month: Month to lock currency value.
+        :param entity: Entity to lock the foreing currency value on. (Ex: Visa, Master, Cash, All)
         :return:
         """
 

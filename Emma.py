@@ -24,10 +24,19 @@ DB
 
 
 def log(msg):
+    """
+    Displays message on console providing some context.
+    :param msg: Message to print in log.
+    :return:
+    """
     print('[{}] Emma: {}'.format(strftime("%H:%M:%S", localtime()), msg))
 
 
 def is_endofmonth():
+    """
+    Checks if it's the last day of the month.
+    :return True: If it's the last day of the month.
+    """
     return calendar.monthrange(datetime.now().year, datetime.now().month)[1] == datetime.now().day
 
 log('Booting up Emma.')
@@ -73,6 +82,15 @@ processed = False
 
 
 def search_for_commands(text):
+    """
+    Searches a string of text for certain command patterns using the compiled regex.
+    :param text: String to check for commands.
+    :return fexpenses: Returns a list of lists containing all fields of the expenses command.
+    :return fstop: Returns a list of lists containing all fields of the stop command.
+    :return fstatus: Returns a list of lists containing all fields of the status command.
+    :return fbalance: Returns a list of lists containing all fields of the balance command.
+    :return fcur: Returns a list of lists containing all fields of the currency command.
+    """
     fexpenses = expense.findall(text)
     fstop = end.findall(text)
     fstatus = status.findall(text)
@@ -83,6 +101,12 @@ def search_for_commands(text):
 
 
 def display_time(seconds, granularity=2):
+    """
+    Converts seconds to higher values depending on the granularity.
+    :param seconds: Seconds to convert.
+    :param granularity: Rounds up the value to the higher unit the closer it is to zero.
+    :return: Returns the converted value.
+    """
     intervals = (
         ('weeks', 604800),
         ('days', 86400),

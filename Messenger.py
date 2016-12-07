@@ -1,21 +1,15 @@
-import time
 from time import strftime, localtime
 from evernote.api.client import EvernoteClient
 import evernote.edam.notestore.ttypes as NoteStore
 
 
-def wait():
-    """Time to wait between actions. Applies to all."""
-    time.sleep(1)
-
-
 class EvernoteManager:
     def __init__(self, token, title, **kwargs):
-        """ Access an Evernote note by title
-            Args:
-                token (str): Authentification token for Evernote.
-                title (str): String to filter the notes by.
-                verbose (optional 'yes'): If set verbose='yes' it will display step by step in the log.
+        """
+        Class to handle communication with the user via Evernote.
+        :param token: Authentication token for Evernote.
+        :param title: String to filter the notes by.
+        :param kwargs: If set verbose='yes' it will display step by step in the log.
         """
 
         self.filter = title
@@ -23,23 +17,34 @@ class EvernoteManager:
         self.verbose = kwargs.get('verbose', 'NO')
 
     def __log(self, message):
-        """Message to print on log.
-            Args:
-                message (str): Message to print in log.
         """
+        Displays message on console providing some context.
+        :param message: Message to print in log.
+        """
+
         if self.verbose.upper() == 'YES':
             print('[{}] Emma.Messenger.EvernoteManager: {}'.format(strftime("%H:%M:%S", localtime()), message))
 
     def auth(self):
+        """
+        Authentication function for the Evernote note.
+        :return client: Returns a Client object.
+        """
 
-        self.__log('Authentificating client')
+        self.__log('Authenticating client')
 
         client = EvernoteClient(token=self.auth_token, sandbox=False)
         return client
 
     def get_content(self):
+        """
+        Retrieves the content of the specified note.
+        :return note_store: Returns the location of the expenses note.
+        :return note: Returns the note object.
+        :return note.content: Returns the content of the note in a string.
+        """
 
-        self.__log('Accesing note')
+        self.__log('Accessing note')
 
         client = self.auth()
 
@@ -57,6 +62,12 @@ class EvernoteManager:
         return note_store, note, note.content
 
     def send_message(self, message, note_store, note):
+        """
+        Generates a message to be delivered to the user vía a note.
+        :param message: Message to deliver.
+        :param note_store: Location of the note.
+        :param note: Note to be updated.
+        """
 
         self.__log('Sending message')
 
@@ -70,6 +81,12 @@ class EvernoteManager:
         note_store.updateNote(note)
 
     def delete_content(self, note_store, note):
+        """
+        Deletes the content of a note.
+        :param note_store: Location of the note.
+        :param note: Note to be updated.
+        :return:
+        """
 
         self.__log('Deleting content')
 
