@@ -138,7 +138,7 @@ class SpreadsheetManager:
 
         sheet = self.log_in_sheets()
 
-        # TODO Finish get las ID function
+        # TODO Finish get las ID function from Spreadsheet
 
     def lock_cur_value(self, month, column, entity):
         """
@@ -249,7 +249,7 @@ class PostgreDBManager:
 
         sheet = self.connect_db()
 
-        # TODO Finish get las ID function
+        # TODO Finish get las ID function from DB
 
     def lock_cur_value(self, month, entity):
         """
