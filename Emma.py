@@ -1,7 +1,6 @@
 # ------------------------------------ Extended Multi Management Assistant ------------------------------------------- #
 import re
 import time
-import random
 import calendar
 from datetime import datetime
 from time import strftime, localtime
@@ -51,7 +50,8 @@ with open('settings.cfg', 'r') as f:
 # TODO Allow to add number of payments next to credit card in Regex
 log('Compiling Regex.')
 expense = re.compile(
-    r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>[^;]*);(?P<currency>\bARS|\bEUR|\bUSD);(?P<method>\bEFVO|\bMASTER|\bVISA|\bDEBITO)',
+    r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>[^;]*);'
+    r'(?P<currency>\bARS|\bEUR|\bUSD);(?P<method>\bEFVO|\bMASTER|\bVISA|\bDEBITO)',
     re.I | re.M)
 signature = re.compile(
     r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>[^;]*);(?P<currency>\w{3})',
@@ -155,7 +155,7 @@ if __name__ == '__main__':
                 spreadsheet = sheet.log_in_sheets()
                 correct = True
 
-                # TODO Check if last ID is the same in both the DB and spreadsheet; if not check last 10 on both to update missing ones
+                # TODO Check if last ID is the same in both the DB and Spreadsheet. When not; equalize.
 
                 if wExpenses:
                     correct = postgre_db.add_expenses(wExpenses)
@@ -197,8 +197,8 @@ if __name__ == '__main__':
             log('Locking currency value for EoM')
 
             try:
-                postgre_db.lock_cur_value()
-                sheet.lock_cur_value()
+                postgre_db.lock_cur_value('month', 'entity')
+                sheet.lock_cur_value('month', 'column', 'entity')
                 processed = True
             except:
                 processed = False
@@ -212,6 +212,4 @@ if __name__ == '__main__':
         log('All done! Run {} took {:.2f} seconds, next scan in {}s'.format(runs, finished, FREQUENCY))
         time.sleep(FREQUENCY)
 
-    goodbyes = ['Goodbye!', 'I\'ll be back', 'NOOOOoooo', 'Cya!', 'Ttyl', 'Don\'t kill me plz!',
-                'Cyka blyat, don\'t do it', 'Peace out', '*Drops mic*']
-    log(random.choice(goodbyes))
+    log('Shutting down. Goodbye!')

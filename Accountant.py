@@ -134,7 +134,7 @@ class SpreadsheetManager:
         :return Returns the highest ID in the spreadsheet.
         """
 
-        self.__log("Retrieveng last transaction")
+        self.__log("Retrieving last transaction")
 
         sheet = self.log_in_sheets()
 
@@ -174,7 +174,7 @@ class PostgreDBManager:
         :param message: Message to display.
         """
         if self.verbose.upper() == 'YES':
-            print('[{}] Emma.Accountant.DBMamager: {}'.format(strftime("%H:%M:%S", localtime()), message))
+            print('[{}] Emma.Accountant.DBManager: {}'.format(strftime("%H:%M:%S", localtime()), message))
 
     def connect_db(self):
         """
@@ -245,7 +245,7 @@ class PostgreDBManager:
         :return the highest ID in the DB
         """
 
-        self.__log("Retrieveng last transaction")
+        self.__log("Retrieving last transaction")
 
         sheet = self.connect_db()
 
