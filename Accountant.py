@@ -74,22 +74,20 @@ class SpreadsheetManager:
         for data in expenses:
             temp = list(data)
 
-            msheet = calendar.month_name[int(data[1])]
+            month = int(data[1])
             temp.pop(1)
 
             categ = difflib.get_close_matches(temp[2], self.categories)
 
             temp[2] = categ[0] if categ else temp[2]
 
-            lastrow = sheet.worksheet(msheet).col_values(2)[1:].index('') + 2
+            payments = int(temp[6]) if temp[6] else 1
+            temp.pop(6)
 
-            # TODO Rework to allow number of payments.
+            for i in range(payments):
+                msheet = calendar.month_name[month + i]
+                lastrow = sheet.worksheet(msheet).col_values(2)[1:].index('') + 2
 
-            payments = temp[7] if temp[7] else False
-
-            if payments:
-                pass
-            else:
                 for j in range(len(temp)):
                     sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow), temp[j].title())
 
@@ -239,12 +237,20 @@ class PostgreDBManager:
 
             tid[0] += 1
 
-            cursor.execute(
-                """INSERT INTO GASTOS (TRANS_ID, TRANS_DATE, DETAIL, EXP_CATEGORY, PRICE, PYMNT_METHOD, CURRENCY,
-                 CURRENCY_VALUE, TOTAL, INSERT_TIMESTAMP, INSERT_USER_ID) VALUES ({}, to_date('{}','DDMMYYYY'),
-                  '{}', '{}', {}, '{}', '{}', {}, {}, {}, '{}');""".format(
-                    tid[0], data[0] + data[1] + str(datetime.now().year), data[2].title(), data[3].title(), data[4],
-                    data[6].upper(), data[5].upper(), currency_value, total, dt.strftime("%Y%d%m%H%M%S"), 'Emma'))
+            payments = int(data[7]) if data[7] else 1
+
+            for i in range(payments):
+
+                month = int(data[1]) + i
+
+                cursor.execute(
+                    """INSERT INTO GASTOS (TRANS_ID, TRANS_DATE, DETAIL, EXP_CATEGORY, PRICE, PYMNT_METHOD, CURRENCY,
+                     CURRENCY_VALUE, TOTAL, INSERT_TIMESTAMP, INSERT_USER_ID) VALUES ({}, to_date('{}','DDMMYYYY'),
+                      '{}', '{}', {}, '{}', '{}', {}, {}, {}, '{}');""".format(
+                        tid[0], data[0] + str(month) + str(datetime.now().year), data[2].title(), data[3].title(),
+                        data[4],
+                        data[6].upper(), data[5].upper(), currency_value, total, dt.strftime("%Y%d%m%H%M%S"),
+                        'Emma'))
 
         connection.commit()
 

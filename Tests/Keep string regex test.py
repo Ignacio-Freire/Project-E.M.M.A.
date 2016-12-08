@@ -16,6 +16,5 @@ for i in exps:
     if i[7]:
         payments = i[7] if i[7] else False
         if payments:
-            print('pepe')
-
-
+            for x in range(int(payments)):
+                print(x)
