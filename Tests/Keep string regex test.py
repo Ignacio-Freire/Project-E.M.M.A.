@@ -1,18 +1,21 @@
 import re
 import calendar
 
-keep = 'Emma2310;Yate 59mts;Random Stuff;10,50;ARS2710;300 Mansiones;Random Stuff;50;USD2910;Algo;Djs;30;USDEdited' \
-       ' 7:58 PMDONE'
+note = '0212;random;random stuff;100;ars;VISA010212;random;random stuff;100;ars;debito0212;random;random stuff;' \
+       '100;ars;master120212;random;random stuff;100;ars;efvo'
 
-p = re.compile(r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]{0,});(?P<category>[^;]{0,});(?P<amount>\d*.\d*);'
-               r'(?P<currency>\w{3})')
+expense = re.compile(
+    r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);'
+    r'(?P<amount>[^;]*);(?P<currency>\bARS|\bEUR|\bUSD);'
+    r'(?P<method>\bEFVO|\bMASTER|\bVISA|\bDEBITO)(?P<paymts>\d{2})?',
+    re.I | re.M)
 
-print(p.findall(keep)[1])
-day = p.match(keep).group('day')
-month = p.match(keep).group('month')
-detail = p.match(keep).group('detail')
-category = p.match(keep).group('category')
-amount = p.match(keep).group('amount')
-currency = p.match(keep).group('currency')
+exps = expense.findall(note)
 
-print('{} {} {} {} {} {}'.format(day, calendar.month_name[int(month)], detail, category, amount, currency))
+for i in exps:
+    if i[7]:
+        payments = i[7] if i[7] else False
+        if payments:
+            print('pepe')
+
+

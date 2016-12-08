@@ -83,8 +83,15 @@ class SpreadsheetManager:
 
             lastrow = sheet.worksheet(msheet).col_values(2)[1:].index('') + 2
 
-            for j in range(len(temp)):
-                sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow), temp[j].title())
+            # TODO Rework to allow number of payments.
+
+            payments = temp[7] if temp[7] else False
+
+            if payments:
+                pass
+            else:
+                for j in range(len(temp)):
+                    sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow), temp[j].title())
 
     def get_balance(self, balance, sheet):
         """

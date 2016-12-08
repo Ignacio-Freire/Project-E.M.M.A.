@@ -50,8 +50,9 @@ with open('settings.cfg', 'r') as f:
 # TODO Allow to add number of payments next to credit card in Regex
 log('Compiling Regex.')
 expense = re.compile(
-    r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>[^;]*);'
-    r'(?P<currency>\bARS|\bEUR|\bUSD);(?P<method>\bEFVO|\bMASTER|\bVISA|\bDEBITO)',
+    r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);'
+    r'(?P<amount>[^;]*);(?P<currency>\bARS|\bEUR|\bUSD);'
+    r'(?P<method>\bEFVO|\bMASTER|\bVISA|\bDEBITO)(?P<paymts>\d{2})?',
     re.I | re.M)
 signature = re.compile(
     r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>[^;]*);(?P<currency>\w{3})',
@@ -155,9 +156,9 @@ if __name__ == '__main__':
                 spreadsheet = sheet.log_in_sheets()
                 correct = True
 
-                # TODO Check if last ID is the same in both the DB and Spreadsheet. When not; equalize.
-
                 if wExpenses:
+                    # TODO Check if last ID is the same in both the DB and Spreadsheet. When not; equalize.
+
                     correct = postgre_db.add_expenses(wExpenses)
                     if correct:
                         sheet.add_expenses(wExpenses, ['C', 'D', 'E', 'F', 'G', 'I', 'J'], spreadsheet)
