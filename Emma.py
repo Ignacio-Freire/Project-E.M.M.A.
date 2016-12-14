@@ -153,7 +153,7 @@ if __name__ == '__main__':
             log('Executing commands')
 
             if wExpenses or sBalance or sCur:
-                spreadsheet = sheet.log_in_sheets()
+                spreadsheet = sheet.log_in_sheets('A')
                 correct = True
 
                 if wExpenses:
@@ -169,13 +169,13 @@ if __name__ == '__main__':
                         evernote.delete_content(note_store, full_note)
 
                 if sBalance:
-                    balances = sheet.get_balance(sBalance, spreadsheet)
+                    balances = sheet.get_balance(sBalance, spreadsheet, 45)
 
                     for month, bal in enumerate(balances):
                         message.append('{}: {}'.format(calendar.month_name[int(sBalance[month])], bal))
 
                 if sCur:
-                    values = sheet.get_currency(sCur, spreadsheet)
+                    values = sheet.get_currency(sCur, spreadsheet, (5, 17), (6, 17))
 
                     for currency, value in enumerate(values):
                         message.append('{}: {}'.format(sCur[currency], value))

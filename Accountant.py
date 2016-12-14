@@ -11,8 +11,6 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 
 class SpreadsheetManager:
-    # TODO Change functions so that they need to be called with which cell they need to use instead of hardcoding them.
-
     def __init__(self, sheet, json_auth, **kwargs):
         """
         Class to handle the connection with the Spreadsheet.
@@ -35,9 +33,10 @@ class SpreadsheetManager:
         if self.verbose.upper() == 'YES':
             print('[{}] Emma.Accountant.SpreadsheetManager: {}'.format(strftime("%H:%M:%S", localtime()), message))
 
-    def log_in_sheets(self):
+    def log_in_sheets(self, categ_col):
         """
         Google Sheet API authentication process.
+        :param categ_col: Column where the categories to load are.
         :return Returns a worksheet.
         """
 
@@ -54,7 +53,7 @@ class SpreadsheetManager:
 
         wsheet = sht.worksheet(calendar.month_name[datetime.now().year])
 
-        self.categories = wsheet.col_values('A')
+        self.categories = wsheet.col_values(categ_col)
 
         self.__log("Loaded")
 
@@ -91,11 +90,12 @@ class SpreadsheetManager:
                 for j in range(len(temp)):
                     sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow), temp[j].title())
 
-    def get_balance(self, balance, sheet):
+    def get_balance(self, balance, sheet, row_no):
         """
         Returns the balance of a month.
         :param balance: Months (in number).
         :param sheet: Spreadsheet to gather data from.
+        :param row_no: Int, row number where the balance is.
         :return: Returns the values to be informed.
         """
 
@@ -105,16 +105,18 @@ class SpreadsheetManager:
         ws = sheet.worksheet('{}'.format(date.today().year))
 
         for month in balance:
-            value = ws.cell(45, int(month) + 1).value
+            value = ws.cell(row_no, int(month) + 1).value
             balances.append(value)
 
         return balances
 
-    def get_currency(self, curr, sheet):
+    def get_currency(self, curr, sheet, usd_pos, eur_pos):
         """
         Returns the current value of the asked currency.
         :param curr: Currency name (USD or EUR).
         :param sheet: Sheet to get the value from.
+        :param usd_pos: Tuple with the position of the USD currency value.
+        :param eur_pos: Tuple with the position of the EUR currency value.
         :return: Returns the value to be informed.
         """
 
@@ -125,10 +127,10 @@ class SpreadsheetManager:
 
         for i in curr:
             if i.lower() == '<usd>':
-                value = ws.cell(5, 17).value
+                value = ws.cell(usd_pos[1], usd_pos[0]).value
                 values.append(value)
             elif i.lower() == '<eur>':
-                value = ws.cell(6, 17).value
+                value = ws.cell(eur_pos[1], eur_pos[0]).value
                 values.append(value)
 
         return values
@@ -240,7 +242,6 @@ class PostgreDBManager:
             payments = int(data[7]) if data[7] else 1
 
             for i in range(payments):
-
                 month = int(data[1]) + i
 
                 cursor.execute(
