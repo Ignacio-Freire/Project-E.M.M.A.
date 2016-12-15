@@ -259,13 +259,31 @@ class PostgreDBManager:
                 month = int(data[1]) + i
 
                 cursor.execute(
-                    """INSERT INTO GASTOS (TRANS_ID, TRANS_DATE, DETAIL, EXP_CATEGORY, PRICE, PYMNT_METHOD, CURRENCY,
-                     CURRENCY_VALUE, TOTAL, INSERT_TIMESTAMP, INSERT_USER_ID) VALUES ({}, to_date('{}','DDMMYYYY'),
-                      '{}', '{}', {}, '{}', '{}', {}, {}, {}, '{}');""".format(
-                        tid[0], data[0] + str(month) + str(datetime.now().year), data[2].title(), data[3].title(),
-                        data[4],
-                        data[6].upper(), data[5].upper(), currency_value, total, dt.strftime("%Y%d%m%H%M%S"),
-                        'Emma'))
+                    """INSERT INTO  GASTOS (TRANS_ID,
+                                            TRANS_DATE,
+                                            DETAIL,
+                                            EXP_CATEGORY,
+                                            PRICE,
+                                            PYMNT_METHOD,
+                                            CURRENCY,
+                                            CURRENCY_VALUE,
+                                            TOTAL,
+                                            INSERT_TIMESTAMP,
+                                            INSERT_USER_ID)
+                                    VALUES ({}
+                                            ,to_date('{}','DDMMYYYY')
+                                            ,'{}'
+                                            ,'{}'
+                                            ,{}
+                                            ,'{}'
+                                            ,'{}'
+                                            ,{}
+                                            ,{}
+                                            ,{}
+                                            ,'{}');""".format(tid[0], data[0] + str(month) + str(datetime.now().year),
+                                                              data[2].title(), data[3].title(), data[4],
+                                                              data[6].upper(), data[5].upper(), currency_value, total,
+                                                              dt.strftime("%Y%d%m%H%M%S"), 'Emma'))
 
         connection.commit()
 
@@ -311,8 +329,8 @@ class PostgreDBManager:
                                WHERE EXTRACT(MONTH FROM trans_date) = {}
                                  AND EXTRACT(YEAR FROM trans_date) = {}
                                  AND pymnt_method = {}
-                                 AND currency = 'USD'""".format(usd, '{:%d%m%y}'.format(dt),
-                                                                dt.strftime("%Y%d%m%H%M%S"), month, year, entity))
+                                 AND currency = 'USD';""".format(usd, '{:%d%m%y}'.format(dt),
+                                                                 dt.strftime("%Y%d%m%H%M%S"), month, year, entity))
 
             cursor.execute("""UPDATE gastos
                                  SET currency_value = {],
@@ -322,7 +340,7 @@ class PostgreDBManager:
                                WHERE EXTRACT(MONTH FROM trans_date) = {}
                                  AND EXTRACT(YEAR FROM trans_date) = {}
                                  AND pymnt_method = {}
-                                 AND currency = 'EUR'""".format(eur, '{:%d%m%y}'.format(dt),
-                                                                dt.strftime("%Y%d%m%H%M%S"), month, year, entity))
+                                 AND currency = 'EUR';""".format(eur, '{:%d%m%y}'.format(dt),
+                                                                 dt.strftime("%Y%d%m%H%M%S"), month, year, entity))
 
         connection.commit()
