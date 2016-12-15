@@ -1,3 +1,5 @@
+# ------------------------------------ Extended Multi Management Assistant ------------------------------------------- #
+# ------------------------------------             Messenger               ------------------------------------------- #
 from time import strftime, localtime
 from evernote.api.client import EvernoteClient
 import evernote.edam.notestore.ttypes as NoteStore

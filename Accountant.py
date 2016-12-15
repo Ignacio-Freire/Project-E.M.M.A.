@@ -1,4 +1,5 @@
-# ------------------------------------- Expense Management Mad Assistant --------------------------------------------- #
+# ------------------------------------ Extended Multi Management Assistant ------------------------------------------- #
+# ------------------------------------             Accountant              ------------------------------------------- #
 import gspread
 import difflib
 import calendar
@@ -135,19 +136,6 @@ class SpreadsheetManager:
 
         return values
 
-    def get_last_id(self, sheet):
-        """
-        Returns the highest transaction id value.
-        :param sheet: Spreadsheet to get the IDs from.
-        :return Returns the highest ID in the spreadsheet.
-        """
-
-        self.__log("Retrieving last transaction")
-
-        # TODO Finish get las ID function from Spreadsheet
-
-        pass
-
     def lock_cur_value(self, payments, cur_col, value_col, entity_col, sheet):
         """
         Locks the foreign currency value for the whole month in the spreadsheet.
@@ -156,7 +144,6 @@ class SpreadsheetManager:
         :param value_col: Column where the values to update are.
         :param entity_col: Column where the entity data is.
         :param sheet: Spreadsheet to update.
-        :return:
         """
 
         dt = datetime.now()
@@ -176,6 +163,19 @@ class SpreadsheetManager:
                         ws.update_cell(value_col, row, usd)
                     if ws.get_cell(row, cur_col) == 'EUR':
                         ws.update_cell(value_col, row, eur)
+
+    def get_last_id(self, sheet):
+        """
+        Returns the highest transaction id value.
+        :param sheet: Spreadsheet to get the IDs from.
+        :return Returns the highest ID in the spreadsheet.
+        """
+
+        self.__log("Retrieving last transaction")
+
+        # TODO Finish get las ID function from Spreadsheet
+
+        pass
 
 
 class PostgreDBManager:
@@ -289,23 +289,10 @@ class PostgreDBManager:
 
         return True
 
-    def get_last_id(self):
-        """
-        Returns the highest transaction id value
-        :return the highest ID in the DB
-        """
-
-        self.__log("Retrieving last transaction")
-
-        conn = self.connect_db()
-
-        # TODO Finish get las ID function from DB
-
     def lock_cur_value(self, payments):
         """
         Locks the foreign currency value for the whole month in the DB.
         :param payments: Entities that have been paid.
-        :return:
         """
 
         connection = self.connect_db()
@@ -344,3 +331,17 @@ class PostgreDBManager:
                                                                  dt.strftime("%Y%d%m%H%M%S"), month, year, entity))
 
         connection.commit()
+
+    def get_last_id(self):
+        """
+        Returns the highest transaction id value
+        :return the highest ID in the DB
+        """
+
+        self.__log("Retrieving last transaction")
+
+        conn = self.connect_db()
+
+        # TODO Finish get las ID function from DB
+
+        pass
