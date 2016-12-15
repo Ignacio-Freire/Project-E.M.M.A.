@@ -226,7 +226,7 @@ class PostgreDBManager:
             dt = datetime.now()
 
             if data[5].upper() == 'ARS':
-                currency_value = None
+                currency_value = 1
             elif data[5].upper() == 'USD':
                 currency_value = usd
             elif data[5].upper() == 'EUR':
@@ -277,10 +277,37 @@ class PostgreDBManager:
         :return:
         """
 
-        self.connect_db()
+        connection = self.connect_db()
+        cursor = connection.cursor()
 
         self.__log('Locking DB foreign currency value for {}'.format(calendar.month_name[month]))
 
-        # TODO complete function to lock currency value at EoM in DB
+        dt = datetime.now()
+        year = dt.year
 
-        pass
+        usd = requests.get("https://currency-api.appspot.com/api/USD/ARS.json").json()['rate']
+        eur = requests.get("https://currency-api.appspot.com/api/EUR/ARS.json").json()['rate']
+
+        cursor.execute("""UPDATE gastos
+                             SET currency_value = {],
+                                 close_date = to_date('{}','DDMMYYYY'),
+                                 edit_timestamp = {},
+                                 edit_user_id = 'Emma'
+                           WHERE EXTRACT(MONTH FROM trans_date) = {}
+                             AND EXTRACT(YEAR FROM trans_date) = {}
+                             AND pymnt_method = {}
+                             AND currency = 'USD'""".format(usd, '{:%d%m%y}'.format(dt), dt.strftime("%Y%d%m%H%M%S"),
+                                                            month, year, entity))
+
+        cursor.execute("""UPDATE gastos
+                             SET currency_value = {],
+                                 close_date = to_date('{}','DDMMYYYY'),
+                                 edit_timestamp = {},
+                                 edit_user_id = 'Emma'
+                           WHERE EXTRACT(MONTH FROM trans_date) = {}
+                             AND EXTRACT(YEAR FROM trans_date) = {}
+                             AND pymnt_method = {}
+                             AND currency = 'EUR'""".format(eur, '{:%d%m%y}'.format(dt), dt.strftime("%Y%d%m%H%M%S"),
+                                                            month, year, entity))
+
+        connection.commit()

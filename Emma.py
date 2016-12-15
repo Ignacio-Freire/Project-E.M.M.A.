@@ -31,13 +31,6 @@ def log(msg):
     print('[{}] Emma: {}'.format(strftime("%H:%M:%S", localtime()), msg))
 
 
-def is_endofmonth():
-    """
-    Checks if it's the last day of the month.
-    :return True: If it's the last day of the month.
-    """
-    return calendar.monthrange(datetime.now().year, datetime.now().month)[1] == datetime.now().day
-
 log('Booting up Emma.')
 
 # Config File
@@ -47,20 +40,17 @@ with open('settings.cfg', 'r') as f:
     account, password, json_auth, shtkey, evernote_token, db = log_info
 
 # Commands to search
-# TODO Allow to add number of payments next to credit card in Regex
 log('Compiling Regex.')
 expense = re.compile(
     r'(?P<day>\d{2})(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);'
     r'(?P<amount>[^;]*);(?P<currency>\bARS|\bEUR|\bUSD);'
     r'(?P<method>\bEFVO|\bMASTER|\bVISA|\bDEBITO)(?P<paymts>\d{2})?',
     re.I | re.M)
-signature = re.compile(
-    r'(?P<place>SIG)(?P<month>\d{2});(?P<detail>[^;]*);(?P<category>[^;]*);(?P<amount>[^;]*);(?P<currency>\w{3})',
-    re.I | re.M)
 status = re.compile(r'/status', re.I | re.M)
 balance = re.compile(r'/balance (?P<month>1[0-2]|[1-9])', re.I | re.M)
 end = re.compile(r'/stop', re.I | re.M)
 cur = re.compile(r'/usd|/eur', re.I | re.M)
+pay = re.compile(r'/payed (?P<entity>\bMASTER|\bVISA)(?P<month>\d{2})', re.I | re.M)
 
 # Evernote initialization
 log('Initializing Evernote Manager.')
@@ -97,8 +87,9 @@ def search_for_commands(text):
     fstatus = status.findall(text)
     fbalance = balance.findall(text)
     fcur = cur.findall(text)
+    fpay = pay.findall(text)
 
-    return fexpenses, fstop, fstatus, fbalance, fcur
+    return fexpenses, fstop, fstatus, fbalance, fcur, fpay
 
 
 def display_time(seconds, granularity=2):
@@ -146,9 +137,9 @@ if __name__ == '__main__':
             log('Couldn\'t reach note, will try on next run')
             note = ''
 
-        wExpenses, dStop, sStatus, sBalance, sCur = search_for_commands(note)
+        wExpenses, dStop, sStatus, sBalance, sCur, wPay = search_for_commands(note)
 
-        if wExpenses or dStop or sStatus or sBalance or sCur:
+        if wExpenses or dStop or sStatus or sBalance or sCur or wPay:
 
             log('Executing commands')
 
@@ -190,22 +181,14 @@ if __name__ == '__main__':
             if dStop:
                 break
 
+            if wPay:
+                entity, month = wPay[0], wPay[0]
+
+                postgre_db.lock_cur_value(month, entity)
+                sheet.lock_cur_value(month, 8, entity)
+
         else:
             log('None found')
-
-        if is_endofmonth() and not processed:
-
-            log('Locking currency value for EoM')
-
-            try:
-                postgre_db.lock_cur_value('month', 'entity')
-                sheet.lock_cur_value('month', 'column', 'entity')
-                processed = True
-            except:
-                processed = False
-
-        else:
-            processed = False
 
         finished = time.time() - start
         totTime += finished
