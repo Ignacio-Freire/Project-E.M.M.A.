@@ -73,7 +73,7 @@ class Expenses:
             dt = datetime.now()
 
             if data[5].upper() == 'ARS':
-                currency_value = 'null'
+                currency_value = 1
                 total = int(data[4])
             elif data[5].upper() == 'USD':
                 currency_value = usd
