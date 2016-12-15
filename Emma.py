@@ -50,7 +50,7 @@ status = re.compile(r'/status', re.I | re.M)
 balance = re.compile(r'/balance (?P<month>1[0-2]|[1-9])', re.I | re.M)
 end = re.compile(r'/stop', re.I | re.M)
 cur = re.compile(r'/usd|/eur', re.I | re.M)
-pay = re.compile(r'/payed (?P<entity>\bMASTER|\bVISA)(?P<month>\d{2})', re.I | re.M)
+pay = re.compile(r'/payed (?P<entity>\bMASTER|\bVISA)', re.I | re.M)
 
 # Evernote initialization
 log('Initializing Evernote Manager.')
@@ -81,6 +81,7 @@ def search_for_commands(text):
     :return fstatus: Returns a list of lists containing all fields of the status command.
     :return fbalance: Returns a list of lists containing all fields of the balance command.
     :return fcur: Returns a list of lists containing all fields of the currency command.
+    :return fpay: Returns a list of lists containing all fields of the CC payment command.
     """
     fexpenses = expense.findall(text)
     fstop = end.findall(text)
@@ -143,7 +144,7 @@ if __name__ == '__main__':
 
             log('Executing commands')
 
-            if wExpenses or sBalance or sCur:
+            if wExpenses or sBalance or sCur or wPay:
                 spreadsheet = sheet.log_in_sheets('A')
                 correct = True
 
@@ -171,6 +172,10 @@ if __name__ == '__main__':
                     for currency, value in enumerate(values):
                         message.append('{}: {}'.format(sCur[currency], value))
 
+                if wPay:
+                    postgre_db.lock_cur_value(wPay)
+                    sheet.lock_cur_value(wPay, 8, spreadsheet)
+
             if sStatus:
                 message.append('{} runs so far. That\'s {}.'
                                .format(runs, display_time(totTime, granularity=5)))
@@ -180,12 +185,6 @@ if __name__ == '__main__':
 
             if dStop:
                 break
-
-            if wPay:
-                entity, month = wPay[0], wPay[0]
-
-                postgre_db.lock_cur_value(month, entity)
-                sheet.lock_cur_value(month, 8, entity)
 
         else:
             log('None found')

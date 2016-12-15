@@ -135,28 +135,30 @@ class SpreadsheetManager:
 
         return values
 
-    def get_last_id(self):
+    def get_last_id(self, sheet):
         """
         Returns the highest transaction id value.
+        :param sheet: Spreadsheet to get the IDs from.
         :return Returns the highest ID in the spreadsheet.
         """
 
         self.__log("Retrieving last transaction")
 
-        sheet = self.log_in_sheets()
-
         # TODO Finish get las ID function from Spreadsheet
 
-    def lock_cur_value(self, month, column, entity):
+        pass
+
+    def lock_cur_value(self, payments, column, sheet):
         """
         Locks the foreign currency value for the whole month in the spreadsheet.
         :param month: Month to lock currency value.
         :param column: Column on which the currency value resides.
         :param entity: Entity to lock the foreing currency value on. (Ex: Visa, Master, Cash, All).
+        :param sheet: Spreadsheet to update value on.
         :return:
         """
-
-        msheet = calendar.month_name[month]
+        dt = datetime.now()
+        msheet = calendar.month_name[dt.month - 1]
         self.__log('Locking Spreadsheet foreign currency value for {}'.format(msheet))
 
         # TODO complete function to lock currency value at EoM in Sheet
@@ -265,49 +267,51 @@ class PostgreDBManager:
 
         self.__log("Retrieving last transaction")
 
-        sheet = self.connect_db()
+        conn = self.connect_db()
 
         # TODO Finish get las ID function from DB
 
-    def lock_cur_value(self, month, entity):
+    def lock_cur_value(self, payments):
         """
         Locks the foreign currency value for the whole month in the DB.
-        :param month: Month to lock currency value.
-        :param entity: Entity to lock the foreing currency value on. (Ex: Visa, Master, Cash, All)
+        :param payments: Entities that have been paid.
         :return:
         """
 
         connection = self.connect_db()
         cursor = connection.cursor()
 
-        self.__log('Locking DB foreign currency value for {}'.format(calendar.month_name[month]))
-
         dt = datetime.now()
         year = dt.year
+        month = int(dt.month) - 1
 
         usd = requests.get("https://currency-api.appspot.com/api/USD/ARS.json").json()['rate']
         eur = requests.get("https://currency-api.appspot.com/api/EUR/ARS.json").json()['rate']
 
-        cursor.execute("""UPDATE gastos
-                             SET currency_value = {],
-                                 close_date = to_date('{}','DDMMYYYY'),
-                                 edit_timestamp = {},
-                                 edit_user_id = 'Emma'
-                           WHERE EXTRACT(MONTH FROM trans_date) = {}
-                             AND EXTRACT(YEAR FROM trans_date) = {}
-                             AND pymnt_method = {}
-                             AND currency = 'USD'""".format(usd, '{:%d%m%y}'.format(dt), dt.strftime("%Y%d%m%H%M%S"),
-                                                            month, year, entity))
+        for entity in payments:
 
-        cursor.execute("""UPDATE gastos
-                             SET currency_value = {],
-                                 close_date = to_date('{}','DDMMYYYY'),
-                                 edit_timestamp = {},
-                                 edit_user_id = 'Emma'
-                           WHERE EXTRACT(MONTH FROM trans_date) = {}
-                             AND EXTRACT(YEAR FROM trans_date) = {}
-                             AND pymnt_method = {}
-                             AND currency = 'EUR'""".format(eur, '{:%d%m%y}'.format(dt), dt.strftime("%Y%d%m%H%M%S"),
-                                                            month, year, entity))
+            self.__log('Locking DB foreign currency value for {}'.format(calendar.month_name[month]))
+
+            cursor.execute("""UPDATE gastos
+                                 SET currency_value = {],
+                                     close_date = to_date('{}','DDMMYYYY'),
+                                     edit_timestamp = {},
+                                     edit_user_id = 'Emma'
+                               WHERE EXTRACT(MONTH FROM trans_date) = {}
+                                 AND EXTRACT(YEAR FROM trans_date) = {}
+                                 AND pymnt_method = {}
+                                 AND currency = 'USD'""".format(usd, '{:%d%m%y}'.format(dt),
+                                                                dt.strftime("%Y%d%m%H%M%S"), month, year, entity))
+
+            cursor.execute("""UPDATE gastos
+                                 SET currency_value = {],
+                                     close_date = to_date('{}','DDMMYYYY'),
+                                     edit_timestamp = {},
+                                     edit_user_id = 'Emma'
+                               WHERE EXTRACT(MONTH FROM trans_date) = {}
+                                 AND EXTRACT(YEAR FROM trans_date) = {}
+                                 AND pymnt_method = {}
+                                 AND currency = 'EUR'""".format(eur, '{:%d%m%y}'.format(dt),
+                                                                dt.strftime("%Y%d%m%H%M%S"), month, year, entity))
 
         connection.commit()
