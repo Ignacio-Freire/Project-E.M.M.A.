@@ -148,22 +148,34 @@ class SpreadsheetManager:
 
         pass
 
-    def lock_cur_value(self, payments, column, sheet):
+    def lock_cur_value(self, payments, cur_col, value_col, entity_col, sheet):
         """
         Locks the foreign currency value for the whole month in the spreadsheet.
-        :param month: Month to lock currency value.
-        :param column: Column on which the currency value resides.
-        :param entity: Entity to lock the foreing currency value on. (Ex: Visa, Master, Cash, All).
-        :param sheet: Spreadsheet to update value on.
+        :param payments: Entities that have been paid.
+        :param cur_col: Column where the currency data is.
+        :param value_col: Column where the values to update are.
+        :param entity_col: Column where the entity data is.
+        :param sheet: Spreadsheet to update.
         :return:
         """
+
         dt = datetime.now()
         msheet = calendar.month_name[dt.month - 1]
+
+        usd = requests.get("https://currency-api.appspot.com/api/USD/ARS.json").json()['rate']
+        eur = requests.get("https://currency-api.appspot.com/api/EUR/ARS.json").json()['rate']
+
         self.__log('Locking Spreadsheet foreign currency value for {}'.format(msheet))
 
-        # TODO complete function to lock currency value at EoM in Sheet
+        ws = sheet.worksheet(msheet)
 
-        pass
+        for payment in payments:
+            for row in ws.col_values(value_col):
+                if ws.get_cell(row, entity_col) == payment:
+                    if ws.get_cell(row, cur_col) == 'USD':
+                        ws.update_cell(value_col, row, usd)
+                    if ws.get_cell(row, cur_col) == 'EUR':
+                        ws.update_cell(value_col, row, eur)
 
 
 class PostgreDBManager:
@@ -289,7 +301,6 @@ class PostgreDBManager:
         eur = requests.get("https://currency-api.appspot.com/api/EUR/ARS.json").json()['rate']
 
         for entity in payments:
-
             self.__log('Locking DB foreign currency value for {}'.format(calendar.month_name[month]))
 
             cursor.execute("""UPDATE gastos

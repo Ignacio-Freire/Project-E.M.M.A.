@@ -174,7 +174,7 @@ if __name__ == '__main__':
 
                 if wPay:
                     postgre_db.lock_cur_value(wPay)
-                    sheet.lock_cur_value(wPay, 8, spreadsheet)
+                    sheet.lock_cur_value(wPay, 7, 8, 9, spreadsheet)
 
             if sStatus:
                 message.append('{} runs so far. That\'s {}.'
