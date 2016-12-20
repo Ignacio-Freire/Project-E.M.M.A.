@@ -152,9 +152,10 @@ if __name__ == '__main__':
                 if wExpenses:
                     # TODO Check if last ID is the same in both the DB and Spreadsheet. When not; equalize.
 
-                    correct = postgre_db.add_expenses(wExpenses)
+                    correct, id_exp = postgre_db.add_expenses(wExpenses)
+
                     if correct:
-                        sheet.add_expenses(wExpenses, ['C', 'D', 'E', 'F', 'G', 'I', 'J'], spreadsheet)
+                        sheet.add_expenses(id_exp, ['B', 'C', 'D', 'E', 'F', 'G', 'I'], spreadsheet)
                     else:
                         log('Something is wrong in transaction.')
 

@@ -164,18 +164,22 @@ class SpreadsheetManager:
                     if ws.get_cell(row, cur_col) == 'EUR':
                         ws.update_cell(value_col, row, eur)
 
-    def get_last_id(self, sheet):
+    def get_last_id(self, spreadsheet, worksheet, cell):
         """
         Returns the highest transaction id value.
-        :param sheet: Spreadsheet to get the IDs from.
-        :return Returns the highest ID in the spreadsheet.
+        :param spreadsheet: Spreadsheet to get the IDs from.
+        :param worksheet: Wotksheet where the max ID is placed.
+        :param cell: Cell where the max ID is written.
+        :return max_id: Returns the highest ID in the spreadsheet.
         """
 
         self.__log("Retrieving last transaction")
 
-        # TODO Finish get las ID function from Spreadsheet
+        ws = spreadsheet.worksheet(worksheet)
 
-        pass
+        max_id = ws.get_cell(cell[0], cell[1])
+
+        return max_id
 
 
 class PostgreDBManager:
@@ -218,6 +222,8 @@ class PostgreDBManager:
 
         connection = self.connect_db()
         cursor = connection.cursor()
+
+        exp_w_id = []
 
         self.__log('Adding expenses to Database')
 
@@ -285,9 +291,12 @@ class PostgreDBManager:
                                                               data[6].upper(), data[5].upper(), currency_value, total,
                                                               dt.strftime("%Y%d%m%H%M%S"), 'Emma'))
 
+            data.insert(0, tid[0])
+            exp_w_id.append(data)
+
         connection.commit()
 
-        return True
+        return True, exp_w_id
 
     def lock_cur_value(self, payments):
         """
@@ -342,6 +351,8 @@ class PostgreDBManager:
 
         conn = self.connect_db()
 
-        # TODO Finish get las ID function from DB
+        cursor = conn.cursor()
+        cursor.execute("""SELECT MAX(trans_id) FROM GASTOS;""")
+        max_id = cursor.fetchone()
 
-        pass
+        return max_id
