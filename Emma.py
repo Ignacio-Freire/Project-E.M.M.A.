@@ -149,8 +149,15 @@ if __name__ == '__main__':
                 spreadsheet = sheet.log_in_sheets('A')
                 correct = True
 
+                # TODO Check if last ID is the same in both the DB and Spreadsheet. When not; equalize.
+                # (Max WS ID) - (Max DB ID) = the number of transactions that need to be added to the DB or WS
+                # whenever it is negative. The latter would happen if the transaction is added manually to the DB.
+                # When positive it will first update the DB with those transactions and then it will run
+                # normally as it used to do.
+                # When negative it will fetch the number of transactions needed and add them to the WS. Then
+                # continue normally.
+
                 if wExpenses:
-                    # TODO Check if last ID is the same in both the DB and Spreadsheet. When not; equalize.
 
                     correct, id_exp = postgre_db.add_expenses(wExpenses)
 
