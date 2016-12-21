@@ -158,28 +158,52 @@ class SpreadsheetManager:
 
         for payment in payments:
             for row in ws.col_values(value_col):
-                if ws.get_cell(row, entity_col) == payment:
-                    if ws.get_cell(row, cur_col) == 'USD':
+                if ws.cell(row, entity_col).value == payment:
+                    if ws.cell(row, cur_col).value == 'USD':
                         ws.update_cell(value_col, row, usd)
-                    if ws.get_cell(row, cur_col) == 'EUR':
+                    if ws.cell(row, cur_col).value == 'EUR':
                         ws.update_cell(value_col, row, eur)
-
-    def get_last_id(self, spreadsheet, worksheet, cell):
+                        
+    def get_last_id(self, qty, spreadsheet, worksheet, cell):
         """
         Returns the highest transaction id value.
+        :param qty: Number of transactions to fetch.
         :param spreadsheet: Spreadsheet to get the IDs from.
-        :param worksheet: Wotksheet where the max ID is placed.
+        :param worksheet: Worksheet where the max ID is placed.
         :param cell: Cell where the max ID is written.
         :return max_id: Returns the highest ID in the spreadsheet.
+        :return transactions: Returns a list of the number of transactions needed.
         """
 
         self.__log("Retrieving last transaction")
 
         ws = spreadsheet.worksheet(worksheet)
 
-        max_id = ws.get_cell(cell[0], cell[1])
+        max_id = ws.cell(cell[0], cell[1]).value
 
-        return max_id
+        ids_to_fetch = [max_id - i for i in range(qty)]
+
+        transaction = []
+        transactions = []
+
+        # TODO Find a way to fetch all the necessary rows that might be spread across the whole spreadsheet.
+        # The worksheet would probably have to change for each ID too.
+
+        for i in range(12):
+
+            msheet = calendar.month_name[i + 1]
+
+            ws = spreadsheet.worksheet(msheet)
+
+            # get list of IDs from spreadsheet
+
+            if 'Cell with ID' in ids_to_fetch:
+                transaction = ['Values from each individual transaction']
+                ids_to_fetch.remove('ID')
+
+            transactions.append(transaction)
+
+        return max_id, transactions
 
 
 class PostgreDBManager:
@@ -341,13 +365,15 @@ class PostgreDBManager:
 
         connection.commit()
 
-    def get_last_id(self):
+    def get_last_id(self, qty):
         """
         Returns the highest transaction id value
-        :return the highest ID in the DB
+        :param qty: Number of expenses to fetch.
+        :return max_id: the highest ID in the DB.
+        :return transactions: Last X transactions in DB.
         """
 
-        self.__log("Retrieving last transaction")
+        self.__log("Retrieving last {} transactions".format(qty))
 
         conn = self.connect_db()
 
@@ -355,4 +381,10 @@ class PostgreDBManager:
         cursor.execute("""SELECT MAX(trans_id) FROM GASTOS;""")
         max_id = cursor.fetchone()
 
-        return max_id
+        cursor.execute("""SELECT TRANS_ID, TRANS_DATE, DETAIL, EXP_CATEGORY, PRICE, PYMNT_METHOD, CURRENCY
+                            FROM GASTOS
+                           WHERE TRANS_ID >= {}""".format(max_id[0] - qty))
+
+        transactions = cursor.fetchone
+
+        return max_id[0], transactions
