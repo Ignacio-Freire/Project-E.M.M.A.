@@ -146,7 +146,7 @@ if __name__ == '__main__':
             log('Executing commands')
 
             if wExpenses or sBalance or sCur or wPay:
-                spreadsheet = sheet.log_in_sheets('A')
+                spreadsheet = sheet.log_in_sheets(1)
                 correct = True
 
                 # TODO Check if last ID is the same in both the DB and Spreadsheet. When not; equalize.

@@ -37,7 +37,7 @@ class SpreadsheetManager:
     def log_in_sheets(self, categ_col):
         """
         Google Sheet API authentication process.
-        :param categ_col: Column where the categories to load are.
+        :param categ_col: Column where the categories to load are in integer.
         :return Returns a worksheet.
         """
 
@@ -52,7 +52,7 @@ class SpreadsheetManager:
 
         self.__log("Loading categories")
 
-        wsheet = sht.worksheet(calendar.month_name[datetime.now().year])
+        wsheet = sht.worksheet(calendar.month_name[datetime.now().month])
 
         self.categories = wsheet.col_values(categ_col)
 
@@ -74,22 +74,23 @@ class SpreadsheetManager:
         for data in expenses:
             temp = list(data)
 
-            month = int(data[1])
-            temp.pop(1)
+            month = int(data[2])
+            temp.pop(2)
 
             categ = difflib.get_close_matches(temp[2], self.categories)
 
             temp[2] = categ[0] if categ else temp[2]
 
-            payments = int(temp[6]) if temp[6] else 1
-            temp.pop(6)
+            payments = int(temp[7]) if temp[7] else 1
+            temp.pop(7)
 
             for i in range(payments):
                 msheet = calendar.month_name[month + i]
                 lastrow = sheet.worksheet(msheet).col_values(2)[1:].index('') + 2
 
                 for j in range(len(temp)):
-                    sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow), temp[j].title())
+                    sheet.worksheet(msheet).update_acell(columns[j] + str(lastrow),
+                                                         temp[j].title() if j < 4 else temp[j].upper())
 
     def get_balance(self, balance, sheet, row_no):
         """
@@ -163,7 +164,7 @@ class SpreadsheetManager:
                         ws.update_cell(value_col, row, usd)
                     if ws.cell(row, cur_col).value == 'EUR':
                         ws.update_cell(value_col, row, eur)
-                        
+
     def get_last_id(self, qty, spreadsheet, worksheet, cell):
         """
         Returns the highest transaction id value.
@@ -254,7 +255,8 @@ class PostgreDBManager:
         currencies = ['USD', 'EUR']
 
         for currency in currencies:
-            if currency in chain.from_iterable(expenses.upper()):
+            transaction = chain.from_iterable(expenses)
+            if currency in transaction or currency.upper() in transaction:
                 usd = requests.get("https://currency-api.appspot.com/api/USD/ARS.json").json()['rate']
                 eur = requests.get("https://currency-api.appspot.com/api/EUR/ARS.json").json()['rate']
                 break
@@ -264,6 +266,7 @@ class PostgreDBManager:
 
         cursor.execute("""SELECT MAX(trans_id) FROM GASTOS;""")
         tid = cursor.fetchone()
+        trans_id = tid[0]
 
         for data in expenses:
 
@@ -281,7 +284,7 @@ class PostgreDBManager:
 
             total = float(data[4]) * currency_value if currency_value else int(data[4])
 
-            tid[0] += 1
+            trans_id += 1
 
             payments = int(data[7]) if data[7] else 1
 
@@ -310,12 +313,13 @@ class PostgreDBManager:
                                             ,{}
                                             ,{}
                                             ,{}
-                                            ,'{}');""".format(tid[0], data[0] + str(month) + str(datetime.now().year),
-                                                              data[2].title(), data[3].title(), data[4],
-                                                              data[6].upper(), data[5].upper(), currency_value, total,
+                                            ,'{}');""".format(trans_id, data[0] + '{0:0=2d}'.format(month)
+                                                              + str(datetime.now().year), data[2].title(),
+                                                              data[3].title(), data[4], data[6].upper(),
+                                                              data[5].upper(), currency_value, total,
                                                               dt.strftime("%Y%d%m%H%M%S"), 'Emma'))
 
-            data.insert(0, tid[0])
+            data = (str(trans_id), *data)
             exp_w_id.append(data)
 
         connection.commit()
@@ -327,6 +331,8 @@ class PostgreDBManager:
         Locks the foreign currency value for the whole month in the DB.
         :param payments: Entities that have been paid.
         """
+
+        # TODO Fix payed command
 
         connection = self.connect_db()
         cursor = connection.cursor()
