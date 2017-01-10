@@ -254,7 +254,7 @@ class PostgreDBManager:
 
         self.__log('Adding expenses to Database')
 
-        currencies = ['USD', 'EUR']
+        currencies = ['USD', 'usd', 'EUR', 'eur']
 
         for currency in currencies:
             transaction = chain.from_iterable(expenses)
