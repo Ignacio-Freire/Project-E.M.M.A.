@@ -283,9 +283,11 @@ class PostgreDBManager:
             else:
                 self.__log('Currency not expected')
                 return False
+            
+            amt = data[4].replace(',', '.')
 
-            total = float(data[4].replace(',', '.')) * currency_value if currency_value \
-                else float(data[4].replace(',', '.'))
+            total = float(amt) * currency_value if currency_value \
+                else float(amt)
 
             trans_id += 1
 
@@ -318,7 +320,7 @@ class PostgreDBManager:
                                         ,{}
                                         ,'{}');""".format(self.trans_table, trans_id,
                                                           data[0] + '{0:0=2d}'.format(month) + str(datetime.now().year),
-                                                          data[2].title(), data[3].title(), data[4], data[6].upper(),
+                                                          data[2].title(), data[3].title(), amt, data[6].upper(),
                                                           data[5].upper(), currency_value, total,
                                                           dt.strftime("%Y%d%m%H%M%S"), 'Emma'))
 
