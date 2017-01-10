@@ -258,7 +258,7 @@ class PostgreDBManager:
 
         for currency in currencies:
             transaction = chain.from_iterable(expenses)
-            if currency in transaction or currency.upper() in transaction:
+            if currency in transaction:
                 usd = requests.get("https://currency-api.appspot.com/api/USD/ARS.json").json()['rate']
                 eur = requests.get("https://currency-api.appspot.com/api/EUR/ARS.json").json()['rate']
                 break
