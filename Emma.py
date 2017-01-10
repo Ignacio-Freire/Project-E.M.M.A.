@@ -18,7 +18,9 @@ Password
 Json File Name
 Sheet Key
 Evernote Token
+Note Title
 DB
+Transactions table name
 /---------------------------/
 '''
 
@@ -38,7 +40,7 @@ log('Booting up Emma.')
 log('Loading settings.')
 with open('settings.cfg', 'r') as f:
     log_info = f.read().splitlines()
-    account, password, json_auth, shtkey, evernote_token, db = log_info
+    account, password, json_auth, shtkey, evernote_token, note_title, db, trans_tbl_name = log_info
 
 # Commands to search
 log('Compiling Regex.')
@@ -55,11 +57,11 @@ pay = re.compile(r'/payed (?P<entity>\bMASTER|\bVISA)', re.I | re.M)
 
 # Evernote initialization
 log('Initializing Evernote Manager.')
-evernote = EvernoteManager(evernote_token, 'Emma', verbose='yes')
+evernote = EvernoteManager(evernote_token, note_title, verbose='yes')
 
 # DB initialization
 log('Initializing DB Manager.')
-postgre_db = PostgreDBManager(db, verbose='yes')
+postgre_db = PostgreDBManager(db, trans_tbl_name, verbose='yes')
 
 # Google Sheet initialization
 log('Initializing Spreadsheet Manager.')

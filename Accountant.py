@@ -208,14 +208,16 @@ class SpreadsheetManager:
 
 
 class PostgreDBManager:
-    def __init__(self, db, **kwargs):
+    def __init__(self, db, tbl_name, **kwargs):
         """
         Class to handle the connection with the PostgreSQL database.
         :param db: String with DB connection data.
+        :param tbl_name: Transactions table name.
         :param kwargs: If set verbose='yes' it will display step by step in the log.
         """
 
         self.connection = db
+        self.trans_table = tbl_name
         self.verbose = kwargs.get('verbose', 'NO')
 
     def __log(self, message):
@@ -264,7 +266,7 @@ class PostgreDBManager:
             usd = None
             eur = None
 
-        cursor.execute("""SELECT MAX(trans_id) FROM GASTOS;""")
+        cursor.execute("""SELECT MAX(trans_id) FROM {};""".format(self.trans_table))
         tid = cursor.fetchone()
         trans_id = tid[0]
 
@@ -282,7 +284,8 @@ class PostgreDBManager:
                 self.__log('Currency not expected')
                 return False
 
-            total = float(data[4]) * currency_value if currency_value else int(data[4])
+            total = float(data[4].replace(',', '.')) * currency_value if currency_value \
+                else float(data[4].replace(',', '.'))
 
             trans_id += 1
 
@@ -291,38 +294,39 @@ class PostgreDBManager:
             for i in range(payments):
                 month = int(data[1]) + i
 
-                cursor.execute(
-                    """INSERT INTO  GASTOS (TRANS_ID,
-                                            TRANS_DATE,
-                                            DETAIL,
-                                            EXP_CATEGORY,
-                                            PRICE,
-                                            PYMNT_METHOD,
-                                            CURRENCY,
-                                            CURRENCY_VALUE,
-                                            TOTAL,
-                                            INSERT_TIMESTAMP,
-                                            INSERT_USER_ID)
-                                    VALUES ({}
-                                            ,to_date('{}','DDMMYYYY')
-                                            ,'{}'
-                                            ,'{}'
-                                            ,{}
-                                            ,'{}'
-                                            ,'{}'
-                                            ,{}
-                                            ,{}
-                                            ,{}
-                                            ,'{}');""".format(trans_id, data[0] + '{0:0=2d}'.format(month)
-                                                              + str(datetime.now().year), data[2].title(),
-                                                              data[3].title(), data[4], data[6].upper(),
-                                                              data[5].upper(), currency_value, total,
-                                                              dt.strftime("%Y%d%m%H%M%S"), 'Emma'))
+            cursor.execute(
+                """INSERT INTO  {} (TRANS_ID,
+                                        TRANS_DATE,
+                                        DETAIL,
+                                        EXP_CATEGORY,
+                                        PRICE,
+                                        PYMNT_METHOD,
+                                        CURRENCY,
+                                        CURRENCY_VALUE,
+                                        TOTAL,
+                                        INSERT_TIMESTAMP,
+                                        INSERT_USER_ID)
+                                VALUES ({}
+                                        ,to_date('{}','DDMMYYYY')
+                                        ,'{}'
+                                        ,'{}'
+                                        ,{}
+                                        ,'{}'
+                                        ,'{}'
+                                        ,{}
+                                        ,{}
+                                        ,{}
+                                        ,'{}');""".format(self.trans_table, trans_id,
+                                                          data[0] + '{0:0=2d}'.format(month)
+                                                          + str(datetime.now().year), data[2].title(),
+                                                          data[3].title(), data[4], data[6].upper(),
+                                                          data[5].upper(), currency_value, total,
+                                                          dt.strftime("%Y%d%m%H%M%S"), 'Emma'))
 
             data = (str(trans_id), *data)
             exp_w_id.append(data)
 
-        connection.commit()
+            connection.commit()
 
         return True, exp_w_id
 
@@ -347,27 +351,27 @@ class PostgreDBManager:
         for entity in payments:
             self.__log('Locking DB foreign currency value for {}'.format(calendar.month_name[month]))
 
-            cursor.execute("""UPDATE gastos
-                                 SET currency_value = {],
-                                     close_date = to_date('{}','DDMMYYYY'),
-                                     edit_timestamp = {},
-                                     edit_user_id = 'Emma'
-                               WHERE EXTRACT(MONTH FROM trans_date) = {}
-                                 AND EXTRACT(YEAR FROM trans_date) = {}
-                                 AND pymnt_method = {}
-                                 AND currency = 'USD';""".format(usd, '{:%d%m%y}'.format(dt),
-                                                                 dt.strftime("%Y%d%m%H%M%S"), month, year, entity))
+            cursor.execute("""UPDATE {}
+                                     SET currency_value = {],
+                                         close_date = to_date('{}','DDMMYYYY'),
+                                         edit_timestamp = {},
+                                         edit_user_id = 'Emma'
+                                   WHERE EXTRACT(MONTH FROM trans_date) = {}
+                                     AND EXTRACT(YEAR FROM trans_date) = {}
+                                     AND pymnt_method = {}
+                                     AND currency = 'USD';""".format(self.trans_table, usd, '{:%d%m%y}'.format(dt),
+                                                                     dt.strftime("%Y%d%m%H%M%S"), month, year, entity))
 
-            cursor.execute("""UPDATE gastos
-                                 SET currency_value = {],
-                                     close_date = to_date('{}','DDMMYYYY'),
-                                     edit_timestamp = {},
-                                     edit_user_id = 'Emma'
-                               WHERE EXTRACT(MONTH FROM trans_date) = {}
-                                 AND EXTRACT(YEAR FROM trans_date) = {}
-                                 AND pymnt_method = {}
-                                 AND currency = 'EUR';""".format(eur, '{:%d%m%y}'.format(dt),
-                                                                 dt.strftime("%Y%d%m%H%M%S"), month, year, entity))
+            cursor.execute("""UPDATE {}
+                                     SET currency_value = {],
+                                         close_date = to_date('{}','DDMMYYYY'),
+                                         edit_timestamp = {},
+                                         edit_user_id = 'Emma'
+                                   WHERE EXTRACT(MONTH FROM trans_date) = {}
+                                     AND EXTRACT(YEAR FROM trans_date) = {}
+                                     AND pymnt_method = {}
+                                     AND currency = 'EUR';""".format(self.trans_table, eur, '{:%d%m%y}'.format(dt),
+                                                                     dt.strftime("%Y%d%m%H%M%S"), month, year, entity))
 
         connection.commit()
 
@@ -384,12 +388,12 @@ class PostgreDBManager:
         conn = self.connect_db()
 
         cursor = conn.cursor()
-        cursor.execute("""SELECT MAX(trans_id) FROM GASTOS;""")
+        cursor.execute("""SELECT MAX(trans_id) FROM {};""".format(self.trans_table))
         max_id = cursor.fetchone()
 
         cursor.execute("""SELECT TRANS_ID, TRANS_DATE, DETAIL, EXP_CATEGORY, PRICE, PYMNT_METHOD, CURRENCY
-                            FROM GASTOS
-                           WHERE TRANS_ID >= {}""".format(max_id[0] - qty))
+                                FROM {}
+                               WHERE TRANS_ID >= {}""".format(self.trans_table, max_id[0] - qty))
 
         transactions = cursor.fetchone
 
