@@ -153,11 +153,12 @@ class SpreadsheetManager:
         usd = requests.get("https://currency-api.appspot.com/api/USD/ARS.json").json()['rate']
         eur = requests.get("https://currency-api.appspot.com/api/EUR/ARS.json").json()['rate']
 
-        self.__log('Locking Spreadsheet foreign currency value for {}'.format(msheet))
-
         ws = sheet.worksheet(msheet)
 
         for entity in entities:
+
+            self.__log('Locking Spreadsheet foreign currency value for {} in {}'.format(entity, msheet))
+
             for row, value in enumerate(ws.col_values(value_col)):
                 row += 1
                 if ws.cell(row, entity_col).value == entity:
@@ -334,10 +335,10 @@ class PostgreDBManager:
 
         return True, exp_w_id
 
-    def lock_cur_value(self, payments):
+    def lock_cur_value(self, entities):
         """
         Locks the foreign currency value for the whole month in the DB.
-        :param payments: Entities that have been paid.
+        :param entities: Entities that have been paid.
         """
 
         # TODO Fix payed command
@@ -352,8 +353,8 @@ class PostgreDBManager:
         usd = requests.get("https://currency-api.appspot.com/api/USD/ARS.json").json()['rate']
         eur = requests.get("https://currency-api.appspot.com/api/EUR/ARS.json").json()['rate']
 
-        for entity in payments:
-            self.__log('Locking DB foreign currency value for {}'.format(calendar.month_name[month]))
+        for entity in entities:
+            self.__log('Locking DB foreign currency value for {} in {}.'.format(entity, calendar.month_name[month]))
 
             cursor.execute("""UPDATE {}
                                      SET currency_value = {},
