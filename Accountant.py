@@ -137,10 +137,10 @@ class SpreadsheetManager:
 
         return values
 
-    def lock_cur_value(self, payments, cur_col, value_col, entity_col, sheet):
+    def lock_cur_value(self, entities, cur_col, value_col, entity_col, sheet):
         """
         Locks the foreign currency value for the whole month in the spreadsheet.
-        :param payments: Entities that have been paid.
+        :param entities: Entities that have been paid.
         :param cur_col: Column where the currency data is.
         :param value_col: Column where the values to update are.
         :param entity_col: Column where the entity data is.
@@ -148,7 +148,7 @@ class SpreadsheetManager:
         """
 
         dt = datetime.now()
-        msheet = calendar.month_name[dt.month - 1]
+        msheet = calendar.month_name[dt.month]
 
         usd = requests.get("https://currency-api.appspot.com/api/USD/ARS.json").json()['rate']
         eur = requests.get("https://currency-api.appspot.com/api/EUR/ARS.json").json()['rate']
@@ -157,13 +157,16 @@ class SpreadsheetManager:
 
         ws = sheet.worksheet(msheet)
 
-        for payment in payments:
-            for row in ws.col_values(value_col):
-                if ws.cell(row, entity_col).value == payment:
+        for entity in entities:
+            for row, value in enumerate(ws.col_values(value_col)):
+                row += 1
+                if ws.cell(row, entity_col).value == entity:
                     if ws.cell(row, cur_col).value == 'USD':
-                        ws.update_cell(value_col, row, usd)
+                        ws.update_cell(row, value_col, str(usd).replace('.', ','))
                     if ws.cell(row, cur_col).value == 'EUR':
-                        ws.update_cell(value_col, row, eur)
+                        ws.update_cell(row, value_col, str(eur).replace('.', ','))
+
+        return True
 
     def get_last_id(self, qty, spreadsheet, worksheet, cell):
         """
