@@ -18,7 +18,9 @@ Password
 Json File Name
 Sheet Key
 Evernote Token
+Note Title
 DB
+Transactions table name
 /---------------------------/
 '''
 
@@ -38,7 +40,7 @@ log('Booting up Emma.')
 log('Loading settings.')
 with open('settings.cfg', 'r') as f:
     log_info = f.read().splitlines()
-    account, password, json_auth, shtkey, evernote_token, db = log_info
+    account, password, json_auth, shtkey, evernote_token, note_title, db, trans_tbl_name = log_info
 
 # Commands to search
 log('Compiling Regex.')
@@ -55,11 +57,11 @@ pay = re.compile(r'/payed (?P<entity>\bMASTER|\bVISA)', re.I | re.M)
 
 # Evernote initialization
 log('Initializing Evernote Manager.')
-evernote = EvernoteManager(evernote_token, 'Emma', verbose='yes')
+evernote = EvernoteManager(evernote_token, note_title, verbose='yes')
 
 # DB initialization
 log('Initializing DB Manager.')
-postgre_db = PostgreDBManager(db, verbose='yes')
+postgre_db = PostgreDBManager(db, trans_tbl_name, verbose='yes')
 
 # Google Sheet initialization
 log('Initializing Spreadsheet Manager.')
@@ -158,6 +160,7 @@ if __name__ == '__main__':
                 # The latter would happen if the transaction is added manually to the DB.
 
                 if wExpenses:
+                    correct = False
 
                     correct, id_exp = postgre_db.add_expenses(wExpenses)
 
@@ -182,8 +185,13 @@ if __name__ == '__main__':
                         message.append('{}: {}'.format(sCur[currency], value))
 
                 if wPay:
+                    correct = False
+
                     postgre_db.lock_cur_value(wPay)
-                    sheet.lock_cur_value(wPay, 7, 8, 9, spreadsheet)
+                    correct = sheet.lock_cur_value(wPay, 7, 8, 9, spreadsheet)
+
+                    if correct:
+                        evernote.delete_content(note_store, full_note)
 
             if sStatus:
                 message.append('{} runs so far. That\'s {}.'
