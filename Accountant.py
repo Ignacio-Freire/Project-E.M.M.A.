@@ -341,8 +341,6 @@ class PostgreDBManager:
         :param entities: Entities that have been paid.
         """
 
-        # TODO Fix payed command
-
         connection = self.connect_db()
         cursor = connection.cursor()
 
