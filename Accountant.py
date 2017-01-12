@@ -161,7 +161,7 @@ class SpreadsheetManager:
 
             for row, value in enumerate(ws.col_values(value_col)):
                 row += 1
-                if ws.cell(row, entity_col).value == entity:
+                if ws.cell(row, entity_col).value == entity.upper():
                     if ws.cell(row, cur_col).value == 'USD':
                         ws.update_cell(row, value_col, str(usd).replace('.', ','))
                     if ws.cell(row, cur_col).value == 'EUR':
@@ -365,7 +365,8 @@ class PostgreDBManager:
                                      AND EXTRACT(YEAR FROM trans_date) = {}
                                      AND pymnt_method = '{}'
                                      AND currency = 'USD';""".format(self.trans_table, usd, dt.strftime("%d%m%y"),
-                                                                     dt.strftime("%Y%d%m%H%M%S"), month, year, entity))
+                                                                     dt.strftime("%Y%d%m%H%M%S"), month, year,
+                                                                     entity.upper()))
 
             cursor.execute("""UPDATE {}
                                      SET currency_value = {},
@@ -376,7 +377,8 @@ class PostgreDBManager:
                                      AND EXTRACT(YEAR FROM trans_date) = {}
                                      AND pymnt_method = '{}'
                                      AND currency = 'EUR';""".format(self.trans_table, eur, dt.strftime("%d%m%y"),
-                                                                     dt.strftime("%Y%d%m%H%M%S"), month, year, entity))
+                                                                     dt.strftime("%Y%d%m%H%M%S"), month, year,
+                                                                     entity.upper()))
 
         connection.commit()
 
