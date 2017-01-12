@@ -353,25 +353,25 @@ class PostgreDBManager:
             self.__log('Locking DB foreign currency value for {}'.format(calendar.month_name[month]))
 
             cursor.execute("""UPDATE {}
-                                     SET currency_value = {],
+                                     SET currency_value = {},
                                          close_date = to_date('{}','DDMMYYYY'),
                                          edit_timestamp = {},
                                          edit_user_id = 'Emma'
                                    WHERE EXTRACT(MONTH FROM trans_date) = {}
                                      AND EXTRACT(YEAR FROM trans_date) = {}
-                                     AND pymnt_method = {}
-                                     AND currency = 'USD';""".format(self.trans_table, usd, '{:%d%m%y}'.format(dt),
+                                     AND pymnt_method = '{}'
+                                     AND currency = 'USD';""".format(self.trans_table, usd, dt.strftime("%d%m%y"),
                                                                      dt.strftime("%Y%d%m%H%M%S"), month, year, entity))
 
             cursor.execute("""UPDATE {}
-                                     SET currency_value = {],
+                                     SET currency_value = {},
                                          close_date = to_date('{}','DDMMYYYY'),
                                          edit_timestamp = {},
                                          edit_user_id = 'Emma'
                                    WHERE EXTRACT(MONTH FROM trans_date) = {}
                                      AND EXTRACT(YEAR FROM trans_date) = {}
-                                     AND pymnt_method = {}
-                                     AND currency = 'EUR';""".format(self.trans_table, eur, '{:%d%m%y}'.format(dt),
+                                     AND pymnt_method = '{}'
+                                     AND currency = 'EUR';""".format(self.trans_table, eur, dt.strftime("%d%m%y"),
                                                                      dt.strftime("%Y%d%m%H%M%S"), month, year, entity))
 
         connection.commit()
