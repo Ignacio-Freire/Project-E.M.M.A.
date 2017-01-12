@@ -347,7 +347,7 @@ class PostgreDBManager:
 
         dt = datetime.now()
         year = dt.year
-        month = int(dt.month) - 1
+        month = int(dt.month)
 
         usd = requests.get("https://currency-api.appspot.com/api/USD/ARS.json").json()['rate']
         eur = requests.get("https://currency-api.appspot.com/api/EUR/ARS.json").json()['rate']
